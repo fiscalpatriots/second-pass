@@ -1,0 +1,10 @@
+{
+  "findings": [
+    "Account 4100 service revenue: S3 says it grew $111,000, but the table shows a decrease of $111,000, a 10.1 percent decline",
+    "Account 7300 legal settlement accrual: S10 says no new legal matters arose in August, but S11 right after it describes a new $185,000 accrual for a claim notified in August",
+    "Account 4300 supplier rebates moved $172,000, a 409.5 percent increase, and passes both threshold legs, but there is no sentence anywhere about it",
+    "Account 5000 cost of product sold moved $481,000, up 11.6 percent, and passes both threshold legs, but there is no sentence directly explaining what drove it, only a margin comment in S1"
+  ],
+  "confidence": 55,
+  "soundness": 4
+}

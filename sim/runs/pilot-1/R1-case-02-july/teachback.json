@@ -1,0 +1,18 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Seasonal slowdown sounds plausible but I have not seen a same-store or last-year comparison backing it up."},
+    {"id": "C2", "verdict": "accept", "reason": "This is the same clash I found, S7 says the program closed in June and S8 describes a July second phase."},
+    {"id": "C3", "verdict": "accept", "reason": "Inventory shrink jumped $62,300 and nothing in the memo explains it, so that really does need a driver."},
+    {"id": "C4", "verdict": "accept", "reason": "I noticed the interest expense number looked off too, $1,900 does not match the $1,400 the table shows."},
+    {"id": "C5", "verdict": "accept", "reason": "Booking a September trade show cost into July does sound like it landed in the wrong period to me."},
+    {"id": "C6", "verdict": "accept", "reason": "That makes sense, the freight rate story sounds like it belongs to inbound freight, not cost of product sold."},
+    {"id": "C7", "verdict": "accept", "reason": "I did not rework the ratio myself, but if it fails unrounded then the held-steady line in S11 should not stand."},
+    {"id": "C8", "verdict": "reject", "reason": "Freight billed to customers only moved $7,500, under the $25,000 threshold stated up top, so no driver was required."},
+    {"id": "C9", "verdict": "accept", "reason": "I cannot rule out a transfer myself, so if part of that service revenue growth came from elsewhere it should be pulled out."},
+    {"id": "C10", "verdict": "accept", "reason": "Bad debt dropped $52,500 and eighty-five percent with nothing said about it, so that needs an explanation before release."},
+    {"id": "C11", "verdict": "accept", "reason": "Same one I caught, S4 calls it a decline but the table shows fleet fuel rose $17,500 to $108,700."},
+    {"id": "C12", "verdict": "accept", "reason": "I flagged this too, S6 says $74,900 but the table shows $79,400 moved on the warehouse wages line."},
+    {"id": "C13", "verdict": "reject", "reason": "S5 already says this timing is consistent with our normal practice, so I do not read that as an error."}
+  ],
+  "confidence": 55
+}

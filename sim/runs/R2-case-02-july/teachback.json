@@ -1,0 +1,20 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "reject", "reason": "Utilities only moved $3,300 on account 6600, which is well short of the $25,000 leg even with three reasons given, so S7 didn't need to be in the memo at all."},
+    {"id": "C2", "verdict": "accept", "reason": "S12 talks about a $12,800 fieldwork invoice landing in August, which is bigger than the $5,300 that actually moved on professional fees, so the timing does look worth questioning."},
+    {"id": "C3", "verdict": "reject", "reason": "I don't see a May column anywhere in this memo, it only compares June and July, so I can't check a $214,000 May figure for account 5100 that isn't in the table I read."},
+    {"id": "C4", "verdict": "accept", "reason": "This is the same one I flagged, S5 explains the $147,000 cost of product sold move with a freight-rate story, but the memo itself says freight sits outside cost of product sold on its own line."},
+    {"id": "C5", "verdict": "accept", "reason": "I already noticed this myself, S4 cites $74,900 for warehouse wages but the table next to account 6000 says the movement was $79,400, so the two figures don't agree."},
+    {"id": "C6", "verdict": "accept", "reason": "I took S2 at face value the first time around, but if the $74,400 marketing charge really belongs to a different month than July, then the period in S2 is wrong."},
+    {"id": "C7", "verdict": "accept", "reason": "S6 just points to a seasonal slowdown in school nutrition accounts for the $214,000 drop in product revenue, and I don't remember seeing a schedule or account list backing that up."},
+    {"id": "C8", "verdict": "accept", "reason": "This is the same gap I flagged, account 7400 shrink moved $62,300 and 700 percent and not one of the twelve sentences mentions it, so it can't go out without a driver."},
+    {"id": "C9", "verdict": "reject", "reason": "The table already says software subscriptions moved $1,600 and 5.3 percent for account 6300, not the $16,000 and 53 percent this challenge cites, so the challenge has its own numbers wrong."},
+    {"id": "C10", "verdict": "accept", "reason": "I hadn't connected service revenue and depot repairs before, but if $55,000 into account 4100 and $82,200 out of account 6200 are really one transfer, then S1 calling it new contracts isn't the full picture."},
+    {"id": "C11", "verdict": "accept", "reason": "S8 already says the June reclassification is complete, but getting the controller to confirm that with the actual closing entry seems like a fair ask on a freight line this small."},
+    {"id": "C12", "verdict": "accept", "reason": "This is the one I caught too, S3 calls the bad debt move an $84,700 reduction, but account 6400 in the table only moved $52,500, so the dollar figure in the sentence is wrong."},
+    {"id": "C13", "verdict": "accept", "reason": "This is the fuel one I already flagged, account 6100 went from $91,200 to $122,800 in the table, which is a rise, and S9 calls that same movement a decline."},
+    {"id": "C14", "verdict": "accept", "reason": "This is the repairs contradiction I already caught, S10 says the program closed in June with nothing more expected, and S11 right after describes $36,400 of active July repair work on the same program."}
+  ],
+  "findings": [],
+  "confidence": 78
+}

@@ -1,0 +1,12 @@
+{
+  "findings": [
+    "Account 6400 bad debt expense: S3 says the reduction was $84,700, but the table shows the variance for that account is $52,500",
+    "Account 6000 warehouse wages: S4 says the increase was $74,900, but the table shows the variance is $79,400",
+    "Account 5000 cost of product sold: S5 says the decline is driven by renegotiated inbound freight rates, but the memo itself says inbound freight is excluded from cost of product sold and sits on its own line",
+    "Account 6100 fleet fuel: S9 says it declined $31,600, but the table shows it went up $31,600, a 34.6 percent increase",
+    "Account 6200 depot repairs: S10 says the repair program closed in June with no further spend expected this year, but S11 right after it describes $36,400 of July repair spend as the second phase of the dock program",
+    "Account 7400 inventory shrink adjustment moved $62,300, a 700 percent increase, and passes both threshold legs, but there is no sentence anywhere about it"
+  ],
+  "confidence": 65,
+  "soundness": 4
+}

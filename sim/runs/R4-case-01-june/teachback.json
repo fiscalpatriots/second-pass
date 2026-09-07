@@ -1,0 +1,20 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "reject", "reason": "Freight billed to customers actually moved $65,000 not $6,500, a tenfold miss, and at 34.9 percent it clears both legs so commentary is in fact owed here."},
+    {"id": "C2", "verdict": "accept", "reason": "S1 says the roof and dock leveler program finished June 30 while S10 says remaining depot repairs finish in August, they cannot both be true and the close needs to know if the $77,600 is done or still running."},
+    {"id": "C3", "verdict": "accept", "reason": "The table goes from $214,000 to $287,800, that is a rise of $73,800, so the account went up and S6's decline story about easing surcharges is backwards."},
+    {"id": "C4", "verdict": "accept", "reason": "Eighty four thousand of annual plans covering twelve months is mostly future service, only about seven thousand belongs to June, the rest should sit in deferred revenue not this month's income."},
+    {"id": "C5", "verdict": "reject", "reason": "Professional fees only moved $7,500 which fails the dollar leg of the threshold on its own, so no driver or engagement letter is actually required before release."},
+    {"id": "C6", "verdict": "reject", "reason": "Shrink only moved $2,500, well under the $25,000 leg even though the percent looks big, both legs are required together so no cycle count file is owed here."},
+    {"id": "C7", "verdict": "accept", "reason": "Three hundred seventy two thousand is the biggest line in the whole memo and S5 just names the Tri-State ramp with nothing behind it, I would want a volume or contract schedule before signing this one."},
+    {"id": "C8", "verdict": "accept", "reason": "The table takes bad debt from fifteen thousand to sixty two thousand, that is forty seven thousand, but S2 says forty two thousand, a five thousand dollar gap against the reserve schedule."},
+    {"id": "C9", "verdict": "accept", "reason": "Nineteen thousand four hundred of June fuel is being pushed into July while the account only shows a five thousand two hundred decline, so properly matched the account would actually be up for June."},
+    {"id": "C10", "verdict": "accept", "reason": "Software subscriptions only moved $1,600 which fails both legs, so the seat by seat explanation should not be in the memo at all, and it used space that could have gone to warehouse wages or freight instead."},
+    {"id": "C11", "verdict": "accept", "reason": "Warehouse wages moved $72,500 at 11.5 percent, clears both legs, and nothing in the memo names a driver, I would want the rate schedule or headcount change before release."},
+    {"id": "C12", "verdict": "accept", "reason": "Freight billed to customers dropped $65,000 the same month product revenue rose $372,000 and nobody says whether any of that is billing shifting between the two accounts, at most $65,000 of the growth could be a transfer and that needs to be ruled out."},
+    {"id": "C13", "verdict": "accept", "reason": "Unrounded, May is 1,310,000 over 5,240,000, that is 25.0 percent, and June is 1,334,000 over 5,612,000, that is about 23.8 percent, so the flat 24 percent stable story does not survive."},
+    {"id": "C14", "verdict": "accept", "reason": "Depreciation sits at $128,000 in both months with zero movement, so the equipment additions S7 blames for the $31,200 interest increase left no mark on depreciation at all."}
+  ],
+  "findings": [],
+  "confidence": 82
+}

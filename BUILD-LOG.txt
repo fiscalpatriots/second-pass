@@ -1,0 +1,2474 @@
+SECOND PASS, BUILD LOG
+======================================================================
+
+Built 5 September 2026. Python 3.9.1 on Windows 10.
+Standard library only. No packages were installed to build or run this.
+
+Every command below was run in this folder and the output is pasted verbatim.
+
+======================================================================
+COMMAND 1   python -m second_pass check
+======================================================================
+
+Second Pass 1.0.0
+
+API keys in this environment, presence only
+  ANTHROPIC_API_KEY    absent
+  OPENAI_API_KEY       absent
+
+AI layer that will run: deterministic
+No key is present, so the challenge list is built by the deterministic challenger from
+each case's own answer key, with the same citation rule and the same refusal to hand
+over the explanation. The pilot does not depend on a key, a network or an account.
+
+Prompt: second-pass/challenger version 1, file prompts/challenger.v1.md
+Cases loaded: 3
+  case-01-june       June 2026 close, distribution and service    10 defects, 2 weak challenges
+  case-02-july       July 2026 close, distribution and service    11 defects, 2 weak challenges
+  case-03-august     August 2026 close, distribution and service  12 defects, 2 weak challenges
+
+======================================================================
+COMMAND 2   python tests/test_smoke.py
+======================================================================
+
+All three cases through the deterministic challenger against the answer key,
+with three synthetic reviewers. Exit code 0.
+
+test_approval_language_is_refused_from_a_model (__main__.SmokeTest) ... ok
+test_every_challenge_carries_a_citation_and_no_approval (__main__.SmokeTest) ... ok
+test_false_challenges_cost_precision (__main__.SmokeTest) ... ok
+test_pack_shape (__main__.SmokeTest) ... ok
+test_reviewer_view_hides_the_key (__main__.SmokeTest) ... ok
+test_three_reviewers_across_three_cases (__main__.SmokeTest) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.037s
+
+OK
+SECOND PASS SMOKE TEST
+==============================================================================
+Keys: ANTHROPIC_API_KEY absent, OPENAI_API_KEY absent
+AI layer under test: deterministic
+
+Model output validation: 3 of 4 challenges refused. Reasons: approval language: 'looks good'; cites an account that is not in the table; no numeric amount, so the challenge cannot be recomputed
+
+Precision check: 1 real finding and 2 false challenges gives 33.3 precision, and both false ones were recognised as the planted weak leads.
+
+Defect pack
+------------------------------------------------------------------------------
+case-01-june       June 2026                  accounts 13  sentences 10  defects 10  weak 2  material lines  6
+case-02-july       July 2026                  accounts 12  sentences 11  defects 11  weak 2  material lines  6
+case-03-august     August 2026                accounts 14  sentences 12  defects 12  weak 2  material lines  5
+
+Scores, deterministic challenger, three synthetic reviewers
+------------------------------------------------------------------------------
+Case               Reviewer    Unaided    Aided    Lift  Precision     Teach  Conf gap
+------------------------------------------------------------------------------
+case-01-june       A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-01-june       B partial     30.0%   100.0%   70.0     100.0%    100.0%     40.0
+case-01-june       C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+case-02-july       A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-02-july       B partial     27.3%   100.0%   72.7     100.0%    100.0%     42.7
+case-02-july       C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+case-03-august     A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-03-august     B partial     25.0%   100.0%   75.0     100.0%    100.0%     45.0
+case-03-august     C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+
+======================================================================
+COMMAND 3   python tests/test_withholding.py
+======================================================================
+
+The withholding rule, tested on the wire rather than on the screen. Exit code 0.
+
+test_a_second_session_cannot_read_the_first (__main__.HttpWithholdingTest) ... ok
+test_full_route_sequence (__main__.HttpWithholdingTest) ... ok
+test_named_reviewer_refused_over_http (__main__.HttpWithholdingTest) ... ok
+test_a_commitment_cannot_be_reopened (__main__.StateMachineTest) ... ok
+test_challenges_withheld_in_every_early_state (__main__.StateMachineTest) ... ok
+test_confidence_cannot_be_restated_after_the_fact (__main__.StateMachineTest) ... ok
+test_reviewer_label_refuses_a_name (__main__.StateMachineTest) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.632s
+
+OK
+SECOND PASS WITHHOLDING TEST
+==============================================================================
+  POST /api/session
+  GET /api/session/case-01-june_R2_7871de09/challenges
+  GET /api/session/not-a-real-session/challenges
+A fresh session starts closed, and an unknown session id returns nothing.
+  GET /api/config
+  POST /api/session
+  GET /api/session/case-01-june_R1_d52de886/case
+  GET /api/session/case-01-june_R1_d52de886/challenges
+GET challenges before phase one: 409, body carries the reason and nothing else.
+  POST /api/session/case-01-june_R1_d52de886/phase1
+  GET /api/session/case-01-june_R1_d52de886/challenges
+GET challenges during phase one: 409.
+  POST /api/session/case-01-june_R1_d52de886/commit
+  GET /api/session/case-01-june_R1_d52de886/challenges
+GET challenges after commit but before the second confidence question: 409.
+  POST /api/session/case-01-june_R1_d52de886/commit
+Second POST commit: 409.
+  POST /api/session/case-01-june_R1_d52de886/finish
+  POST /api/session/case-01-june_R1_d52de886/confidence2
+  GET /api/session/case-01-june_R1_d52de886/challenges
+GET challenges after the commitment is sealed: 200, 12 challenges.
+Every challenge carries a line and an amount, and none carries its own truth flag.
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/teachback
+  POST /api/session/case-01-june_R1_d52de886/finish
+Finish: scored, key released, session log written with 18 events.
+  POST /api/session
+A named reviewer is refused at the API, not only in the dropdown.
+Second commit refused. The sealed list is still the one that was sealed.
+Withheld in states: briefing, phase_1_open, phase_1_committed. Released in state: challenges_revealed, 12 challenges.
+Confidence cannot be restated once the phase is open.
+Reviewer labels: names refused, R1 to R99 accepted.
+
+======================================================================
+WHAT THE TWO SUITES PROVE
+======================================================================
+
+Smoke test, 6 tests.
+
+  The pack loads: 3 cases, 13 / 12 / 14 accounts, 10 / 11 / 12 sentences,
+  10 / 11 / 12 defects of distinct kinds, 2 weak challenges each, and every
+  case declares itself fictional.
+
+  Every challenge carries a real account line, a numeric amount and a citation
+  beginning "Account", and none of them contains approval language.
+
+  The reviewer's copy of a case carries no answer key, and the reviewer's copy
+  of a challenge carries no flag saying whether it is a real defect.
+
+  A reviewer who names every defect scores 100 percent unaided and 100 percent
+  on teach-back. A reviewer who names three scores a real lift and a positive
+  confidence gap. A reviewer who accepts every challenge with a one-word reason
+  scores zero aided, which is the behaviour the tool exists to catch.
+
+  Two false challenges against one real finding gives 33.3 percent precision,
+  and both false ones were recognised as the planted weak leads.
+
+  Given four challenges from a model, three were refused before any reviewer
+  saw them: one for approval language, one for citing an account that is not in
+  the table, one for having no amount to recompute.
+
+Withholding test, 7 tests.
+
+  The challenge list is refused in every state before the commitment is sealed:
+  briefing, phase one open, and phase one committed but confidence not yet
+  stated. It is released only in the fourth state, and no list exists in memory
+  before that point.
+
+  Every response a reviewer can obtain before committing was searched for the
+  exact text of all 10 defects, both weak challenges and all 12 challenges the
+  tool would raise. None of it appears in any of them.
+
+  A second commit is refused, over the API as well as in the object, so a
+  reviewer cannot commit, look, and then improve their own list.
+
+  Confidence cannot be restated once the phase is open.
+
+  Nothing can be scored before the challenge list has been worked.
+
+  A reviewer label that could identify a person is refused at the API, not only
+  in the dropdown.
+
+  Finishing writes a session log with the case, the commitments, the challenge
+  list, the teach-backs, the confidence ratings, the scores and the event trail.
+
+======================================================================
+CLICKED THROUGH, NOT ONLY TESTED
+======================================================================
+
+The web interface was driven end to end in a browser on 5 September: case
+opened, confidence stated, three findings committed, the seal confirmed, the
+challenge list revealed, verdicts and reasons entered, and the result screen
+read back off the page. The word counter updated live, the accept and reject
+buttons toggled, and the scorecard rendered with the answer key beneath it. The
+scorecard from that run:
+
+  Case case-01-june, reviewer R1
+  Defects planted: 10
+    Catch rate, unaided       30.0%   (3 of 10)
+    Catch rate, aided         50.0%   (5 of 10)
+    Lift                     20.0 points
+    Precision, unaided       100.0%   (0 finding(s) matched nothing)
+    Confidence stated first   60.0%
+    Confidence gap, unaided  30.0 points
+    Teach-back completeness   25.0%
+    Teach-back accuracy       16.7%
+    Weak challenges refused  0 of 2
+    Time, phase 1 / phase 2  9 / 36 seconds
+
+Three of twelve challenges were answered in that run, which is why teach-back
+completeness is 25 percent and why only two further defects were credited. That
+is the scoring rule doing its job.
+
+The command line was driven end to end in the same session, scripted from
+stdin, and wrote sessions/example/case-01-june_R3_6c58a567.json. That file is
+kept as a worked example of the log format.
+
+Aggregation was run against that log and printed the per-reviewer table, the
+pooled catch rates with denominators, the confidence gap and the markdown table
+for the write-up.
+
+======================================================================
+NOT DONE
+======================================================================
+
+No API key was present in this environment, so the Anthropic and OpenAI paths
+were exercised only against their validation layer, using a hand-built model
+response, rather than against a live endpoint. The request shapes follow each
+provider's documented API and the fallback path is tested, but the live call
+itself is unproven until somebody runs it with a key.
+
+======================================================================
+THE SIMULATION DRIVER, 5 SEPTEMBER 2026
+======================================================================
+
+The pilot reviewers are language-model agents at three instruction
+levels, run in parallel, each going through the real session state
+machine one command at a time. sim start writes the reviewer-safe view,
+sim commit seals the findings and releases the challenge list, and sim
+finish scores the session and writes a log carrying simulated: true and
+the persona. The method, the counterbalanced case order and the limits
+are in SIMULATION.md.
+
+New in this build:
+  second_pass/sim.py       the driver
+  sim/personas/*.md        novice, intermediate, experienced
+  tests/test_sim.py        one full session and every refusal
+  SIMULATION.md            the method and what the numbers do not measure
+  results.py               --only simulated, --only human, and the
+                           simulated reviewers label on every heading
+
+======================================================================
+ALL THREE SUITES, RUN AFTER THE CHANGE
+======================================================================
+
+$ python tests/test_smoke.py
+test_approval_language_is_refused_from_a_model (__main__.SmokeTest) ... ok
+test_every_challenge_carries_a_citation_and_no_approval (__main__.SmokeTest) ... ok
+test_false_challenges_cost_precision (__main__.SmokeTest) ... ok
+test_pack_shape (__main__.SmokeTest) ... ok
+test_reviewer_view_hides_the_key (__main__.SmokeTest) ... ok
+test_three_reviewers_across_three_cases (__main__.SmokeTest) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.037s
+
+OK
+SECOND PASS SMOKE TEST
+==============================================================================
+Keys: ANTHROPIC_API_KEY absent, OPENAI_API_KEY absent
+AI layer under test: deterministic
+
+Model output validation: 3 of 4 challenges refused. Reasons: approval language: 'looks good'; cites an account that is not in the table; no numeric amount, so the challenge cannot be recomputed
+
+Precision check: 1 real finding and 2 false challenges gives 33.3 precision, and both false ones were recognised as the planted weak leads.
+
+Defect pack
+------------------------------------------------------------------------------
+case-01-june       June 2026                  accounts 13  sentences 10  defects 10  weak 2  material lines  6
+case-02-july       July 2026                  accounts 12  sentences 11  defects 11  weak 2  material lines  6
+case-03-august     August 2026                accounts 14  sentences 12  defects 12  weak 2  material lines  5
+
+Scores, deterministic challenger, three synthetic reviewers
+------------------------------------------------------------------------------
+Case               Reviewer    Unaided    Aided    Lift  Precision     Teach  Conf gap
+------------------------------------------------------------------------------
+case-01-june       A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-01-june       B partial     30.0%   100.0%   70.0     100.0%    100.0%     40.0
+case-01-june       C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+case-02-july       A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-02-july       B partial     27.3%   100.0%   72.7     100.0%    100.0%     42.7
+case-02-july       C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+case-03-august     A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-03-august     B partial     25.0%   100.0%   75.0     100.0%    100.0%     45.0
+case-03-august     C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+
+
+$ python tests/test_withholding.py
+test_a_second_session_cannot_read_the_first (__main__.HttpWithholdingTest) ... ok
+test_full_route_sequence (__main__.HttpWithholdingTest) ... ok
+test_named_reviewer_refused_over_http (__main__.HttpWithholdingTest) ... ok
+test_a_commitment_cannot_be_reopened (__main__.StateMachineTest) ... ok
+test_challenges_withheld_in_every_early_state (__main__.StateMachineTest) ... ok
+test_confidence_cannot_be_restated_after_the_fact (__main__.StateMachineTest) ... ok
+test_reviewer_label_refuses_a_name (__main__.StateMachineTest) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.640s
+
+OK
+SECOND PASS WITHHOLDING TEST
+==============================================================================
+  POST /api/session
+  GET /api/session/case-01-june_R2_2c94921f/challenges
+  GET /api/session/not-a-real-session/challenges
+A fresh session starts closed, and an unknown session id returns nothing.
+  GET /api/config
+  POST /api/session
+  GET /api/session/case-01-june_R1_e3b710d0/case
+  GET /api/session/case-01-june_R1_e3b710d0/challenges
+GET challenges before phase one: 409, body carries the reason and nothing else.
+  POST /api/session/case-01-june_R1_e3b710d0/phase1
+  GET /api/session/case-01-june_R1_e3b710d0/challenges
+GET challenges during phase one: 409.
+  POST /api/session/case-01-june_R1_e3b710d0/commit
+  GET /api/session/case-01-june_R1_e3b710d0/challenges
+GET challenges after commit but before the second confidence question: 409.
+  POST /api/session/case-01-june_R1_e3b710d0/commit
+Second POST commit: 409.
+  POST /api/session/case-01-june_R1_e3b710d0/finish
+  POST /api/session/case-01-june_R1_e3b710d0/confidence2
+  GET /api/session/case-01-june_R1_e3b710d0/challenges
+GET challenges after the commitment is sealed: 200, 12 challenges.
+Every challenge carries a line and an amount, and none carries its own truth flag.
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/teachback
+  POST /api/session/case-01-june_R1_e3b710d0/finish
+Finish: scored, key released, session log written with 18 events.
+  POST /api/session
+A named reviewer is refused at the API, not only in the dropdown.
+Second commit refused. The sealed list is still the one that was sealed.
+Withheld in states: briefing, phase_1_open, phase_1_committed. Released in state: challenges_revealed, 12 challenges.
+Confidence cannot be restated once the phase is open.
+Reviewer labels: names refused, R1 to R99 accepted.
+
+$ python tests/test_sim.py
+test_a_named_reviewer_is_refused (__main__.SimDriverTest) ... ok
+test_commit_before_findings_is_refused (__main__.SimDriverTest) ... ok
+test_finish_before_commit_is_refused (__main__.SimDriverTest) ... ok
+test_finish_twice_is_refused (__main__.SimDriverTest) ... ok
+test_full_simulated_session (__main__.SimDriverTest) ... SECOND PASS SIMULATION DRIVER TEST
+==============================================================================
+AI layer under test: deterministic
+
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+Refused: Khaled, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
+Simulated session case-01-june_R1_e3f14747 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    <session dir>\R1-case-01-june
+
+Read <session dir>\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings and the share of the
+problems you believe you found. One finding per entry, and name the account in each one.
+
+  {"findings": ["...", "..."], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim commit --dir
+<session dir>\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: findings.json not found at <session dir>\R1-case-01-june\findings.json. Write your own findings first. The challenge list is withheld until they are sealed.
+Refused: commit before findings.json exists, and no challenge list was written.
+Simulated session case-01-june_R1_2366a978 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    <session dir>\R1-case-01-june
+
+Read <session dir>\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings and the share of the
+problems you believe you found. One finding per entry, and name the account in each one.
+
+  {"findings": ["...", "..."], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim commit --dir
+<session dir>\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: There is nothing to score yet. Commit your findings and work the challenge list first. Current state: 'briefing'.
+Refused: finish before commit, and no session log was written.
+Simulated session case-01-june_R1_3785ea58 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    <session dir>\R1-case-01-june
+
+Read <session dir>\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings and the share of the
+problems you believe you found. One finding per entry, and name the account in each one.
+
+  {"findings": ["...", "..."], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim commit --dir
+<session dir>\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 12 challenge(s) from the deterministic layer.
+  Written to <session dir>\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {"responses": [{"id": "C1", "verdict": "accept" or "reject", "reason": "..."}], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim finish --dir
+<session dir>\R1-case-01-june
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 10
+
+  Catch rate, unaided       10.0%   (1 of 10)
+  Catch rate, aided         10.0%   (1 of 10)
+  Lift                     0.0 points
+  Precision, unaided       100.0%   (0 finding(s) matched nothing)
+  Confidence stated first   70.0%
+  Confidence gap, unaided  60.0 points
+  Confidence gap, aided    60.0 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       16.7%
+  Weak challenges refused  2 of 2
+  Time, phase 1 / phase 2  0 / 0 seconds
+
+The answer key is withheld from this output. A facilitator can see it with sim finish --debrief, or with show --case case-01-june --key.
+
+Session log written to <session dir>\sessions\case-01-june_R1_3785ea58.json
+It carries simulated: true and persona: experienced.
+
+Stopped: This session is already scored and its log is written.
+Refused: finishing a session that is already scored. One log, not two.
+A full simulated session, run through the command line
+------------------------------------------------------------------------------
+Simulated session case-01-june_R1_da34ddb0 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    <session dir>\R1-case-01-june
+
+Read <session dir>\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings and the share of the
+problems you believe you found. One finding per entry, and name the account in each one.
+
+  {"findings": ["...", "..."], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim commit --dir
+<session dir>\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+start   view.md written, 2982 characters, no key and no challenge list on disk
+Findings sealed. 3 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 12 challenge(s) from the deterministic layer.
+  Written to <session dir>\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {"responses": [{"id": "C1", "verdict": "accept" or "reject", "reason": "..."}], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim finish --dir
+<session dir>\R1-case-01-june
+commit  12 challenges written, weak ones included and unmarked
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 10
+
+  Catch rate, unaided       30.0%   (3 of 10)
+  Catch rate, aided        100.0%   (10 of 10)
+  Lift                     70.0 points
+  Precision, unaided       100.0%   (0 finding(s) matched nothing)
+  Confidence stated first   75.0%
+  Confidence gap, unaided  45.0 points
+  Confidence gap, aided    -25.0 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       83.3%
+  Weak challenges refused  0 of 2
+  Time, phase 1 / phase 2  0 / 0 secondsok
+test_results_label_the_population (__main__.SimDriverTest) ... ok
+test_second_commit_is_refused (__main__.SimDriverTest) ... ok
+test_start_into_a_used_folder_is_refused (__main__.SimDriverTest) ... ok
+test_the_answer_key_stays_out_of_the_score_block (__main__.SimDriverTest) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.263s
+
+OK
+
+
+Session log written to <session dir>\sessions\case-01-june_R1_da34ddb0.json
+It carries simulated: true and persona: experienced.
+finish  simulated: true, persona experienced, caught 3 of 10 unaided and 10 of 10 aided, teach-back accuracy 83.3%
+
+Simulated session case-01-june_R1_1165ce0f opened.
+  Case      case-01-june
+  Reviewer  R1, persona novice
+  Folder    <session dir>\R1-case-01-june
+
+Read <session dir>\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings and the share of the
+problems you believe you found. One finding per entry, and name the account in each one.
+
+  {"findings": ["...", "..."], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim commit --dir
+<session dir>\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 12 challenge(s) from the deterministic layer.
+  Written to <session dir>\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {"responses": [{"id": "C1", "verdict": "accept" or "reject", "reason": "..."}], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim finish --dir
+<session dir>\R1-case-01-june
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 10
+
+  Catch rate, unaided       10.0%   (1 of 10)
+  Catch rate, aided        100.0%   (10 of 10)
+  Lift                     90.0 points
+  Precision, unaided       100.0%   (0 finding(s) matched nothing)
+  Confidence stated first   70.0%
+  Confidence gap, unaided  60.0 points
+  Confidence gap, aided    -30.0 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       83.3%
+  Weak challenges refused  0 of 2
+  Time, phase 1 / phase 2  0 / 0 seconds
+
+Session log written to <session dir>\sessions\case-01-june_R1_1165ce0f.json
+It carries simulated: true and persona: novice.
+Aggregation: title, four headings and the markdown table all say simulated reviewers, and --only human returns nothing from a simulated set.
+
+Simulated session case-01-june_R1_9cdf4869 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    <session dir>\R1-case-01-june
+
+Read <session dir>\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings and the share of the
+problems you believe you found. One finding per entry, and name the account in each one.
+
+  {"findings": ["...", "..."], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim commit --dir
+<session dir>\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 12 challenge(s) from the deterministic layer.
+  Written to <session dir>\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {"responses": [{"id": "C1", "verdict": "accept" or "reject", "reason": "..."}], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim finish --dir
+<session dir>\R1-case-01-june
+
+Stopped: This session has already committed. A commitment is sealed once and cannot be reopened, so a reviewer cannot commit, read the challenge list, and then improve their own findings. Current state: 'challenges_revealed'.
+Refused: a second commit. The first commitment of 1 finding stands and the challenge list is unchanged.
+Simulated session case-01-june_R1_da1d9608 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    <session dir>\R1-case-01-june
+
+Read <session dir>\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings and the share of the
+problems you believe you found. One finding per entry, and name the account in each one.
+
+  {"findings": ["...", "..."], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim commit --dir
+<session dir>\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: <session dir>\R1-case-01-june already holds a simulated session. A session directory is used once, so that a reviewer cannot restart after seeing the challenge list. Point --dir somewhere new.
+Refused: a second session in a folder that already holds one.
+Simulated session case-01-june_R1_6106ce63 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    <session dir>\R1-case-01-june
+
+Read <session dir>\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings and the share of the
+problems you believe you found. One finding per entry, and name the account in each one.
+
+  {"findings": ["...", "..."], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim commit --dir
+<session dir>\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 0 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 12 challenge(s) from the deterministic layer.
+  Written to <session dir>\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {"responses": [{"id": "C1", "verdict": "accept" or "reject", "reason": "..."}], "confidence": 0 to 100}
+
+Then run: python -m second_pass sim finish --dir
+<session dir>\R1-case-01-june
+The score block withholds the key from the reviewer and prints it under --debrief, so an agent running all three cases does not learn the taxonomy from case one.
+
+
+================================================================================
+THE REFINE STEP, 5 SEPTEMBER 2026
+================================================================================
+
+Pilot one ran earlier the same day: six simulated reviewers, three instruction
+levels, eighteen sessions, 198 planted defects worked. Its numbers are frozen in
+PILOT-1-RESULTS.md, its logs are in sessions/pilot-1/ and its reviewer working
+folders are in sim/runs/pilot-1/. The reviewers reported ten findings about the
+instrument. All ten were acted on, and PILOT-1-FINDINGS.md pairs each finding
+with the change made because of it.
+
+What changed in this pass.
+
+  cases/*.json           three cases rebuilt. Halyard Provisioning Group kept,
+                         June to July to August still chain. 32 defects over the
+                         pack, all twelve kinds, no two cases with the same set,
+                         percent-into-dollar in one case only. Nine weak
+                         challenges in four shapes, none repeated in a case.
+                         Subtotals added: a revenue total and an operating
+                         expense subtotal per case.
+  second_pass/cases.py   tags, distractor shapes, counterparty and focus fields,
+                         subtotal_table(), materiality_rule(), and five new
+                         validation rules that refuse a case file which breaks
+                         any of them.
+  second_pass/challenger.py
+                         cited amount is the named account's movement, read from
+                         the table. Counterparty and focus clauses. Template fit
+                         checks. One-word tags. Evidence bars. The model path
+                         drops a challenge whose amount does not tie and names no
+                         other account.
+  prompts/challenger.v2.md
+                         new version, v1 kept. CHANGELOG row added.
+  second_pass/scoring.py findings outside the key counted and kept verbatim,
+                         precision labelled against the answer key, ceiling note,
+                         four definitions printed beside the numbers.
+  second_pass/results.py by-instruction-level block, ceiling notes, out-of-key
+                         counts, definitions, in text and in markdown.
+  second_pass/sim.py     check_dir() guard, full findings and teach-back schemas
+                         with their rules, subtotals and the restated threshold
+                         in view.md, tags and evidence bars in challenges.md.
+  second_pass/cli.py     the guard wired into all three sim commands,
+                         --allow-any-dir, the schemas printed in full.
+  second_pass/session.py findings_outside_key written into the session log.
+  web/index.html         the threshold restated above and below the table,
+                         subtotals rendered, tags and evidence bars shown.
+  tests/                 eight new tests. Full output below.
+
+The withholding rule and every refusal are unchanged. No test of a refusal was
+altered except to pass --allow-any-dir where it writes into a temporary folder.
+
+--------------------------------------------------------------------------------
+python tests/test_smoke.py
+--------------------------------------------------------------------------------
+test_a_ceiling_note_prints_when_unaided_catch_is_at_the_top (__main__.SmokeTest)
+Finding 7. A lift of zero from a ceiling is not a lift of zero from nothing. ... ok
+test_a_counterparty_is_named_in_words_not_just_implied (__main__.SmokeTest)
+The other half of finding 1: say it out loud, with its own movement. ... ok
+test_a_template_that_does_not_fit_its_sentence_is_not_used (__main__.SmokeTest)
+Finding 2. The percent template must read the sentence first. ... ok
+test_approval_language_and_untied_amounts_are_refused_from_a_model (__main__.SmokeTest) ... ok
+test_defect_kinds_and_slots_rotate_across_the_pack (__main__.SmokeTest)
+Finding 4. Pilot one put the same kind in the same slot in all three. ... ok
+test_every_challenge_carries_a_citation_and_no_approval (__main__.SmokeTest) ... ok
+test_every_challenge_carries_a_tag_that_does_not_reveal_weakness (__main__.SmokeTest)
+Finding 9. A tag only weak challenges carried would give them away. ... ok
+test_every_cited_amount_ties_to_the_named_account (__main__.SmokeTest)
+Finding 1, the one that cost pilot one the most credibility. ... ok
+test_no_case_plants_two_weak_challenges_of_the_same_shape (__main__.SmokeTest)
+Finding 3. In pilot one all six weak challenges were one shape. ... ok
+test_pack_shape (__main__.SmokeTest) ... ok
+test_precision_is_against_the_key_and_out_of_key_findings_are_counted_apart (__main__.SmokeTest)
+Finding 6 from pilot one, in a test. ... ok
+test_reviewer_view_hides_the_key (__main__.SmokeTest) ... ok
+test_three_reviewers_across_three_cases (__main__.SmokeTest) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.057s
+
+OK
+SECOND PASS SMOKE TEST
+==============================================================================
+Keys: ANTHROPIC_API_KEY absent, OPENAI_API_KEY absent
+AI layer under test: deterministic
+
+Ceiling note prints at 100 percent unaided and stays off at 9.1 percent.
+
+Every counterparty is named by line and by its own movement in the challenge text.
+
+Template fit: the percent challenge changes shape when the sentence already labels its percentage, and a transfer with a known other side stops asking for one.
+
+Model output validation: 4 of 6 challenges refused. Reasons: approval language: 'looks good'; cites an account that is not in the table; no numeric amount, so the challenge cannot be recomputed; cites $62,500 against account 6000, which moved $72,500, and names no other account the figure could belong to
+
+Kinds: all twelve across the pack, no two cases with the same set, percent-into-dollar in 1 case, and no key slot holding one kind in all three.
+
+Tags: every challenge carries one of eight, weak challenges share tags with real ones, and every driver challenge states its evidence bar.
+
+Citation tie: 41 challenges checked across three cases. Every cited amount is the named account's own movement, or the text names the account the figure belongs to.
+
+Weak challenge shapes, 4 distinct across the pack, none repeated inside a case:
+  case-01-june       below_threshold_document, bad_recomputation, restates_correct_explanation
+  case-02-july       wrong_period_named, restates_correct_explanation, bad_recomputation
+  case-03-august     below_threshold_document, wrong_period_named, restates_correct_explanation
+
+Defect pack
+------------------------------------------------------------------------------
+case-01-june       June 2026                  accounts 14  sentences 12  defects 11  weak 3  material lines  7
+case-02-july       July 2026                  accounts 16  sentences 12  defects 11  weak 3  material lines  7
+case-03-august     August 2026                accounts 17  sentences 12  defects 10  weak 3  material lines  8
+
+Precision: 1 finding in the key and 2 outside it gives 33.3 against the key. Neither out-of-key finding moved the catch rate, and both are in the log verbatim.
+
+Scores, deterministic challenger, three synthetic reviewers
+------------------------------------------------------------------------------
+Case               Reviewer    Unaided    Aided    Lift  Precision     Teach  Conf gap
+------------------------------------------------------------------------------
+case-01-june       A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-01-june       B partial     27.3%   100.0%   72.7     100.0%    100.0%     42.7
+case-01-june       C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+case-02-july       A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-02-july       B partial     27.3%   100.0%   72.7     100.0%    100.0%     42.7
+case-02-july       C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+case-03-august     A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-03-august     B partial     30.0%   100.0%   70.0     100.0%    100.0%     40.0
+case-03-august     C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+
+
+--------------------------------------------------------------------------------
+python tests/test_withholding.py
+--------------------------------------------------------------------------------
+test_a_second_session_cannot_read_the_first (__main__.HttpWithholdingTest) ... ok
+test_full_route_sequence (__main__.HttpWithholdingTest) ... ok
+test_named_reviewer_refused_over_http (__main__.HttpWithholdingTest) ... ok
+test_a_commitment_cannot_be_reopened (__main__.StateMachineTest) ... ok
+test_challenges_withheld_in_every_early_state (__main__.StateMachineTest) ... ok
+test_confidence_cannot_be_restated_after_the_fact (__main__.StateMachineTest) ... ok
+test_reviewer_label_refuses_a_name (__main__.StateMachineTest) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.726s
+
+OK
+SECOND PASS WITHHOLDING TEST
+==============================================================================
+  POST /api/session
+  GET /api/session/case-01-june_R2_094aafc6/challenges
+  GET /api/session/not-a-real-session/challenges
+A fresh session starts closed, and an unknown session id returns nothing.
+  GET /api/config
+  POST /api/session
+  GET /api/session/case-01-june_R1_88263d95/case
+  GET /api/session/case-01-june_R1_88263d95/challenges
+GET challenges before phase one: 409, body carries the reason and nothing else.
+  POST /api/session/case-01-june_R1_88263d95/phase1
+  GET /api/session/case-01-june_R1_88263d95/challenges
+GET challenges during phase one: 409.
+  POST /api/session/case-01-june_R1_88263d95/commit
+  GET /api/session/case-01-june_R1_88263d95/challenges
+GET challenges after commit but before the second confidence question: 409.
+  POST /api/session/case-01-june_R1_88263d95/commit
+Second POST commit: 409.
+  POST /api/session/case-01-june_R1_88263d95/finish
+  POST /api/session/case-01-june_R1_88263d95/confidence2
+  GET /api/session/case-01-june_R1_88263d95/challenges
+GET challenges after the commitment is sealed: 200, 14 challenges.
+Every challenge carries a line and an amount, and none carries its own truth flag.
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/teachback
+  POST /api/session/case-01-june_R1_88263d95/finish
+Finish: scored, key released, session log written with 20 events.
+  POST /api/session
+A named reviewer is refused at the API, not only in the dropdown.
+Second commit refused. The sealed list is still the one that was sealed.
+Withheld in states: briefing, phase_1_open, phase_1_committed. Released in state: challenges_revealed, 14 challenges.
+Confidence cannot be restated once the phase is open.
+Reviewer labels: names refused, R1 to R99 accepted.
+
+--------------------------------------------------------------------------------
+python tests/test_sim.py
+--------------------------------------------------------------------------------
+test_a_dir_outside_sim_runs_is_refused (__main__.SimDriverTest)
+Finding 10. Pilot one lost its backslashes to bash and wrote a folder ... ok
+test_a_named_reviewer_is_refused (__main__.SimDriverTest) ... ok
+test_commit_before_findings_is_refused (__main__.SimDriverTest) ... ok
+test_finish_before_commit_is_refused (__main__.SimDriverTest) ... ok
+test_finish_twice_is_refused (__main__.SimDriverTest) ... SECOND PASS SIMULATION DRIVER TEST
+==============================================================================
+AI layer under test: deterministic
+
+
+Stopped: --dir C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-okggsfki\simrunsR6-case-02-july resolves to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-okggsfki\simrunsR6-case-02-july, which is outside C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
+Refused: a --dir outside sim/runs, with the resolved path echoed back, the forward slash advice, and the note that the working directory does not persist.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+Refused: Khaled, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
+Simulated session case-01-june_R1_ea0ea7e4 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: findings.json not found at C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june\findings.json. Write your own findings first. The challenge list is withheld until they are sealed.
+Refused: commit before findings.json exists, and no challenge list was written.
+Simulated session case-01-june_R1_04a64720 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-mqgok3lw\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-mqgok3lw\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-mqgok3lw\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: There is nothing to score yet. Commit your findings and work the challenge list first. Current state: 'briefing'.
+Refused: finish before commit, and no session log was written.
+Simulated session case-01-june_R1_4d2a0ab3 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.ok
+test_full_simulated_session (__main__.SimDriverTest) ... 
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "The two fuel invoices relate to June activity and belong in June, so the memo is deferring a cost into the wrong period."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Professional fees fell $7,500, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 11
+
+  Catch rate, unaided        9.1%   (1 of 11)
+  Catch rate, aided          9.1%   (1 of 11)
+  Lift                     0.0 points
+  Precision, against key   100.0%   (0 finding(s) outside the answer key)
+  Confidence stated first   70.0%
+  Confidence gap, unaided  60.9 points
+  Confidence gap, aided    60.9 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       21.4%
+  Weak challenges refused  3 of 3
+  Time, phase 1 / phase 2  0 / 0 seconds
+
+What the numbers are
+  Lift: aided catch rate minus unaided catch rate, in points. It is what the challenge list added to what the reviewer already had.
+  Confidence gap: the share of the planted defects the reviewer said they would find, minus the share they actually found. Positive means they believed they caught more than they caught.
+  Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
+  Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.
+
+The answer key is withheld from this output. A facilitator can see it with sim finish --debrief, or with show --case case-01-june --key.
+
+Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\sessions\case-01-june_R1_4d2a0ab3.json
+It carries simulated: true and persona: experienced.
+
+Stopped: This session is already scored and its log is written.
+Refused: finishing a session that is already scored. One log, not two.
+A full simulated session, run through the command line
+------------------------------------------------------------------------------
+Simulated session case-01-june_R1_4899bc36 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+start   view.md written, 4304 characters, no key and no challenge list on disk
+Findings sealed. 3 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "The two fuel invoices relate to June activity and belong in June, so the memo is deferring a cost into the wrong period."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Professional fees fell $7,500, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
+commit  14 challenges written, weak ones included and unmarked
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 11
+
+  Catch rate, unaided       27.3%   (3 of 11)
+  Catch rate, aided        100.0%   (11 of 11)
+  Lift                     72.7 points
+  Precision, against key   100.0%   (0 finding(s) outside the answer key)
+  Confidence stated first   75.0%
+  Confidence gap, unaided  47.7 points
+  Confidence gap, aided    -25.0 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       78.6%
+  Weak challenges refused  0 of 3
+  Time, phase 1 / phase 2  0 / 0 seconds
+
+What the numbers are
+  Lift: aided catch rate minus unaided catch rate, in points. It is what the challenge list added to what the reviewer already had.
+  Confidence gap: the share of the planted defects the reviewer said they would find, minus the share they actually found. Positive means they believed they caught more than they caught.
+  Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
+  Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.ok
+test_results_label_the_population (__main__.SimDriverTest) ... ok
+test_second_commit_is_refused (__main__.SimDriverTest) ... 
+
+Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\sessions\case-01-june_R1_4899bc36.json
+It carries simulated: true and persona: experienced.
+finish  simulated: true, persona experienced, caught 3 of 11 unaided and 11 of 11 aided, teach-back accuracy 78.6%
+
+Simulated session case-01-june_R1_0f14878c opened.
+  Case      case-01-june
+  Reviewer  R1, persona novice
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "The two fuel invoices relate to June activity and belong in June, so the memo is deferring a cost into the wrong period."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Professional fees fell $7,500, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 11
+
+  Catch rate, unaided        9.1%   (1 of 11)
+  Catch rate, aided        100.0%   (11 of 11)
+  Lift                     90.9 points
+  Precision, against key   100.0%   (0 finding(s) outside the answer key)
+  Confidence stated first   70.0%
+  Confidence gap, unaided  60.9 points
+  Confidence gap, aided    -30.0 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       78.6%
+  Weak challenges refused  0 of 3
+  Time, phase 1 / phase 2  0 / 0 seconds
+
+What the numbers are
+  Lift: aided catch rate minus unaided catch rate, in points. It is what the challenge list added to what the reviewer already had.
+  Confidence gap: the share of the planted defects the reviewer said they would find, minus the share they actually found. Positive means they believed they caught more than they caught.
+  Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
+  Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.
+
+Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\sessions\case-01-june_R1_0f14878c.json
+It carries simulated: true and persona: novice.
+Aggregation: title, four headings and the markdown table all say simulated reviewers, and --only human returns nothing from a simulated set.
+
+Simulated session case-01-june_R1_d0174f68 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "The two fuel invoices relate to June activity and belong in June, so the memo is deferring a cost into the wrong period."},ok
+test_start_into_a_used_folder_is_refused (__main__.SimDriverTest) ... ok
+test_the_answer_key_stays_out_of_the_score_block (__main__.SimDriverTest) ... ok
+test_the_printed_prompts_carry_the_whole_schema_and_the_rules (__main__.SimDriverTest)
+Finding 8. Pilot one printed a schema missing soundness, never printed ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.297s
+
+OK
+
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Professional fees fell $7,500, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
+
+Stopped: This session has already committed. A commitment is sealed once and cannot be reopened, so a reviewer cannot commit, read the challenge list, and then improve their own findings. Current state: 'challenges_revealed'.
+Refused: a second commit. The first commitment of 1 finding stands and the challenge list is unchanged.
+Simulated session case-01-june_R1_db38ec62 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june already holds a simulated session. A session directory is used once, so that a reviewer cannot restart after seeing the challenge list. Point --dir somewhere new.
+Refused: a second session in a folder that already holds one.
+Simulated session case-01-june_R1_90fbbe5e opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 0 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "The two fuel invoices relate to June activity and belong in June, so the memo is deferring a cost into the wrong period."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Professional fees fell $7,500, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
+The score block withholds the key from the reviewer and prints it under --debrief, so an agent running all three cases does not learn the taxonomy from case one.
+Printed prompts: both schemas in full, the soundness field, the eight word rule, and what confidence is measured against.
+
+--------------------------------------------------------------------------------
+A FULL SIMULATED SESSION, RUN BY HAND, TO CONFIRM THE PRINTED PROMPTS
+--------------------------------------------------------------------------------
+
+Reviewer R9, case-01-june, persona experienced, deterministic layer, a dummy
+findings file and a dummy teach-back file written between the steps. The session
+log was written to a scratch folder rather than to sessions/, and the run folder
+was removed afterwards, so that pilot two starts on an empty sessions/ and an
+empty sim/runs/.
+
+The three commands, and everything they printed:
+
+$ python -m second_pass sim start --case case-01-june --reviewer R9 \
+      --dir sim/runs/HANDRUN-case-01-june --persona experienced
+Simulated session case-01-june_R9_034723f4 opened.
+  Case      case-01-june
+  Reviewer  R9, persona experienced
+  Folder    C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs\HANDRUN-case-01-june
+
+Read C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs\HANDRUN-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 5100 inbound freight rose $73,800 and sentence S6 says it declined",
+      "Account 6000 warehouse wages moved $72,500 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir sim/runs/HANDRUN-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+$ cat > sim/runs/HANDRUN-case-01-june/findings.json   (the dummy file, four findings,
+  three aimed at planted defects and one deliberately outside the answer key)
+
+$ python -m second_pass sim commit --dir sim/runs/HANDRUN-case-01-june
+Findings sealed. 4 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs\HANDRUN-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "The two fuel invoices relate to June activity and belong in June, so the memo is deferring a cost into the wrong period."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Professional fees fell $7,500, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir sim/runs/HANDRUN-case-01-june
+
+$ cat > sim/runs/HANDRUN-case-01-june/teachback.json   (the dummy file, one verdict and
+  one long reason per challenge, three rejected)
+
+$ python -m second_pass sim finish --dir sim/runs/HANDRUN-case-01-june
+
+========================================================================================
+Case case-01-june, reviewer R9
+Defects planted: 11
+
+  Catch rate, unaided       27.3%   (3 of 11)
+  Catch rate, aided        100.0%   (11 of 11)
+  Lift                     72.7 points
+  Precision, against key    75.0%   (1 finding(s) outside the answer key)
+      1 of those matched no planted weak lead either, and are listed in the session log verbatim for a facilitator to adjudicate.
+  Confidence stated first   55.0%
+  Confidence gap, unaided  27.7 points
+  Confidence gap, aided    -45.0 points
+  Memo soundness, 1 to 5   2
+  Teach-back completeness  100.0%
+  Teach-back accuracy      100.0%
+  Weak challenges refused  3 of 3
+  Time, phase 1 / phase 2  0 / 11 seconds
+
+What the numbers are
+  Lift: aided catch rate minus unaided catch rate, in points. It is what the challenge list added to what the reviewer already had.
+  Confidence gap: the share of the planted defects the reviewer said they would find, minus the share they actually found. Positive means they believed they caught more than they caught.
+  Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
+  Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.
+
+Session log written to C:/Users/Khaled/AppData/Local/Temp/claude/C--Users-Khaled-Documents-Coach-Dashboard-HQ/cac73d55-fe06-4b57-b27b-65dd2fa92081/scratchpad/verify-sessions\case-01-june_R9_034723f4.json
+It carries simulated: true and persona: experienced.
+
+$ python -m second_pass sim start --case case-01-june --reviewer R6 --dir simrunsR6-case-02-july
+
+Stopped: --dir simrunsR6-case-02-july resolves to C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\simrunsR6-case-02-july, which is outside C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
+
+(The last command above returned exit code 2 and created nothing. That is the
+finding 10 guard doing its job, reproduced against the exact folder name pilot
+one produced.)
+
+--------------------------------------------------------------------------------
+THE PACK, AFTER THE REBUILD
+--------------------------------------------------------------------------------
+
+$ python -m second_pass cases
+case-01-june  June 2026 close, distribution and service
+  accounts 14, sentences 12, defects 11, weak challenges 3
+  kinds: contradiction, cutoff, driver_wrong_account, immaterial_over_explained, mismatched_amount, missing_driver_material, reclass_as_growth, rounding_flips_conclusion, unsupported_driver, wrong_period, wrong_sign
+
+case-02-july  July 2026 close, distribution and service
+  accounts 16, sentences 12, defects 11, weak challenges 3
+  kinds: contradiction, cutoff, driver_wrong_account, immaterial_over_explained, mismatched_amount, missing_driver_material, percent_as_absolute, reclass_as_growth, unsupported_driver, wrong_period, wrong_sign
+
+case-03-august  August 2026 close, distribution and service
+  accounts 17, sentences 12, defects 10, weak challenges 3
+  kinds: contradiction, cutoff, driver_wrong_account, immaterial_over_explained, missing_driver_material, reclass_as_growth, rounding_flips_conclusion, unsupported_driver, wrong_period, wrong_sign
+
+Weak challenge shapes, four across the pack, none repeated inside a case:
+  case-01-june       below_threshold_document, bad_recomputation, restates_correct_explanation
+  case-02-july       wrong_period_named, restates_correct_explanation, bad_recomputation
+  case-03-august     below_threshold_document, wrong_period_named, restates_correct_explanation
+
+Citation tie, checked by test: 41 challenges across three cases. Every cited
+amount is the named account's own movement, or the challenge text names the
+account the figure belongs to, or it is the one weak challenge per case planted
+as a wrong recomputation, where the mis-citation is the thing being tested.
+
+--------------------------------------------------------------------------------
+PILOT ONE, PRESERVED AND AGGREGATING ON ITS OWN
+--------------------------------------------------------------------------------
+
+$ python -m second_pass results --dir sessions/pilot-1 --only simulated
+Second Pass pilot results, simulated reviewers
+==============================================
+
+Sessions: 18 over 6 simulated reviewer(s), cases case-01-june, case-02-july, case-03-august. AI layer: deterministic.
+Every session in this set was run by a simulated reviewer, not by a person.
+
+Reviewer Persona       Case            Defects Unaided Aided  Lift   Precision Conf  Gap    Teach  Sec 1  Sec 2  
+-----------------------------------------------------------------------------------------------------------------
+R1       novice        case-01-june    10      40.0%   100.0% 60.0   100.0%    60.0% 20.0   100.0% 144    156    
+R1       novice        case-02-july    11      27.3%   90.9%  63.6   100.0%    55.0% 27.7   100.0% 93     134    
+R1       novice        case-03-august  12      16.7%   100.0% 83.3   66.7%     55.0% 38.3   100.0% 100    78     
+R2       novice        case-01-june    10      50.0%   100.0% 50.0   100.0%    60.0% 10.0   100.0% 73     78     
+By instruction level, pooled
+Level           Sessions  Unaided   Aided    Lift    Gap unaided   Gap aided    Weak refused
+--------------------------------------------------------------------------------------------
+novice          6         34.8%     95.5%    60.7    21.3          -38.9        8 of 12
+intermediate    6         51.5%     63.6%    12.1    6.4           -5.7         9 of 12
+experienced     6         89.4%     93.9%    4.5     -6.8          -11.2        7 of 12
+
+Pooled over simulated reviewers, every defect over every defect shown
+  Catch rate unaided        58.6%   (116 of 198)
+  Catch rate aided          84.3%   (167 of 198)
+  Lift                      25.7 points
+
+Mean of simulated reviewer rates
+  Catch rate unaided        59.1%
+  Catch rate aided          84.7%
+  Lift                      25.6 points
+  Precision against the key 86.9%
+  Findings outside the key  22, of which 0 matched no planted weak lead and await facilitator adjudication
+
+Confidence against accuracy over simulated reviewers, the headline measurement
+  Stated expectation        66.1%
+  Actual, unaided           59.1%
+  Gap, unaided              7.0 points
+
+$ python -m second_pass results --dir sessions
+Second Pass pilot results
+=========================
+
+No scored sessions found. Run a session first, or point --dir at the right folder.
+
+Pilot two starts on an empty sessions/ folder and an empty sim/runs/ folder, so
+the two passes can never be pooled by accident.
+
+======================================================================
+PILOT TWO, THE REFINE STEP: THE PRINTED SCHEMA EXAMPLE
+======================================================================
+
+5 September 2026, after pilot two closed. Pilot two's reviewers reported six
+findings. One of them was a defect and the other five are stated limits. The
+defect: the schema example printed by sim start and sim commit was written from
+case-01-june, so it named that case's accounts, its own movements, its direction
+reversal, its missing driver and the correct reject for one of its weak
+challenges. A reviewer who read the prompt before working case one was handed
+three answers by the tool whose entire job is to withhold them.
+
+The example is now invented: accounts 9200, 9250 and 9280, and the figures
+$61,300, $38,200 and $14,900, none of which appear anywhere in the pack. The
+same invented example replaced the case-authoring example in README.md and the
+reproduction block in SIMULATION.md, which carried the same real figures.
+
+All three test files below were run after the change. Thirty-two tests, up from
+thirty-one, and the new one is
+test_sim.py::test_the_printed_schema_example_leaks_no_case.
+
+$ python tests/test_smoke.py
+test_a_ceiling_note_prints_when_unaided_catch_is_at_the_top (__main__.SmokeTest)
+Finding 7. A lift of zero from a ceiling is not a lift of zero from nothing. ... ok
+test_a_counterparty_is_named_in_words_not_just_implied (__main__.SmokeTest)
+The other half of finding 1: say it out loud, with its own movement. ... ok
+test_a_template_that_does_not_fit_its_sentence_is_not_used (__main__.SmokeTest)
+Finding 2. The percent template must read the sentence first. ... ok
+test_approval_language_and_untied_amounts_are_refused_from_a_model (__main__.SmokeTest) ... ok
+test_defect_kinds_and_slots_rotate_across_the_pack (__main__.SmokeTest)
+Finding 4. Pilot one put the same kind in the same slot in all three. ... ok
+test_every_challenge_carries_a_citation_and_no_approval (__main__.SmokeTest) ... ok
+test_every_challenge_carries_a_tag_that_does_not_reveal_weakness (__main__.SmokeTest)
+Finding 9. A tag only weak challenges carried would give them away. ... ok
+test_every_cited_amount_ties_to_the_named_account (__main__.SmokeTest)
+Finding 1, the one that cost pilot one the most credibility. ... ok
+test_no_case_plants_two_weak_challenges_of_the_same_shape (__main__.SmokeTest)
+Finding 3. In pilot one all six weak challenges were one shape. ... ok
+test_pack_shape (__main__.SmokeTest) ... ok
+test_precision_is_against_the_key_and_out_of_key_findings_are_counted_apart (__main__.SmokeTest)
+Finding 6 from pilot one, in a test. ... ok
+test_reviewer_view_hides_the_key (__main__.SmokeTest) ... ok
+test_three_reviewers_across_three_cases (__main__.SmokeTest) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.058s
+
+OK
+SECOND PASS SMOKE TEST
+==============================================================================
+Keys: ANTHROPIC_API_KEY absent, OPENAI_API_KEY absent
+AI layer under test: deterministic
+
+Ceiling note prints at 100 percent unaided and stays off at 9.1 percent.
+
+Every counterparty is named by line and by its own movement in the challenge text.
+
+Template fit: the percent challenge changes shape when the sentence already labels its percentage, and a transfer with a known other side stops asking for one.
+
+Model output validation: 4 of 6 challenges refused. Reasons: approval language: 'looks good'; cites an account that is not in the table; no numeric amount, so the challenge cannot be recomputed; cites $62,500 against account 6000, which moved $72,500, and names no other account the figure could belong to
+
+Kinds: all twelve across the pack, no two cases with the same set, percent-into-dollar in 1 case, and no key slot holding one kind in all three.
+
+Tags: every challenge carries one of eight, weak challenges share tags with real ones, and every driver challenge states its evidence bar.
+
+Citation tie: 41 challenges checked across three cases. Every cited amount is the named account's own movement, or the text names the account the figure belongs to.
+
+Weak challenge shapes, 4 distinct across the pack, none repeated inside a case:
+  case-01-june       below_threshold_document, bad_recomputation, restates_correct_explanation
+  case-02-july       wrong_period_named, restates_correct_explanation, bad_recomputation
+  case-03-august     below_threshold_document, wrong_period_named, restates_correct_explanation
+
+Defect pack
+------------------------------------------------------------------------------
+case-01-june       June 2026                  accounts 14  sentences 12  defects 11  weak 3  material lines  7
+case-02-july       July 2026                  accounts 16  sentences 12  defects 11  weak 3  material lines  7
+case-03-august     August 2026                accounts 17  sentences 12  defects 10  weak 3  material lines  8
+
+Precision: 1 finding in the key and 2 outside it gives 33.3 against the key. Neither out-of-key finding moved the catch rate, and both are in the log verbatim.
+
+Scores, deterministic challenger, three synthetic reviewers
+------------------------------------------------------------------------------
+Case               Reviewer    Unaided    Aided    Lift  Precision     Teach  Conf gap
+------------------------------------------------------------------------------
+case-01-june       A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-01-june       B partial     27.3%   100.0%   72.7     100.0%    100.0%     42.7
+case-01-june       C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+case-02-july       A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-02-july       B partial     27.3%   100.0%   72.7     100.0%    100.0%     42.7
+case-02-july       C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+case-03-august     A perfect    100.0%   100.0%    0.0     100.0%    100.0%    -20.0
+case-03-august     B partial     30.0%   100.0%   70.0     100.0%    100.0%     40.0
+case-03-august     C waved        0.0%     0.0%    0.0       0.0%      0.0%     90.0
+
+
+$ python tests/test_withholding.py
+test_a_second_session_cannot_read_the_first (__main__.HttpWithholdingTest) ... ok
+test_full_route_sequence (__main__.HttpWithholdingTest) ... ok
+test_named_reviewer_refused_over_http (__main__.HttpWithholdingTest) ... ok
+test_a_commitment_cannot_be_reopened (__main__.StateMachineTest) ... ok
+test_challenges_withheld_in_every_early_state (__main__.StateMachineTest) ... ok
+test_confidence_cannot_be_restated_after_the_fact (__main__.StateMachineTest) ... ok
+test_reviewer_label_refuses_a_name (__main__.StateMachineTest) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.647s
+
+OK
+SECOND PASS WITHHOLDING TEST
+==============================================================================
+  POST /api/session
+  GET /api/session/case-01-june_R2_f595e8a7/challenges
+  GET /api/session/not-a-real-session/challenges
+A fresh session starts closed, and an unknown session id returns nothing.
+  GET /api/config
+  POST /api/session
+  GET /api/session/case-01-june_R1_a0f665c3/case
+  GET /api/session/case-01-june_R1_a0f665c3/challenges
+GET challenges before phase one: 409, body carries the reason and nothing else.
+  POST /api/session/case-01-june_R1_a0f665c3/phase1
+  GET /api/session/case-01-june_R1_a0f665c3/challenges
+GET challenges during phase one: 409.
+  POST /api/session/case-01-june_R1_a0f665c3/commit
+  GET /api/session/case-01-june_R1_a0f665c3/challenges
+GET challenges after commit but before the second confidence question: 409.
+  POST /api/session/case-01-june_R1_a0f665c3/commit
+Second POST commit: 409.
+  POST /api/session/case-01-june_R1_a0f665c3/finish
+  POST /api/session/case-01-june_R1_a0f665c3/confidence2
+  GET /api/session/case-01-june_R1_a0f665c3/challenges
+GET challenges after the commitment is sealed: 200, 14 challenges.
+Every challenge carries a line and an amount, and none carries its own truth flag.
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/teachback
+  POST /api/session/case-01-june_R1_a0f665c3/finish
+Finish: scored, key released, session log written with 20 events.
+  POST /api/session
+A named reviewer is refused at the API, not only in the dropdown.
+Second commit refused. The sealed list is still the one that was sealed.
+Withheld in states: briefing, phase_1_open, phase_1_committed. Released in state: challenges_revealed, 14 challenges.
+Confidence cannot be restated once the phase is open.
+Reviewer labels: names refused, R1 to R99 accepted.
+
+$ python tests/test_sim.py
+test_a_dir_outside_sim_runs_is_refused (__main__.SimDriverTest)
+Finding 10. Pilot one lost its backslashes to bash and wrote a folder ... ok
+test_a_named_reviewer_is_refused (__main__.SimDriverTest) ... ok
+test_commit_before_findings_is_refused (__main__.SimDriverTest) ... ok
+test_finish_before_commit_is_refused (__main__.SimDriverTest) ... ok
+test_finish_twice_is_refused (__main__.SimDriverTest) ... SECOND PASS SIMULATION DRIVER TEST
+==============================================================================
+AI layer under test: deterministic
+
+
+Stopped: --dir C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-2l8v41ak\simrunsR6-case-02-july resolves to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-2l8v41ak\simrunsR6-case-02-july, which is outside C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
+Refused: a --dir outside sim/runs, with the resolved path echoed back, the forward slash advice, and the note that the working directory does not persist.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+
+Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
+Refused: Khaled, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
+Simulated session case-01-june_R1_dc949b30 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 9200 groundskeeping contract rose $61,300 and sentence S3 says it fell",
+      "Account 9250 waste removal moved $38,200 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: findings.json not found at C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june\findings.json. Write your own findings first. The challenge list is withheld until they are sealed.
+Refused: commit before findings.json exists, and no challenge list was written.
+Simulated session case-01-june_R1_bf8a4a7e opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-risf_807\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-risf_807\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 9200 groundskeeping contract rose $61,300 and sentence S3 says it fell",
+      "Account 9250 waste removal moved $38,200 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-risf_807\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: There is nothing to score yet. Commit your findings and work the challenge list first. Current state: 'briefing'.
+Refused: finish before commit, and no session log was written.
+Simulated session case-01-june_R1_81b3d35f opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 9200 groundskeeping contract rose $61,300 and sentence S3 says it fell",
+      "Account 9250 waste removal moved $38,200 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june\challenges.mdok
+test_full_simulated_session (__main__.SimDriverTest) ... 
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "Account 9200 groundskeeping contract rose $61,300 and sentence S3 has it falling, so the memo states the direction backwards."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Account 9280 site security moved $14,900, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 11
+
+  Catch rate, unaided        9.1%   (1 of 11)
+  Catch rate, aided          9.1%   (1 of 11)
+  Lift                     0.0 points
+  Precision, against key   100.0%   (0 finding(s) outside the answer key)
+  Confidence stated first   70.0%
+  Confidence gap, unaided  60.9 points
+  Confidence gap, aided    60.9 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       21.4%
+  Weak challenges refused  3 of 3
+  Time, phase 1 / phase 2  0 / 0 seconds
+
+What the numbers are
+  Lift: aided catch rate minus unaided catch rate, in points. It is what the challenge list added to what the reviewer already had.
+  Confidence gap: the share of the planted defects the reviewer said they would find, minus the share they actually found. Positive means they believed they caught more than they caught.
+  Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
+  Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.
+
+The answer key is withheld from this output. A facilitator can see it with sim finish --debrief, or with show --case case-01-june --key.
+
+Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\sessions\case-01-june_R1_81b3d35f.json
+It carries simulated: true and persona: experienced.
+
+Stopped: This session is already scored and its log is written.
+Refused: finishing a session that is already scored. One log, not two.
+A full simulated session, run through the command line
+------------------------------------------------------------------------------
+Simulated session case-01-june_R1_96f91aa0 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 9200 groundskeeping contract rose $61,300 and sentence S3 says it fell",
+      "Account 9250 waste removal moved $38,200 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+start   view.md written, 4304 characters, no key and no challenge list on disk
+Findings sealed. 3 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "Account 9200 groundskeeping contract rose $61,300 and sentence S3 has it falling, so the memo states the direction backwards."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Account 9280 site security moved $14,900, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
+commit  14 challenges written, weak ones included and unmarked
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 11
+
+  Catch rate, unaided       27.3%   (3 of 11)
+  Catch rate, aided        100.0%   (11 of 11)
+  Lift                     72.7 points
+  Precision, against key   100.0%   (0 finding(s) outside the answer key)
+  Confidence stated first   75.0%
+  Confidence gap, unaided  47.7 points
+  Confidence gap, aided    -25.0 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       78.6%
+  Weak challenges refused  0 of 3
+  Time, phase 1 / phase 2  0 / 0 seconds
+
+What the numbers are
+  Lift: aided catch rate minus unaided catch rate, in points. It is what the challenge list added to what the reviewer already had.
+  Confidence gap: the share of the planted defects the reviewer said they would find, minus the share they actually found. Positive means they believed they caught more than they caught.
+  Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
+  Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.ok
+test_results_label_the_population (__main__.SimDriverTest) ... ok
+test_second_commit_is_refused (__main__.SimDriverTest) ... 
+
+Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\sessions\case-01-june_R1_96f91aa0.json
+It carries simulated: true and persona: experienced.
+finish  simulated: true, persona experienced, caught 3 of 11 unaided and 11 of 11 aided, teach-back accuracy 78.6%
+
+Simulated session case-01-june_R1_08d1e9c5 opened.
+  Case      case-01-june
+  Reviewer  R1, persona novice
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 9200 groundskeeping contract rose $61,300 and sentence S3 says it fell",
+      "Account 9250 waste removal moved $38,200 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "Account 9200 groundskeeping contract rose $61,300 and sentence S3 has it falling, so the memo states the direction backwards."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Account 9280 site security moved $14,900, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
+
+========================================================================================
+Case case-01-june, reviewer R1
+Defects planted: 11
+
+  Catch rate, unaided        9.1%   (1 of 11)
+  Catch rate, aided        100.0%   (11 of 11)
+  Lift                     90.9 points
+  Precision, against key   100.0%   (0 finding(s) outside the answer key)
+  Confidence stated first   70.0%
+  Confidence gap, unaided  60.9 points
+  Confidence gap, aided    -30.0 points
+  Memo soundness, 1 to 5   3
+  Teach-back completeness  100.0%
+  Teach-back accuracy       78.6%
+  Weak challenges refused  0 of 3
+  Time, phase 1 / phase 2  0 / 0 seconds
+
+What the numbers are
+  Lift: aided catch rate minus unaided catch rate, in points. It is what the challenge list added to what the reviewer already had.
+  Confidence gap: the share of the planted defects the reviewer said they would find, minus the share they actually found. Positive means they believed they caught more than they caught.
+  Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
+  Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.
+
+Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\sessions\case-01-june_R1_08d1e9c5.json
+It carries simulated: true and persona: novice.
+Aggregation: title, four headings and the markdown table all say simulated reviewers, and --only human returns nothing from a simulated set.
+
+Simulated session case-01-june_R1_b44a197d opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 9200 groundskeeping contract rose $61,300 and sentence S3 says it fell",
+      "Account 9250 waste removal moved $38,200 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 1 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "Account 9200 groundskeeping contract rose $61,300 and sentence S3 has it falling, so the memo states the direction backwards."},ok
+test_start_into_a_used_folder_is_refused (__main__.SimDriverTest) ... ok
+test_the_answer_key_stays_out_of_the_score_block (__main__.SimDriverTest) ... ok
+test_the_printed_prompts_carry_the_whole_schema_and_the_rules (__main__.SimDriverTest)
+Finding 8. Pilot one printed a schema missing soundness, never printed ... ok
+test_the_printed_schema_example_leaks_no_case (__main__.SimDriverTest)
+Pilot two, finding 4. The schema printed by sim start and sim commit ... 
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Account 9280 site security moved $14,900, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
+
+Stopped: This session has already committed. A commitment is sealed once and cannot be reopened, so a reviewer cannot commit, read the challenge list, and then improve their own findings. Current state: 'challenges_revealed'.
+Refused: a second commit. The first commitment of 1 finding stands and the challenge list is unchanged.
+Simulated session case-01-june_R1_e98a9c32 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-wlyuulml\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-wlyuulml\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 9200 groundskeeping contract rose $61,300 and sentence S3 says it fell",
+      "Account 9250 waste removal moved $38,200 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-wlyuulml\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+
+Stopped: C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-wlyuulml\R1-case-01-june already holds a simulated session. A session directory is used once, so that a reviewer cannot restart after seeing the challenge list. Point --dir somewhere new.
+Refused: a second session in a folder that already holds one.
+Simulated session case-01-june_R1_852ee778 opened.
+  Case      case-01-june
+  Reviewer  R1, persona experienced
+  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
+
+Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june\view.md. Do not open any other file.
+
+Then write findings.json in that folder, holding your own findings, the share of the
+problems you believe you found, and how sound the memo looked to you. One finding per
+entry, and name the account in each one.
+
+  {
+    "findings": [
+      "Account 9200 groundskeeping contract rose $61,300 and sentence S3 says it fell",
+      "Account 9250 waste removal moved $38,200 with no driver anywhere in the memo"
+    ],
+    "confidence": 65,
+    "soundness": 3
+  }
+
+  - findings: a list of strings, one challenge per entry, each naming the account. Free
+    text is fine and it is read by a published matching rule, not by a model.
+  - confidence: a number from 0 to 100. It is measured against one thing and one thing
+    only: the share of the planted defects in this memo that you believe you have
+    caught. It is not how confident you feel, and it is not how sound the memo is.
+  - soundness: a whole number from 1 to 5, 1 poor and 5 sound, for how sound the memo
+    looked to you before you read it closely. Optional, and it feeds the memo soundness
+    figure.
+
+Then run: python -m second_pass sim commit --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
+The challenge list does not exist until you do. It is not written anywhere in this
+folder, in this process, or on any wire, so there is nothing to look at ahead of time.
+Findings sealed. 0 finding(s), and they cannot be edited.
+Phase one took 0 seconds.
+
+Challenge list released: 14 challenge(s) from the deterministic layer.
+  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june\challenges.md
+
+Read that file. Some of those challenges do not hold. Accept the ones that do and reject
+the ones that do not, with a reason in your own words for each, and write teachback.json
+in the same folder.
+
+  {
+    "responses": [
+      {"id": "C1",
+       "verdict": "accept",
+       "reason": "Account 9200 groundskeeping contract rose $61,300 and sentence S3 has it falling, so the memo states the direction backwards."},
+      {"id": "C2",
+       "verdict": "reject",
+       "reason": "Account 9280 site security moved $14,900, which fails the dollar leg of the threshold, so no driver is required and this challenge does not hold."}
+    ],
+    "findings": [
+      "anything the challenge list did not raise that you still want to challenge"
+    ],
+    "confidence": 80
+  }
+
+  - One entry per challenge. A challenge with no entry counts as unanswered and the
+    defect behind it counts as missed.
+  - verdict: exactly "accept" or "reject". Nothing else is recorded.
+  - reason: your own words, and a reason under eight words scores zero. A verdict
+    without a real reason is not review, it is a click, and it earns no credit for the
+    defect.
+  - Refusing a weak challenge with a reason scores exactly as highly as accepting a real
+    one with a reason. Some of the challenges in the list do not hold.
+  - findings: optional, for anything the list did not raise that you still want to
+    challenge. A finding here that the answer key does not carry is counted on its own
+    and listed in the session log for a facilitator, and it never reduces your catch
+    rate.
+  - confidence: a number from 0 to 100, and it means the same thing it meant before: the
+    share of the planted defects in this memo you believe you have now caught.
+
+Then run: python -m second_pass sim finish --dir
+C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
+The score block withholds the key from the reviewer and prints it under --debrief, so an agent running all three cases does not learn the taxonomy from case one.
+Printed prompts: both schemas in full, the soundness field, the eight word rule, and what confidence is measured against.
+Printed example: 3 invented account(s) and 3 invented figure(s), checked against all 3 case files. 32 planted movements, every account name, every defect claim and every weak challenge checked against what the two commands print.ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.330s
+
+OK
+

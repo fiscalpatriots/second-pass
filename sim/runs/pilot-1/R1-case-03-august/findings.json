@@ -1,0 +1,9 @@
+{
+  "findings": [
+    "Line 4100, Service revenue, equipment maintenance: S2 says service revenue 'grew $82,000' on contract renewals, but the table shows this line fell by $82,000 (from $1,096,000 to $1,014,000), the opposite direction from what the sentence says.",
+    "Line 6050, Temporary labor: S4 says temporary labor 'rose $68,800' but the table shows the variance on that line is $86,800, an $18,000 gap from what the commentary states.",
+    "Line 5100, Inbound freight: S5 explains the inbound freight increase by 'the temporary labor added at the Northgate depot,' but temporary labor is a headcount/wage cost, not something that would drive a freight line, so the driver given does not seem to match the account it is supposedly explaining."
+  ],
+  "confidence": 55,
+  "soundness": 3
+}

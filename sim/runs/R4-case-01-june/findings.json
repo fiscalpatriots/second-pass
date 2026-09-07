@@ -1,0 +1,13 @@
+{
+  "findings": [
+    "Account 5100 inbound freight rose $73,800 (34.5%) to $287,800, but S6 says it declined on easing carrier fuel surcharges - the direction is backwards from the table.",
+    "Account 6000 warehouse wages moved $72,500 (11.5%), clears both legs of the threshold, but no sentence anywhere in the memo names a driver for it.",
+    "Account 4200 freight billed to customers fell $65,000 (-34.9%), also clears both legs of the threshold, and it also has nothing written about it.",
+    "Account 6400 bad debt expense actually moved $47,000, from $15,000 to $62,000, but S2 states the increase as $42,000 - a $5,000 gap from the table.",
+    "Account 6200 repairs and maintenance contradicts itself: S1 says the roof and dock leveler program finished June 30, S10 says remaining depot repairs are scheduled to finish in August.",
+    "Product gross margin in S11: recomputing 4000 less 5000 over 4000 gives 25.0% in May and 23.8% in June, not a flat 24% - margin actually slipped about a point, it was not stable.",
+    "Account 4100 service revenue rose $229,000 but S9 only accounts for $84,000 of it through annual plans - no driver is named for the remaining roughly $145,000."
+  ],
+  "confidence": 60,
+  "soundness": 3
+}

@@ -1,0 +1,16 @@
+{"responses": [
+{"id": "C1", "verdict": "accept", "reason": "Agreed, the $172,000 rebate jump on 4300 has no driver anywhere in the memo, that gap is real."},
+{"id": "C2", "verdict": "accept", "reason": "I did not rerun the margin math myself, but if unrounded numbers move it off 22 percent then the S11 conclusion should not stand."},
+{"id": "C3", "verdict": "accept", "reason": "Right, the table shows 4100 falling $82,000 while S2 says it grew, the direction in the sentence is just wrong."},
+{"id": "C4", "verdict": "reject", "reason": "The table shows warehouse wages, account 6000, moved only $37,700, not $86,800, so this one does not match what I read."},
+{"id": "C5", "verdict": "accept", "reason": "Makes sense, if the $185,000 accrual on 7300 relates to a claim resolved back in June then August is the wrong period for it."},
+{"id": "C6", "verdict": "accept", "reason": "S4 says temporary labor rose $68,800 but the table for 6050 shows $86,800, so the sentence and the schedule do not agree."},
+{"id": "C7", "verdict": "accept", "reason": "Fair point, $1,700 on bad debt is under the threshold and S7 spends more words on it than the big unexplained lines get."},
+{"id": "C8", "verdict": "accept", "reason": "S9 says no new legal matters in August and S10 books a new $185,000 accrual the same month, those cannot both stand as written."},
+{"id": "C9", "verdict": "accept", "reason": "That tracks, freight billed only rose $5,400 against a $27,600 rise in inbound freight and nobody in the memo mentions the squeeze on margin."},
+{"id": "C10", "verdict": "accept", "reason": "Adding temporary labor at Northgate does not really explain inbound freight costs, that driver sounds like it belongs to the 6050 labor line instead."},
+{"id": "C11", "verdict": "accept", "reason": "Right, the $31,200 in S6 belongs to August by its own description, so posting it to September is a cutoff problem worth flagging."},
+{"id": "C12", "verdict": "reject", "reason": "Insurance is flat at $47,300 with zero movement and no asterisk, pulling a policy schedule for an unchanged line seems like effort spent on nothing."},
+{"id": "C13", "verdict": "accept", "reason": "Fair, S1 just asserts the restaurant channel drove the $507,000 gain and I have not actually seen anything backing that up."},
+{"id": "C14", "verdict": "accept", "reason": "Something is off on 7100 either way, the table says $12,300 moved and S8 quotes $16,100, so the sentence needs to be restated."}
+], "confidence": 65}

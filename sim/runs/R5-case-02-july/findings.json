@@ -1,0 +1,19 @@
+{
+  "findings": [
+    "Account 7400 inventory shrink adjustment rose $62,300, from $8,900 to $71,200, which is 700.0 percent and is starred as passing both legs, and not one sentence in the memo mentions it. It is the largest unexplained movement in the pack.",
+    "Account 6100 fleet fuel: S9 says it declined $31,600, but the table shows $91,200 rising to $122,800, up $31,600 and 34.6 percent. The direction is reversed and diesel coming off a June peak cannot explain a 34.6 percent increase.",
+    "Account 6400 bad debt expense: S3 says a reduction of $84,700, but the movement is $62,000 down to $9,500, which is $52,500. The 84.7 is the percentage written in as if it were dollars, and releasing the Coastal Grocers reserve one month after taking it needs a cash receipt or a credit event behind it.",
+    "Account 6000 warehouse wages: S4 says wages rose $74,900, but $702,500 to $781,900 is $79,400. The digits are transposed and $4,500 of the movement is unaccounted for.",
+    "Account 5000 cost of product sold: S5 credits renegotiated inbound freight rates for the decline, but the note above the table says inbound freight is excluded from cost of product sold and sits on its own line. The driver is attached to the wrong account.",
+    "Account 5100 inbound freight fell $43,500 or 15.1 percent and is starred, yet the only sentence in the memo about freight rates is written against account 5000. The line that actually moved is left without a driver of its own.",
+    "Account 6200 repairs and maintenance: S10 says the depot repair program closed in June with no further repair spend expected this year, and S11 says the July repairs of $36,400 are the second phase of the dock program at Southline. Both sentences cannot be true.",
+    "Account 6800 marketing and trade shows: S2 says the $96,400 relates to a regional trade show in September. Cost for a September show is not July expense, so the $74,400 movement should be sitting in prepaid and released when the show runs.",
+    "Account 6500 professional fees: S12 defers a July interim review invoice of roughly $12,800 into August and calls that normal practice. July fieldwork belongs in July and should be accrued at close, and the $12,800 appears nowhere in the table.",
+    "Account 4000 distribution revenue: S6 explains the $214,000 decline as a seasonal slowdown, while S8 discloses that customer freight billings were reclassified into distribution revenue in June. June is inflated by that reclassification, so the month on month comparison is not like for like and the seasonal driver has not been tested against it.",
+    "Account 6600 utilities: a $3,300 movement at 6.0 percent fails both legs of the threshold and gets the longest sentence in the memo, covering a tariff re rating, chiller load and the other two depots, while account 7400 at $62,300 gets nothing.",
+    "Account 4100 service revenue: S1 writes commentary on a 5.3 percent movement that fails the percentage leg, which is more space spent on a line that required none.",
+    "Account 4000 distribution revenue: S6 leans on a comparison to the same month last year, and no prior year figure appears anywhere in this pack, so the assertion cannot be tested by anyone reading the memo."
+  ],
+  "confidence": 80,
+  "soundness": 2
+}

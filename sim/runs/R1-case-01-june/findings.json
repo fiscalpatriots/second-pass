@@ -1,0 +1,11 @@
+{
+  "findings": [
+    "Account 6200 depot repairs is confusing: S1 says the roof and dock leveler program finished on June 30, but S10 says the remaining depot repairs are scheduled to finish in August, so it isn't clear if the $118,600 is the whole project",
+    "Account 5100 inbound freight rose $73,800 to $287,800 per the table, but S6 says freight declined",
+    "Account 4200 freight billed to customers dropped $65,000 which is 34.9% and is starred for commentary, but there is no sentence about it, S5 only talks about two revenue lines growing",
+    "Account 6000 warehouse wages moved $72,500 which is 11.5% and is starred, but nothing in the memo explains why wages went up",
+    "Account 7100 interest expense: S7 says it comes from depot equipment additions that also sit in depreciation, but account 7000 depreciation shows zero variance for the month"
+  ],
+  "confidence": 60,
+  "soundness": 4
+}

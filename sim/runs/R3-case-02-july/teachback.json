@@ -1,0 +1,20 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Utilities only moved $3,300, which fails both legs of the threshold, so S7 was not required at all, and that much detail on a trivial line may have crowded out the real explanation missing elsewhere, like the shrink account."},
+    {"id": "C2", "verdict": "accept", "reason": "Interim review fieldwork of about $12,800 relates to July work but only gets recorded in August when the invoice shows up, so July professional fees look understated by that amount and the period does not match when the cost was actually incurred."},
+    {"id": "C3", "verdict": "reject", "reason": "The table I have only runs June against July, there is no May column anywhere in it, so I cannot check a $214,000 May figure, and the June to July movement shown here is a decline, which fits lower rates, not against them."},
+    {"id": "C4", "verdict": "accept", "reason": "Cost of product sold dropped $147,000 and S5 credits it to freight rate renegotiation, but the note above the table says inbound freight sits on its own line outside cost of product sold, so that driver belongs to account 5100, not 5000, and this account's real driver is still unexplained."},
+    {"id": "C5", "verdict": "accept", "reason": "The table shows warehouse wages moved $79,400 but S4 only attributes $74,900 of it to Northgate overtime, leaving a $4,500 gap that the sentence never accounts for or explains."},
+    {"id": "C6", "verdict": "accept", "reason": "S2 ties the $74,400 marketing jump in July to a trade show that happens in September, which reads like spend that should land closer to the event month rather than fully hitting the books before the show even happens."},
+    {"id": "C7", "verdict": "accept", "reason": "S6 just names a seasonal slowdown and says it is consistent with last year, but there is no unit count, customer split, or contract cited anywhere to back that up, only the assertion itself, so I would ask for supporting detail before this goes out."},
+    {"id": "C8", "verdict": "accept", "reason": "Inventory shrink jumped $62,300, a 700 percent swing that clears both legs of the threshold by a wide margin, and none of the twelve sentences in the memo even mention this account, so it cannot go out without someone explaining the driver behind it."},
+    {"id": "C9", "verdict": "reject", "reason": "Recomputing from the table, software subscriptions only moved $1,600, from $30,100 to $31,700, which is 5.3 percent, not the $16,000 and 53 percent claimed here, and $1,600 does not come close to the $25,000 leg of the threshold."},
+    {"id": "C10", "verdict": "reject", "reason": "Service revenue and depot repairs are different activities, one bills customers for maintaining their equipment and the other is our own dock repair spend, and the two amounts do not even match each other, $55,000 against $82,200, so I do not see a clean transfer between them."},
+    {"id": "C11", "verdict": "reject", "reason": "Freight billed to customers only moved $7,500, which fails the dollar leg of the threshold on its own, so this line never needed commentary, and the note that last month's reclass is closed reads like routine background rather than something this close needs to chase."},
+    {"id": "C12", "verdict": "accept", "reason": "The table shows bad debt expense actually fell $52,500, from $62,000 to $9,500, but S3 states the reduction as $84,700, which looks like the 84.7 percent number written back in as if it were a dollar figure."},
+    {"id": "C13", "verdict": "accept", "reason": "Fleet fuel rose $31,600 per the table, from $91,200 to $122,800, but S9 says it declined by that same amount, so the sentence has the direction backwards and the diesel-price story does not fit an increase."},
+    {"id": "C14", "verdict": "accept", "reason": "S10 says the repair program closed in June with nothing further expected, and S11 then describes $36,400 of July spend as the second phase of that same program, both statements cannot be true at once, and I would trust the one with actual dollars posted against it."}
+  ],
+  "findings": [],
+  "confidence": 75
+}

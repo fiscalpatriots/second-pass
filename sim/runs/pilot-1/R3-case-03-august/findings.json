@@ -1,0 +1,12 @@
+{
+  "findings": [
+    "Line 4300, Supplier rebates, other income: up $172,000, which is 409.5%, and it's flagged over threshold, but there is no commentary anywhere in the memo about this account.",
+    "Line 6050, Temporary labor: recomputing $121,400 minus $34,600 gives $86,800, matching the table's 250.9%, but S4 says temp labor 'rose $68,800' -- that's $18,000 short of the real variance.",
+    "Line 4100, Service revenue, equipment maintenance: the table shows this account down $82,000 (-7.5%, in parentheses), but S2 says service revenue 'grew $82,000' -- the direction is backwards.",
+    "Line 5100, Inbound freight: S5 blames the increase on temporary labor added at Northgate, but temporary labor is its own account, 6050, a labor cost -- it doesn't explain why a freight and transportation account went up.",
+    "Line 7100, Interest expense: the table shows the account moved $12,300 (16.1%), but S8 says 'an increase of $16,100' -- that dollar figure doesn't match what the account actually did.",
+    "Accounts 4000 and 5000, product gross margin (S11): recomputing (4000 minus 5000) over 4000 gives about 23.5% for July and about 21.9% for August. The claim that margin 'held at 22 percent in both months' doesn't work for July, so margin actually slipped over a point, it didn't hold."
+  ],
+  "confidence": 55,
+  "soundness": 2
+}

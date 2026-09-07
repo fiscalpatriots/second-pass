@@ -1,0 +1,10 @@
+{
+  "findings": [
+    "Account 4100 service revenue: S3 says it grew $111,000, but the table shows ($111,000) and -10.1%, prior $1,096,000 to current $985,000 -- that reads like a decline, not growth.",
+    "Account 4300 supplier rebates rose $172,000 (409.5%) and is starred as needing commentary, but none of the twelve sentences mention it.",
+    "Account 7300 legal settlement accrual of $185,000 in S11, tied to an August claim, seems to directly contradict S10's line that no new legal matters arose during August.",
+    "Account 5100 inbound freight is starred at $27,600 (11.3%), but S4's freight explanation cites $31,200 of invoices pushed to September, which doesn't match the $27,600 variance."
+  ],
+  "confidence": 55,
+  "soundness": 4
+}

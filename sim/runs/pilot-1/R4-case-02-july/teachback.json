@@ -1,0 +1,18 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "reject", "reason": "Seasonal slowdown lines up with the same month last year too, that's enough of a driver for me, and both numbers tie."},
+    {"id": "C2", "verdict": "accept", "reason": "S7 says the program closed with no further spend, then S8 describes 36,400 of July repair spend, they can't both stand."},
+    {"id": "C3", "verdict": "accept", "reason": "Fair catch, 700 percent is the biggest swing on the whole page and I don't see one sentence about it."},
+    {"id": "C4", "verdict": "accept", "reason": "76,300 minus 74,900 is 1,400, so the 1,900 in S10 is really the 1.9 percent written in as dollars."},
+    {"id": "C5", "verdict": "reject", "reason": "S9 names the September trade show right there as the reason, that's a real driver to me, not a problem."},
+    {"id": "C6", "verdict": "accept", "reason": "That's the same thing I flagged, freight rates are really a 5100 story and only cover part of the 147,000 drop."},
+    {"id": "C7", "verdict": "reject", "reason": "6000 alone moved 79,400 in the table, not 98,900, and S11 is about the whole operating expense total, not wages alone."},
+    {"id": "C8", "verdict": "reject", "reason": "7,500 is nowhere near the 25,000-and-10-percent bar, so policy doesn't require a driver, and I can't check last month from here."},
+    {"id": "C9", "verdict": "reject", "reason": "4100 actually moved 55,000 per the table, not 38,000, so I don't trust this number enough to chase a transfer theory."},
+    {"id": "C10", "verdict": "accept", "reason": "Agreed, 52,500 is a huge swing on this line and there isn't a word about it anywhere in the memo."},
+    {"id": "C11", "verdict": "accept", "reason": "108,700 minus 91,200 is a 17,500 increase, not a decline, S4 has the direction flipped."},
+    {"id": "C12", "verdict": "accept", "reason": "I caught this one too, 781,900 minus 702,500 is 79,400, not the 74,900 S6 states, a 4,500 gap."},
+    {"id": "C13", "verdict": "reject", "reason": "S5 calls this normal practice every month, that reads like an ordinary cutoff to me, not something wrong."}
+  ],
+  "confidence": 52
+}

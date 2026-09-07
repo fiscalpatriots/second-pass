@@ -1,0 +1,14 @@
+{"responses": [
+{"id": "C1", "verdict": "accept", "reason": "Fair, $1,600 on software subscriptions is nowhere near the threshold and S8 spends far more words on it than the big unexplained lines get."},
+{"id": "C2", "verdict": "accept", "reason": "Right, the table has account 4100 moving $229,000 and S2 only says 28,200, so the sentence is quoting the wrong scale of number."},
+{"id": "C3", "verdict": "accept", "reason": "That matches what S6 already says, the $19,400 belongs to June and is being pushed into July, so this is a period question worth naming."},
+{"id": "C4", "verdict": "reject", "reason": "Professional fees only moved $7,500, which fails the dollar test in the rule stated at the top, so a full tie-out is not required here."},
+{"id": "C5", "verdict": "accept", "reason": "Agreed, S5 calls the repair program finished on June 30 and S9 says remaining repairs continue into August, those cannot both be accurate."},
+{"id": "C6", "verdict": "accept", "reason": "I did not rework the margin math myself, so I will defer and accept that the rounded 24 percent claim may not hold once unrounded."},
+{"id": "C7", "verdict": "accept", "reason": "S7 states $42,000 for bad debt but the table for account 6400 shows $47,000 moved, so the sentence and the schedule are off from each other."},
+{"id": "C8", "verdict": "accept", "reason": "Agreed, a $72,500 move on warehouse wages that clears the threshold and gets zero mention anywhere is a real gap in the memo."},
+{"id": "C9", "verdict": "accept", "reason": "Checking back, inbound freight rose from $214,000 to $287,800 in the table, so S4 calling that a decline has the direction wrong."},
+{"id": "C10", "verdict": "reject", "reason": "Account 4000 moved $372,000 in the table, not $65,000, so this challenge is pairing the wrong dollar figure with the wrong account."},
+{"id": "C11", "verdict": "reject", "reason": "Depreciation sits at zero movement, $128,000 both months, well under any threshold, and nothing in the memo mentions new depot assets to chase."},
+{"id": "C12", "verdict": "accept", "reason": "Fair, S3 just asserts a Tri-State ramp will keep driving growth through the third quarter and I have not seen anything that backs that up."}
+], "confidence": 63}

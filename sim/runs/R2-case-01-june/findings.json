@@ -1,0 +1,11 @@
+{
+  "findings": [
+    "Account 5100 inbound freight rose $73,800, from $214,000 to $287,800, but S6 says it declined to $287,800, which is backwards since $287,800 is more than $214,000.",
+    "Account 6000 warehouse wages moved $72,500, 11.5 percent, it's starred as needing commentary, but none of the twelve sentences mention it anywhere.",
+    "Account 6200 repairs and maintenance: S1 says the roof and dock leveler program finished on June 30, but S10 right after says remaining depot repairs are scheduled to finish in August, which sounds like the program isn't actually done.",
+    "Account 6400 bad debt expense: the table shows a $47,000 variance but S2 says the increase was $42,000, so the two numbers don't match.",
+    "Account 4200 freight billed to customers fell $65,000, -34.9 percent, it's starred as needing commentary, but I don't see a sentence anywhere in the draft about it."
+  ],
+  "confidence": 60,
+  "soundness": 3
+}

@@ -1,0 +1,65 @@
+{
+  "responses": [
+    {
+      "id": "C1",
+      "verdict": "accept",
+      "reason": "The $1,600 ties, 28,500 to 30,100, and at 5.6% it fails both halves of the stated test. S8 should not be in the memo in that form. It is the longest sentence on the page, down to prorated seats and the annual plan discount, and what it displaced is real work: 4200 freight billed fell $65,000 and 6000 warehouse wages rose $72,500, both over the threshold and both with no sentence at all. One line of that detail on either account would be worth more than the whole of S8."
+    },
+    {
+      "id": "C2",
+      "verdict": "accept",
+      "reason": "The account went 812,000 to 1,041,000, a movement of $229,000. The 28,200 in S2 is the percentage, 28.2%, printed as though it were dollars, so the sentence understates the movement by $200,800. It should read that service revenue grew $229,000, or 28.2 percent, on the equipment maintenance contracts signed in the spring, and the superlative about the strongest month ever should come out until someone shows me the history."
+    },
+    {
+      "id": "C3",
+      "verdict": "accept",
+      "reason": "The fuel was consumed in June, so June is the correct period regardless of when the invoices arrived. The entry should have been a June accrual, debit account 6100 fleet fuel $19,400 and credit accrued liabilities, reversed in July against the invoices. It changes the story: accrued, fuel is $110,600 against May's $96,400, an increase of $14,200 or 14.7 percent, not the $5,200 decline the table reports. The reported decline is an artifact of the missed cutoff."
+    },
+    {
+      "id": "C4",
+      "verdict": "reject",
+      "reason": "The $7,500 is right, 55,000 to 47,500, but the demand is not. The memo's stated rule requires a movement to exceed both $25,000 and 10 percent, and while this clears the percentage at 13.6 percent it fails the dollar gate by more than three times over, so no driver is required and this cannot be a release blocker. The challenge also names legal and audit invoices as the tie-out, and nothing in the memo says what professional fees consist of, so it is specifying support for a population it has not established. I would still ask the question in passing, but I will not hold a release on it."
+    },
+    {
+      "id": "C5",
+      "verdict": "accept",
+      "reason": "The pair is S5 and S9. S5 says the roof and dock leveler program finished on June 30, and S9 says the remaining depot repairs are scheduled to finish in August with that spend not yet in these numbers. The $77,600 ties, 41,000 to 118,600. I believe S9, because a program that is genuinely complete does not have remaining phases in a later sentence, and it matters to the close because it means there is committed repair spend outside these numbers that nobody has sized. If S5 is the true one, then S9 is describing a commitment that should be disclosed anyway."
+    },
+    {
+      "id": "C6",
+      "verdict": "accept",
+      "reason": "The defect is real although the label is wrong. The $1,334,000 is not a cost of product sold figure at all, it is June gross profit, 5,612,000 less 4,278,000, so the challenge has hung the right number on the wrong account. Recomputed unrounded, the conclusion does not survive. May margin is 1,310,000 over 5,240,000, exactly 25.0 percent. June is 1,334,000 over 5,612,000, or 23.8 percent. May does not round to 24 percent, it rounds to 25, so the two months were never the same figure and margin fell 123 basis points, about $69,000 of gross profit at June revenue. Gross profit rose only $24,000 on $372,000 of extra revenue, a 6.5 percent incremental margin against a 25 percent base, so mix and pricing were not stable."
+    },
+    {
+      "id": "C7",
+      "verdict": "accept",
+      "reason": "The difference is $5,000. The account moved $47,000, from 15,000 to 62,000, and S7 claims $42,000. I cannot tie $42,000 to anything else in the table, so unlike a copied figure this looks like the size of the Coastal Grocers reserve itself rather than the account variance, which would mean $5,000 of the increase comes from something other than that customer and is unexplained. Either way the sentence is sizing the driver against a number that is not the movement."
+    },
+    {
+      "id": "C8",
+      "verdict": "accept",
+      "reason": "630,000 to 702,500 is $72,500, or 11.5 percent, which clears both gates, and the memo does not mention the account once. It cannot go out because an 11.5 percent step in wages against 7.1 percent revenue growth is either rate or headcount, and those have opposite implications for next month. I would ask for headcount at both month ends by depot, regular against overtime hours, the effective hourly rate, and whether any accrued vacation or a retro pay adjustment landed in June."
+    },
+    {
+      "id": "C9",
+      "verdict": "accept",
+      "reason": "The account rose. 214,000 to 287,800 is an increase of $73,800, or 34.5 percent, and S4 says it declined. The sentence is wrong twice over, because reversing the direction also destroys the driver: easing carrier fuel surcharges cannot explain a cost that went up by a third. It also does not sit with 6100 fleet fuel falling 5.4 percent in the same month, since one fuel market cannot move those two lines apart by forty points. The line needs a real driver, most likely carrier mix, lane changes or volume."
+    },
+    {
+      "id": "C10",
+      "verdict": "reject",
+      "reason": "The amount does not belong to the account named. Product revenue moved $372,000, from 5,240,000 to 5,612,000, not $65,000. The $65,000 is the movement on account 4200 freight billed to customers, which fell from 186,000 to 121,000, a different line entirely and in the opposite direction. The transfer theory is also unsupported: there is no account in this table whose variance offsets $65,000 against product revenue, and I am not going to invent a counterparty to rescue the challenge. There is a genuine freight question here, why billed freight fell $65,000 while inbound freight cost rose $73,800, but that is a question about 4200 and 5100 and has nothing to do with S1 or product revenue."
+    },
+    {
+      "id": "C11",
+      "verdict": "accept",
+      "reason": "Both months show $128,000 exactly, a zero variance to the dollar, which is unusual enough to prove out on its own. In the same month S5 describes a roof and dock leveler program, and roofs and dock levelers are capital assets, so I want to know whether any of that $118,600 should have been capitalized rather than run through 6200 repairs. If it was capitalized, depreciation should have moved once the assets were placed in service. If it was not, the memo should say why the capitalization policy does not reach it. And I want confirmation the $128,000 is a computed charge from the fixed asset register rather than a figure carried forward from May."
+    },
+    {
+      "id": "C12",
+      "verdict": "accept",
+      "reason": "The $372,000 ties, 5,240,000 to 5,612,000, or 7.1 percent. Before I accept the Tri-State depot ramp as the driver I would need revenue by depot for both months showing Tri-State carrying the increase, the new customer or contract count behind it, and the volume against price split. I have seen none of that. The claim is also in direct conflict with S1, which credits continued demand across all four depots, and the two cannot both explain the same $372,000. S3 then adds a forecast through the third quarter, which belongs nowhere in a variance memo without support, and which sits badly against the Coastal Grocers reserve in S7."
+    }
+  ],
+  "confidence": 85
+}

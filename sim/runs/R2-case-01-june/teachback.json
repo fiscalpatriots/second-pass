@@ -1,0 +1,20 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "reject", "reason": "The table shows freight billed to customers moved $65,000 and -34.9 percent, not the $6,500 and 3.5 percent this challenge cites, so it's actually starred and does need commentary."},
+    {"id": "C2", "verdict": "accept", "reason": "This is the contradiction I already caught, S1 says the roof and dock program finished June 30, and S10 right after talks about remaining repairs finishing in August."},
+    {"id": "C3", "verdict": "accept", "reason": "This is the freight one I flagged myself, account 5100 went from $214,000 to $287,800 in the table, which is a rise, and S6 calls that same move a decline."},
+    {"id": "C4", "verdict": "accept", "reason": "I read past this the first time, but if $84,000 of a twelve-month maintenance plan billed in June really got taken straight to revenue in one month, then S9's period looks wrong."},
+    {"id": "C5", "verdict": "accept", "reason": "S12 blames the $7,500 professional fees drop on audit fee timing, and asking the controller to show which month actually carried the audit fee seems like a fair check."},
+    {"id": "C6", "verdict": "reject", "reason": "Inventory shrink only moved $2,500 on account 7400, which doesn't come close to the $25,000 leg of the threshold even at 39 percent, so no cycle count file is owed here."},
+    {"id": "C7", "verdict": "accept", "reason": "S5 just credits the Tri-State depot ramp for the $372,000 product revenue move, and I don't recall seeing a volume schedule or customer split anywhere backing that up."},
+    {"id": "C8", "verdict": "accept", "reason": "This is the one I caught too, S2 says bad debt rose $42,000, but account 6400 in the table actually moved $47,000, so the sentence has the wrong dollar figure."},
+    {"id": "C9", "verdict": "accept", "reason": "S8 mentions $19,400 of June fuel invoices pushed into July, which is bigger than the $5,200 that actually moved on fleet fuel, so that timing is worth flagging."},
+    {"id": "C10", "verdict": "reject", "reason": "Software subscriptions only moved $1,600 on account 6300, nowhere near the $25,000 leg of the threshold, so all that seat-count detail in S3 wasn't needed in the first place."},
+    {"id": "C11", "verdict": "accept", "reason": "This is the same gap I flagged, account 6000 warehouse wages moved $72,500 and 11.5 percent and none of the twelve sentences say why."},
+    {"id": "C12", "verdict": "accept", "reason": "I hadn't thought about product revenue and freight billed to customers as connected, but $372,000 up on account 4000 against $65,000 down on account 4200 in the same month is worth checking as a possible reclass."},
+    {"id": "C13", "verdict": "accept", "reason": "I didn't redo the margin math myself, but if S11's flat 24 percent doesn't hold up once you unround $348,000 of cost against $372,000 of revenue, that conclusion is wrong."},
+    {"id": "C14", "verdict": "accept", "reason": "I hadn't questioned this one, but if the equipment additions that S7 uses to explain the $31,200 interest expense rise really belong to depreciation, which shows zero movement, then S7 is resting on the wrong account."}
+  ],
+  "findings": [],
+  "confidence": 75
+}

@@ -1,0 +1,10 @@
+{
+  "findings": [
+    "Account 5000 cost of product sold rose $481,000, 11.6 percent, and S1 says gross margin held at 22 percent in both July and August, but recomputing from the account balances July's margin was closer to 23.5 percent, so margin actually moved and the real driver behind the cost increase is not explained.",
+    "Account 7300 legal settlement accrual of $185,000 is a brand new balance this month, and S10 says no new legal matters arose in August while S11 describes this same $185,000 as a new claim notified to the broker in August, the two sentences contradict each other.",
+    "Account 4300 supplier rebates rose $172,000, 409.5 percent, clears both threshold tests by a wide margin, and there is no commentary sentence anywhere in the memo that mentions it.",
+    "Account 4100 service revenue actually fell $111,000, from $1,096,000 to $985,000, a 10.1 percent decline, but S3 says service revenue grew $111,000 on contract renewals, the direction is backwards from the table."
+  ],
+  "confidence": 50,
+  "soundness": 2
+}

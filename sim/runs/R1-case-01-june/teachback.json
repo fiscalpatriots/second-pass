@@ -1,0 +1,20 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "reject", "reason": "The table shows account 4200 fell $65,000 and 34.9 percent, not the $6,500 and 3.5 percent this challenge cites, so the conclusion is wrong too."},
+    {"id": "C2", "verdict": "accept", "reason": "S1 says the repair program finished June 30 but S10 calls part of it remaining work due in August, so the two sentences cannot both be true."},
+    {"id": "C3", "verdict": "accept", "reason": "The table has account 5100 going from $214,000 to $287,800, which is an increase, so S6 saying it declined looks backwards to me."},
+    {"id": "C4", "verdict": "accept", "reason": "S9 says the $84,000 covers twelve months to May 2027 but books all of it as June revenue, which does not sound like where it belongs."},
+    {"id": "C5", "verdict": "reject", "reason": "S12 already states that professional fees fails the dollar leg of the threshold, so I do not think an engagement letter is needed for something that small."},
+    {"id": "C6", "verdict": "reject", "reason": "Inventory shrink only moved $2,500 against a $25,000 threshold, so asking for the cycle count file on a line this size seems like more than is owed."},
+    {"id": "C7", "verdict": "accept", "reason": "S5 names the Tri-State depot ramp as the reason for the $372,000 change without a schedule, contract, or rate change behind it anywhere in the memo."},
+    {"id": "C8", "verdict": "accept", "reason": "S2 states bad debt increased $42,000 but the table shows account 6400 moving $47,000, and those two figures do not agree with each other."},
+    {"id": "C9", "verdict": "accept", "reason": "S8 mentions $19,400 of fuel invoices pushed into July, which is larger than the $5,200 the account shows for the whole month, so June looks light."},
+    {"id": "C10", "verdict": "accept", "reason": "Software subscriptions moved only $1,600 on 5.6 percent, which fails both legs of the threshold, so S3 probably should not be a full sentence in this memo."},
+    {"id": "C11", "verdict": "accept", "reason": "Warehouse wages moved $72,500, which clears both the dollar and percent threshold, and I cannot find a sentence anywhere that explains what drove it."},
+    {"id": "C12", "verdict": "accept", "reason": "Account 4000 rose $372,000 the same month account 4200 fell $65,000, and neither sentence says whether freight billing moved into product revenue."},
+    {"id": "C13", "verdict": "accept", "reason": "S11 rounds both months to 24 percent, and if May was actually nearer 25 before rounding, the stable mix and pricing story does not hold up the same way."},
+    {"id": "C14", "verdict": "accept", "reason": "S7 blames the $31,200 interest increase on equipment that also sits in depreciation, but account 7000 shows zero variance, so depreciation does not back that up."}
+  ],
+  "findings": [],
+  "confidence": 80
+}

@@ -1,0 +1,12 @@
+{
+  "findings": [
+    "Account 6100 Fleet fuel: S4 says fuel declined 17,500, but the table shows 91,200 to 108,700, which is an increase of 17,500 (19.2%). That's backwards.",
+    "Account 6000 Warehouse wages: S6 says wages rose 74,900, but 781,900 minus 702,500 is 79,400. A 4,500 gap on a line that's over the commentary threshold.",
+    "Account 6200 Repairs and maintenance: S7 says the program closed in June with no further spend expected this year, but S8 right after it describes 36,400 of July repair spend as the second phase of a dock program. Those can't both be true.",
+    "Account 7100 Interest expense: S10 says the increase was 1.9 percent, or 1,900, but 76,300 minus 74,900 is 1,400, not 1,900.",
+    "Account 5100 Inbound freight: over the commentary threshold at 43,500 (-15.1%), but there's no sentence that gives its own number. S3 only talks about the total cost of product sold decline and credits it to freight rates, and 43,500 is less than a third of the 147,000 drop in cost of product sold, so most of that move is still unexplained.",
+    "Operating expense, sentence S11: claims the ratio held at 15 percent and that the cost base moved with volume. But product revenue fell 3.8 percent while the accounts making up operating expense rose by roughly 100,000 combined, so the cost base moved opposite to volume, and the ratio doesn't look like 15 percent in either month once I add up the lines."
+  ],
+  "confidence": 55,
+  "soundness": 2
+}

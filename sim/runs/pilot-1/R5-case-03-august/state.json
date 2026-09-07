@@ -1,0 +1,502 @@
+{
+  "schema": "second-pass/sim-state/v1",
+  "session_id": "case-03-august_R5_6417baf2",
+  "case_id": "case-03-august",
+  "reviewer": "R5",
+  "persona": "experienced",
+  "provider": "auto",
+  "cases_root": null,
+  "sessions_root": null,
+  "state": "finished",
+  "started_at": "2026-09-05T05:28:07Z",
+  "epoch_start": 1788586087.3576143,
+  "epoch_commit": 1788586182.87771,
+  "data": {
+    "confidence_unaided": 85.0,
+    "confidence_aided": 85.0,
+    "soundness_rating": 1,
+    "findings_unaided": [
+      "S2 has the sign backwards on account 4100, service revenue. The table runs $1,096,000 to $1,014,000, a decline of $82,000 or 7.5 percent. The sentence says it grew $82,000 on maintenance contract renewals, so the only driver offered explains a movement that went the other way. A territory losing $82,000 of recurring service revenue needs a real explanation, and none is here.",
+      "S4 misstates the amount on account 6050, temporary labor. $121,400 less $34,600 is $86,800, not the $68,800 the sentence claims. The digits are transposed and $18,000 of the increase disappears from the narrative. The percent in the table, 250.9 percent, is computed off the correct $86,800, so the prose and the table disagree with each other.",
+      "S8 misstates the amount on account 7100, interest expense. $88,600 less $76,300 is $12,300. The sentence says $16,100, which is the 16.1 percent figure rewritten with a dollar sign. $16,100 appears nowhere in the table. Separately, a revolver draw to fund inventory should show up as higher average borrowings, and nothing here ties the $12,300 to a draw amount or a rate.",
+      "S11 is arithmetically false on accounts 4000 and 5000. July product gross margin is $5,398,000 less $4,131,000 over $5,398,000, which is 23.5 percent. August is $5,905,000 less $4,612,000 over $5,905,000, which is 21.9 percent. They are not both 22 percent rounded. Margin fell roughly 160 basis points, about $93,000 of gross profit at August volume, and the conclusion that channel mix did not move is drawn from a number that does not exist.",
+      "Account 5000, cost of product sold, moved $481,000 or 11.6 percent and is marked over threshold, yet no sentence in the commentary explains it. Revenue on 4000 rose 9.4 percent while cost rose 11.6 percent. That gap is the single most important thing in the file and it is unaddressed.",
+      "Account 4300, supplier rebates, moved $172,000 or 409.5 percent and is marked over threshold, and there is no commentary on it at all. A jump from $42,000 to $214,000 in one month reads as a catch-up or a true-up rather than a run rate. I need to know the period the rebate relates to, because if it is earning from prior months it does not belong in August, and $172,000 of other income is enough to change how the month reads.",
+      "S5 attaches the driver to the wrong account. Inbound freight, account 5100, rose $27,600 or 11.3 percent, and the sentence explains it with the temporary labor added at Northgate. Temp labor is a warehouse cost in account 6050 and cannot cause inbound carrier charges. Inbound freight moves with purchase volume, lane mix, or carrier rates, and cost of product sold rose 11.6 percent in the same month, which is the obvious place to look.",
+      "S9 and S10 cannot both be true. S9 says no new legal matters arose in August, while account 7300 carries a new $185,000 settlement accrual that was zero in July. A $185,000 charge is a new matter by any reading, and one of these two sentences has to be withdrawn.",
+      "S10 puts the $185,000 in account 7300 in the wrong period and then describes it wrongly. If the delivery claim was resolved in June, the loss was probable and estimable in June and the accrual belongs there, which makes this a prior period item rather than an August cost. Calling it something that reverses once the release is signed is also wrong. A settlement accrual is relieved by payment, not reversed, and if it truly reverses then it was never a settlement.",
+      "S6 describes an unrecorded liability and leaves it unrecorded. Three August invoices totaling $31,200 for fuel and freight sat in September because the vendor portal closed. That is a cutoff error, not a narrative point. August accounts 5100 and 6100 are both understated, the $31,200 appears nowhere in the table, and the fix is an accrual before this book closes.",
+      "The $31,200 in S6 also breaks the threshold determination on account 6100, fleet fuel. As shown, fuel moved $6,200 or 5.7 percent and escapes commentary. Push any material share of $31,200 back into August and the movement can clear the $25,000 test, which means the commentary list itself was built off understated numbers.",
+      "S3 claims a productivity program on account 6000, warehouse wages, but the two labor lines together say otherwise. Wages fell $37,700 while temporary labor rose $86,800, so total warehouse labor went from $816,500 to $865,600, up $49,100 or 6.0 percent. That pattern is people moving from payroll to agency, not productivity. A program launched at the start of the month delivering 4.8 percent in its first month would be unusual in any case.",
+      "S7 spends three clauses, a reserve percentage and a payment plan on account 6400, bad debt expense, for a $1,700 movement, while $481,000 on account 5000 and $172,000 on account 4300 get nothing. The effort is inverted. I would also want the receivable balance behind that $1,700, because a 15 percent reserve on a single account moving past ninety days implies roughly $11,000 of exposure and that is not worth a sentence either.",
+      "S12 is a sentence spent to report that account 6700, insurance, was flat at $47,300 and requires no comment. The identical dollar in both months is worth one question, whether the policy is on straight amortization or the accrual simply was not trued up, but as written the line adds nothing while material accounts stay silent.",
+      "S1 asserts share gains in the independent restaurant channel on account 4000 with nothing behind it. Revenue rose $507,000 or 9.4 percent, the largest dollar movement in the file, and cost of product sold rose faster at 11.6 percent. Share bought with price concessions looks exactly like this, and the sentence should carry volume and price separately before anyone signs it.",
+      "The threshold policy itself lets the two biggest revenue movements through untouched. Account 4000 moved $507,000 at 9.4 percent and account 4100 moved $82,000 at 7.5 percent, so $589,000 of revenue movement clears the dollar test and fails the percent test and requires no comment. Account 7300 has no percent at all because the prior month is zero, yet it is marked over threshold, so the rule is being applied inconsistently in both directions."
+    ],
+    "findings_aided": [],
+    "teachbacks": {
+      "C1": {
+        "verdict": "accept",
+        "reason": "Account 4300 runs $42,000 to $214,000, a $172,000 move at 409.5 percent, and no sentence in the memo touches it. A movement four times the base cannot be released on silence. I would ask for the rebate agreement, the volume tiers, and the months the earnings relate to, because a lump like this usually carries prior period earnings and does not belong in August at full value.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C2": {
+        "verdict": "accept",
+        "reason": "Recomputing unrounded, July margin is $1,267,000 over $5,398,000, which is 23.47 percent, and August is $1,293,000 over $5,905,000, which is 21.90 percent. The conclusion does not survive. Margin fell about 157 basis points, roughly $93,000 of gross profit at August volume, so S11 is false before rounding is even argued. The tag on account 5000 is loose since $1,293,000 is August gross profit rather than a cost movement, but the substance of the challenge is right.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C3": {
+        "verdict": "accept",
+        "reason": "Account 4100 went from $1,096,000 to $1,014,000, so it fell $82,000, which the table shows as negative 7.5 percent. S2 says it grew. The sentence is not merely mislabeled, it is explaining a renewal-driven increase that never happened, and the real question of why maintenance revenue dropped 7.5 percent in Southline is left with no answer at all.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C4": {
+        "verdict": "reject",
+        "reason": "The amount is attached to the wrong account. Account 6000 warehouse wages moved from $781,900 to $744,200, which is a decrease of $37,700, not $86,800. The $86,800 belongs to account 6050 temporary labor, $34,600 to $121,400. The underlying idea of a transfer between the two lines is sound and I raised it myself, since total labor went from $816,500 to $865,600 and rose $49,100, but a challenge that cites a figure the named account never moved does not hold as written.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C5": {
+        "verdict": "accept",
+        "reason": "If the delivery claim was resolved in June then the loss was probable and estimable in June, so the $185,000 charge on account 7300 belongs in June and August is carrying a prior period item. The entry in June should have been a debit to legal settlement expense and a credit to accrued liabilities for the settled amount, relieved by cash on payment. Booking it in August also means June results were understated by the same $185,000.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C6": {
+        "verdict": "accept",
+        "reason": "Account 6050 moved $121,400 less $34,600, which is $86,800, and S4 states $68,800. The difference is exactly $18,000 and the digits are transposed. The table percent of 250.9 percent is computed off $86,800, so the memo contradicts itself, and anyone reconciling the prose to the schedule ends up $18,000 short on the single fastest-growing expense line in the month.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C7": {
+        "verdict": "accept",
+        "reason": "Account 6400 moved $1,700 on a $25,000 and 10 percent threshold, so it clears neither test and needs no sentence at all. S7 gives it three clauses, a reserve percentage and a payment plan, while account 5000 at $481,000 and account 4300 at $172,000 get nothing. That sentence displaced the cost of product sold discussion, which is the one thing a reader actually needs to understand August.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C8": {
+        "verdict": "accept",
+        "reason": "The pair is S9 and S10. S9 says no new legal matters arose in August while account 7300 went from zero to $185,000, and S10 describes the matter behind that accrual. I believe the accrual, because a booked $185,000 entry is harder evidence than a blanket assertion. It matters because S9 is the sentence a lender or an auditor relies on for completeness of contingencies, and a false completeness statement is a bigger problem than a misclassified expense.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C9": {
+        "verdict": "reject",
+        "reason": "The two amounts are right, $5,400 on account 4200 and $27,600 on account 5100, but the inference does not follow. Inbound freight is freight-in on purchased product, while freight billed to customers is outbound delivery recovery, so they are different movements of different goods and one does not absorb the other. The memo also defines product gross margin as account 4000 less account 5000, so neither line enters that margin at all and the claimed margin effect does not exist under the stated definition. The real question is why inbound freight rose 11.3 percent when it should track purchase volume.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C10": {
+        "verdict": "accept",
+        "reason": "The driver in S5 is temporary labor, which lives in account 6050 and moved $86,800, and warehouse labor cannot generate inbound carrier charges. What is left unexplained is the whole $27,600 on account 5100, an 11.3 percent rise that is over threshold on both tests. Inbound freight tracks purchase volume, lane mix and carrier rates, and with account 5000 up 11.6 percent in the same month the purchasing explanation is sitting right there unused.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C11": {
+        "verdict": "accept",
+        "reason": "The period point holds. Those invoices relate to August service and belong in August under accrual accounting, so the correct entry is a debit to inbound freight and fleet fuel with a credit to accrued liabilities for $31,200, reversed when the vendor invoices post in September. A closed vendor portal is not an accounting cutoff. One correction to the challenge, S6 describes fuel and freight invoices together, so the $31,200 splits across account 5100 and account 6100 rather than landing entirely on 5100, and the fuel share may push account 6100 over the $25,000 threshold it currently escapes at $6,200.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C12": {
+        "verdict": "reject",
+        "reason": "Account 6700 moved zero dollars and zero percent, so it fails both limbs of the $25,000 and 10 percent test and no commentary is required. Demanding the policy schedule before release for a line with no variance is the same inverted effort the memo is already guilty of on bad debt, and it burns reviewer time that account 5000 and account 4300 have a real claim on. I would ask one question, whether $47,300 is straight amortization or an accrual nobody has trued up, but that is a curiosity and not a challenge that should hold up a close.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C13": {
+        "verdict": "accept",
+        "reason": "Before I accept share gains in the independent restaurant channel for $507,000 on account 4000 I would need customer counts and revenue by channel for both months, volume split from price, and new account additions with their first invoice dates. I have seen none of that, and what I can see cuts against it, since cost of product sold rose 11.6 percent against revenue up 9.4 percent, which is what buying volume with price concessions looks like. Worth noting the line is under threshold at 9.4 percent, so this driver was volunteered rather than required, and a volunteered driver still has to be supportable.",
+        "at": "2026-09-05T05:30:52Z"
+      },
+      "C14": {
+        "verdict": "accept",
+        "reason": "The percentage is the 16.1, and the memo dressed it as $16,100 by moving a decimal and adding a dollar sign. Account 7100 actually moved $88,600 less $76,300, which is $12,300. The sentence should read that interest expense rose $12,300, or 16.1 percent, on the revolver draw taken to fund inventory ahead of the fall menu change, and I would still want the draw amount and the rate to prove that $12,300 is the whole story.",
+        "at": "2026-09-05T05:30:52Z"
+      }
+    },
+    "seconds_phase_1": 96,
+    "seconds_phase_2": 69,
+    "confidence_post_teachback": 85.0
+  },
+  "challenger": {
+    "prompt_id": "second-pass/challenger",
+    "prompt_version": 1,
+    "prompt_file": "prompts/challenger.v1.md",
+    "keys": {
+      "ANTHROPIC_API_KEY": "absent",
+      "OPENAI_API_KEY": "absent"
+    },
+    "provider_requested": "auto",
+    "provider_used": "deterministic",
+    "model": null,
+    "dropped": [],
+    "fallback_reason": null,
+    "challenge_count": 14
+  },
+  "challenges": [
+    {
+      "id": "C1",
+      "line": "4300",
+      "account": "Supplier rebates, other income",
+      "amount": 172000.0,
+      "sentence": null,
+      "citation": "Account 4300 Supplier rebates, other income, $172,000",
+      "question": "Account 4300 Supplier rebates, other income moved $172,000 and the commentary never mentions it. Say why a movement of that size cannot be released without a driver, and what you would ask for.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C2",
+      "line": "5000",
+      "account": "Cost of product sold",
+      "amount": 1293000.0,
+      "sentence": "S11",
+      "citation": "Account 5000 Cost of product sold, $1,293,000, sentence S11",
+      "question": "Sentence S11 reaches a conclusion from rounded figures on account 5000 Cost of product sold, where $1,293,000 is in play. Recompute it unrounded and say whether the conclusion survives.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C3",
+      "line": "4100",
+      "account": "Service revenue, equipment maintenance",
+      "amount": 82000.0,
+      "sentence": "S2",
+      "citation": "Account 4100 Service revenue, equipment maintenance, $82,000, sentence S2",
+      "question": "Account 4100 Service revenue, equipment maintenance moved $82,000 in the opposite direction to the one Sentence S2 describes. State which way the account actually moved and what that does to the sentence.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C4",
+      "line": "6000",
+      "account": "Warehouse wages",
+      "amount": 86800.0,
+      "sentence": "S3",
+      "citation": "Account 6000 Warehouse wages, $86,800, sentence S3",
+      "question": "The movement of $86,800 on account 6000 Warehouse wages may be a transfer between accounts rather than the operating change Sentence S3 describes. Identify the other side of it and say what the underlying movement really was.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C5",
+      "line": "7300",
+      "account": "Legal settlement accrual",
+      "amount": 185000.0,
+      "sentence": "S10",
+      "citation": "Account 7300 Legal settlement accrual, $185,000, sentence S10",
+      "question": "Sentence S10 explains $185,000 on account 7300 Legal settlement accrual by an event in a different period. Say which period the cost or income belongs in and what the entry should have been.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C6",
+      "line": "6050",
+      "account": "Temporary labor",
+      "amount": 86800.0,
+      "sentence": "S4",
+      "citation": "Account 6050 Temporary labor, $86,800, sentence S4",
+      "question": "The amount in Sentence S4 does not agree with account 6050 Temporary labor, which moved $86,800. State the difference and where the figure in the memo came from.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C7",
+      "line": "6400",
+      "account": "Bad debt expense",
+      "amount": 1700.0,
+      "sentence": "S7",
+      "citation": "Account 6400 Bad debt expense, $1,700, sentence S7",
+      "question": "Account 6400 Bad debt expense moved $1,700, which is under the stated threshold, and Sentence S7 gives it more explanation than any material line receives. Say whether that sentence should be in the memo at all, and what it displaced.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C8",
+      "line": "7300",
+      "account": "Legal settlement accrual",
+      "amount": 185000.0,
+      "sentence": "S9",
+      "citation": "Account 7300 Legal settlement accrual, $185,000, sentence S9",
+      "question": "Two sentences in this memo cannot both be true about account 7300 Legal settlement accrual and its movement of $185,000. Name the pair and say which one you believe, and why it matters to the close.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C9",
+      "line": "4200",
+      "account": "Freight billed to customers",
+      "amount": 5400.0,
+      "sentence": null,
+      "citation": "Account 4200 Freight billed to customers, $5,400",
+      "question": "Freight billed to customers rose $5,400 while inbound freight rose $27,600, so the company is absorbing freight cost and the memo does not address the margin effect.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C10",
+      "line": "5100",
+      "account": "Inbound freight",
+      "amount": 27600.0,
+      "sentence": "S5",
+      "citation": "Account 5100 Inbound freight, $27,600, sentence S5",
+      "question": "Sentence S5 explains the movement of $27,600 on account 5100 Inbound freight using a driver that belongs to a different account. Name the account the driver actually affects and say what is left unexplained.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C11",
+      "line": "5100",
+      "account": "Inbound freight",
+      "amount": 31200.0,
+      "sentence": "S6",
+      "citation": "Account 5100 Inbound freight, $31,200, sentence S6",
+      "question": "Sentence S6 places $31,200 of activity on account 5100 Inbound freight in a later month than the one it relates to. State the correct period and the entry that should have been posted.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C12",
+      "line": "6700",
+      "account": "Insurance",
+      "amount": 0.0,
+      "sentence": "S12",
+      "citation": "Account 6700 Insurance, sentence S12",
+      "question": "Insurance is flat at $47,300 and the memo says it requires no comment. A reviewer should not accept a line that declares itself out of scope, so obtain the policy schedule before release.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C13",
+      "line": "4000",
+      "account": "Product revenue, distribution",
+      "amount": 507000.0,
+      "sentence": "S1",
+      "citation": "Account 4000 Product revenue, distribution, $507,000, sentence S1",
+      "question": "Sentence S1 names a driver for $507,000 on account 4000 Product revenue, distribution without citing anything that supports it. Say what evidence would have to exist before that driver can be accepted, and whether you have seen it.",
+      "source": "deterministic"
+    },
+    {
+      "id": "C14",
+      "line": "7100",
+      "account": "Interest expense",
+      "amount": 12300.0,
+      "sentence": "S8",
+      "citation": "Account 7100 Interest expense, $12,300, sentence S8",
+      "question": "Sentence S8 reports a figure for account 7100 Interest expense that reads as a dollar amount while the account moved $12,300. Say which of the two numbers is a percentage and restate the sentence correctly.",
+      "source": "deterministic"
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-09-05T05:28:07Z",
+      "event": "session_opened",
+      "state": "briefing",
+      "cause": "reviewer opened case case-03-august"
+    },
+    {
+      "at": "2026-09-05T05:28:07Z",
+      "event": "simulated_session_opened",
+      "state": "briefing",
+      "cause": "a simulated reviewer opened the case through the sim driver",
+      "detail": {
+        "persona": "experienced",
+        "dir": "C:\\Users\\Khaled\\Documents\\Coach Dashboard HQ\\drafts-2026-09-05-aina\\second-pass\\sim\\runs\\R5-case-03-august"
+      }
+    },
+    {
+      "at": "2026-09-05T05:29:42Z",
+      "event": "confidence_unaided_recorded",
+      "state": "phase_1_open",
+      "cause": "reviewer stated expectation before working",
+      "detail": {
+        "confidence": 85.0,
+        "soundness": 1
+      }
+    },
+    {
+      "at": "2026-09-05T05:29:42Z",
+      "event": "findings_committed",
+      "state": "phase_1_committed",
+      "cause": "reviewer sealed their unaided findings",
+      "detail": {
+        "count": 16,
+        "seconds": 96
+      }
+    },
+    {
+      "at": "2026-09-05T05:29:42Z",
+      "event": "confidence_aided_recorded",
+      "state": "confidence_2_set",
+      "cause": "reviewer stated expectation before the challenge list",
+      "detail": {
+        "confidence": 85.0
+      }
+    },
+    {
+      "at": "2026-09-05T05:29:42Z",
+      "event": "challenges_revealed",
+      "state": "challenges_revealed",
+      "cause": "commitment sealed, AI layer released",
+      "detail": {
+        "provider_used": "deterministic",
+        "challenge_count": 14,
+        "dropped": 0,
+        "fallback_reason": null
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C1",
+        "verdict": "accept",
+        "reason_words": 67
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C2",
+        "verdict": "accept",
+        "reason_words": 76
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C3",
+        "verdict": "accept",
+        "reason_words": 58
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C4",
+        "verdict": "reject",
+        "reason_words": 81
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C5",
+        "verdict": "accept",
+        "reason_words": 77
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C6",
+        "verdict": "accept",
+        "reason_words": 59
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C7",
+        "verdict": "accept",
+        "reason_words": 67
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C8",
+        "verdict": "accept",
+        "reason_words": 78
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C9",
+        "verdict": "reject",
+        "reason_words": 100
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C10",
+        "verdict": "accept",
+        "reason_words": 74
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C11",
+        "verdict": "accept",
+        "reason_words": 100
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C12",
+        "verdict": "reject",
+        "reason_words": 99
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C13",
+        "verdict": "accept",
+        "reason_words": 104
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C14",
+        "verdict": "accept",
+        "reason_words": 76
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "confidence_post_teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "simulated reviewer restated confidence after working the challenge list",
+      "detail": {
+        "confidence": 85.0
+      }
+    },
+    {
+      "at": "2026-09-05T05:30:52Z",
+      "event": "session_scored",
+      "state": "finished",
+      "cause": "phase two closed and the session was scored",
+      "detail": {
+        "catch_rate_unaided": 75.0,
+        "catch_rate_aided": 91.7
+      }
+    }
+  ]
+}

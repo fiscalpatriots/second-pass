@@ -1,0 +1,17 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "This account only moved $1,600, well under threshold, and S8 spends a whole sentence on seat counts and proration while much bigger required lines get nothing."},
+    {"id": "C2", "verdict": "accept", "reason": "Table shows service revenue up $229,000, and 229,000 divided by 812,000 gives 28.2 percent, so the sentence swapped the percent in for the real dollar figure."},
+    {"id": "C3", "verdict": "reject", "reason": "The memo says these fuel invoices arrived after the books closed and will land in July, that reads like ordinary month-end cutoff to me, not a real problem."},
+    {"id": "C4", "verdict": "reject", "reason": "This line only moved $7,500, under the $25,000 bar in the memo's own rule, so nothing was actually required here regardless of what invoices sit behind it."},
+    {"id": "C5", "verdict": "accept", "reason": "S5 says the roof and dock leveler program finished June 30, then S9 says remaining repairs are scheduled to finish in August; both cannot be true about a program that is done."},
+    {"id": "C6", "verdict": "accept", "reason": "Recomputing revenue minus cost of product sold over revenue gives exactly 25.0 percent for May and about 23.8 percent for June, so the 24 percent both months claim fails for May."},
+    {"id": "C7", "verdict": "accept", "reason": "Bad debt actually moved $47,000 per the table, and the memo says $42,000, which is short by $5,000 of what the account really did."},
+    {"id": "C8", "verdict": "accept", "reason": "Warehouse wages moved $72,500, which is 11.5 percent and clears the threshold, and there is no sentence anywhere in this memo about that account."},
+    {"id": "C9", "verdict": "accept", "reason": "Table shows inbound freight went from $214,000 up to $287,800, an increase of $73,800, but the sentence says it declined; the account moved the opposite way."},
+    {"id": "C10", "verdict": "reject", "reason": "Account 4000 actually moved $372,000 per the table, matching what S1 already says; $65,000 is the freight billed to customers number, a different line entirely."},
+    {"id": "C11", "verdict": "reject", "reason": "Depreciation did not move at all, zero dollars and zero percent, about as clean as a line gets, and I have nothing here showing new assets were even added."},
+    {"id": "C12", "verdict": "reject", "reason": "Continued demand across all four depots plus a Tri-State ramp is a believable enough story to me for a distribution business, and the dollar figure ties to the table fine."}
+  ],
+  "confidence": 65
+}

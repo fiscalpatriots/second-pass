@@ -1,0 +1,19 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Supplier rebates moved $172,000, which is 409.5 percent and clears the threshold by a mile, and there is not one sentence about it anywhere in this memo."},
+    {"id": "C2", "verdict": "accept", "reason": "Recomputing revenue minus cost of product sold over revenue gives about 23.5 percent for July and 21.9 percent for August, so the 22 percent held claim does not survive for July."},
+    {"id": "C3", "verdict": "accept", "reason": "Table shows this account down $82,000 in parentheses, but the sentence says it grew $82,000; the account moved the opposite way from what is written."},
+    {"id": "C4", "verdict": "reject", "reason": "The $86,800 figure actually belongs to account 6050 temporary labor, not account 6000 wages; wages moved $37,700 down, matching what S3 already says, so nothing here is wrong."},
+    {"id": "C5", "verdict": "reject", "reason": "The memo already says this covers a June matter and will reverse once the release is signed, that reads as a normal accrual entry to me, not something I would flag."},
+    {"id": "C6", "verdict": "accept", "reason": "Temp labor actually moved $86,800 per the table, and the memo says $68,800, which is short by $18,000 of what the account really did."},
+    {"id": "C7", "verdict": "accept", "reason": "This account only moved $1,700, well under threshold, yet it gets three clauses of detail while $172,000 and $481,000 lines get nothing at all; that balance looks backwards to me."},
+    {"id": "C8", "verdict": "reject", "reason": "S9 says no new matters arose, and S10 says this accrual covers a matter that was already resolved back in June, so they are describing different things, not contradicting each other."},
+    {"id": "C9", "verdict": "reject", "reason": "Freight billed to customers and inbound freight are different flows, one outbound to customers and one inbound from suppliers, so I would not expect them to move together, and this line is under threshold anyway."},
+    {"id": "C10", "verdict": "accept", "reason": "Temporary labor is a headcount cost booked to account 6050, not a freight cost, so it does not really explain why inbound freight rose $27,600."},
+    {"id": "C11", "verdict": "reject", "reason": "The memo gives a specific operational reason, the vendor portal closing early, for why these invoices landed in September; that sounds like routine cutoff to me, not a real problem."},
+    {"id": "C12", "verdict": "reject", "reason": "This line is flat, zero dollars and zero percent change, about as clean as a line can be, so I see no reason to chase a policy schedule here."},
+    {"id": "C13", "verdict": "reject", "reason": "Share gains in the independent restaurant channel is a believable enough story to me, and the dollar and percent both tie out to the table, so I would not ask for more backup."},
+    {"id": "C14", "verdict": "accept", "reason": "Table shows interest expense moved $12,300, not $16,100; 16.1 percent of $76,300 is close to $12,300, so the percent is right and the dollar amount in the sentence is wrong."}
+  ],
+  "confidence": 58
+}

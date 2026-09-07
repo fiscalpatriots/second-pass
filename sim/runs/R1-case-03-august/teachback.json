@@ -1,0 +1,19 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "S2 points to share gains in the independent restaurant channel but gives no channel split or volume numbers to check that against."},
+    {"id": "C2", "verdict": "accept", "reason": "S4 mentions $31,200 of August freight invoices posted to September, and that is more than the account's whole $27,600 movement, so August looks light."},
+    {"id": "C3", "verdict": "accept", "reason": "S1 rounds both months to 22 percent, and if July was really closer to 23 or 24 before rounding, the mix did not move claim does not hold up."},
+    {"id": "C4", "verdict": "accept", "reason": "S10 says no new legal matters arose in August, and S11 right after describes a new $185,000 accrual for an August claim, so they cannot both stand."},
+    {"id": "C5", "verdict": "accept", "reason": "S9 ties the $67,500 marketing change to a September show while the number is booked in August, so the timing does not line up."},
+    {"id": "C6", "verdict": "accept", "reason": "Wages fell $37,700 while temporary labor rose $86,800 the same month, and nobody says whether the two are connected, so I would ask for the detail."},
+    {"id": "C7", "verdict": "accept", "reason": "Supplier rebates moved $172,000, over 400 percent, and I cannot find a single sentence anywhere in the memo about what caused it."},
+    {"id": "C8", "verdict": "reject", "reason": "S7 already gives the amortization schedule and says no endorsement was issued, and the account moved zero dollars, so there is nothing here to chase further."},
+    {"id": "C9", "verdict": "reject", "reason": "Repairs only moved $8,400, which is under the $25,000 leg of the threshold, so a contractor schedule and open purchase orders are not owed for this one."},
+    {"id": "C10", "verdict": "accept", "reason": "The table shows account 4100 fell $111,000, so S3 saying service revenue grew by that same amount is pointed the wrong way."},
+    {"id": "C11", "verdict": "reject", "reason": "The prior figure for fleet fuel this month is $122,800, not $91,200, so comparing against $91,200 is comparing against a month that already closed."},
+    {"id": "C12", "verdict": "accept", "reason": "Bad debt only moved $1,700, which fails the dollar leg of the threshold, so a three-part story for that size change is more than the memo needs."},
+    {"id": "C13", "verdict": "accept", "reason": "S12 uses the warehouse wages program as the reason shrink fell, but that explains wages, and shrink still has no count or write-off detail of its own."}
+  ],
+  "findings": [],
+  "confidence": 80
+}

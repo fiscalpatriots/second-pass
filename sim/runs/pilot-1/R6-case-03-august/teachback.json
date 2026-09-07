@@ -1,0 +1,75 @@
+{
+  "responses": [
+    {
+      "id": "C1",
+      "verdict": "accept",
+      "reason": "42,000 to 214,000 is $172,000, a 409.5 percent move, and it is the second largest movement on the page with no sentence attached. It cannot go out because it is pure income and nobody has said what earned it. I would ask for the rebate agreements and the tiers they turn on, the purchase volume that triggered them in August, whether any of the $214,000 relates to prior period purchasing and is therefore a catch up, and whether the amount is estimated or confirmed by the supplier. I would also ask why rebates sit in other income at all rather than reducing cost of product sold, because that choice moves the margin conclusion by more than three points."
+    },
+    {
+      "id": "C2",
+      "verdict": "accept",
+      "reason": "The defect is real although the label is wrong. The $1,293,000 is not a cost of product sold figure, it is August gross profit, 5,905,000 less 4,612,000, so the challenge has put the right number against the wrong account. Recomputed unrounded the conclusion does not survive. July margin is 1,267,000 over 5,398,000, or 23.5 percent. August is 1,293,000 over 5,905,000, or 21.9 percent. July does not round to 22 percent, so the two months were never the same figure, and margin fell 158 basis points, about $93,000 of gross profit at August revenue. Gross profit rose only $26,000 on $507,000 of extra revenue, a 5.1 percent incremental margin, which is what a mix shift looks like."
+    },
+    {
+      "id": "C3",
+      "verdict": "accept",
+      "reason": "The account fell. 1,096,000 to 1,014,000 is a decline of $82,000, or 7.5 percent, and S2 says it grew. Reversing the direction also destroys the driver, because maintenance contract renewals in Southline cannot explain revenue that went away. The sentence has to be rewritten as a decline and given a real cause, most likely a contract that lapsed or a completed job that did not repeat, and until then the largest adverse revenue movement of the month is unexplained."
+    },
+    {
+      "id": "C4",
+      "verdict": "reject",
+      "reason": "The amount does not belong to the account named. Warehouse wages went 781,900 to 744,200, a movement of $37,700, not $86,800. The $86,800 is the movement on account 6050 temporary labor, 34,600 to 121,400, so the challenge has taken the other side of the transfer and printed it as the near side. As written it asks me to identify the other side of a figure that already is the other side. I agree completely that S3 is describing a shift rather than a productivity gain, and I raised that myself, but the correct arithmetic is wages down $37,700 against temporary labor up $86,800, total labor up $49,100 from $816,500 to $865,600, or 6.0 percent against revenue up 6.5 percent. I am not signing a challenge whose figure is on the wrong row when the point can be made accurately."
+    },
+    {
+      "id": "C5",
+      "verdict": "accept",
+      "reason": "S10 says the delivery claim was resolved in June, and if it was resolved in June then the obligation existed in June and the loss belongs in June. The entry should have been posted in June, debit legal settlement expense $185,000 and credit accrued settlement liability, with disclosure of the matter at that point. Booking it in August understates June and July and overstates August by $185,000, and because the amount exceeds the memo's own materiality it needs to be presented as a correction of a prior period rather than an August event, with a view on whether the reported June and July results have to be restated."
+    },
+    {
+      "id": "C6",
+      "verdict": "accept",
+      "reason": "The difference is $18,000. The account moved $86,800, from 34,600 to 121,400, and S4 claims $68,800. The digits are transposed, 68 for 86, which is the classic way this happens when someone keys the figure by hand rather than pulling it from the schedule. The summer peak explanation is then sized against a number more than twenty percent below the real movement, so even a reader who accepts the driver walks away with the wrong sense of what Northgate cost."
+    },
+    {
+      "id": "C7",
+      "verdict": "accept",
+      "reason": "The $1,700 ties, 9,500 to 11,200, and at that size the line fails the $25,000 gate outright, so it requires no commentary at all. S7 should not be in the memo in this form. It is the most specific sentence on the page, carrying the aging bucket, the reserve percentage and a payment plan, and what it displaced is the work that matters: 4300 supplier rebates moved $172,000 and 5000 cost of product sold moved $481,000, both over the threshold and both with nothing written about them. One sentence on either would be worth more than all of S7."
+    },
+    {
+      "id": "C8",
+      "verdict": "accept",
+      "reason": "The pair is S9 and S10. S9 says no new legal matters arose during August and S10 books a $185,000 accrual from a zero balance in the same month. I believe S10, because the accrual is on the face of the statement and money does not appear without a matter behind it. It matters to the close because S9 is the sentence a reader relies on when deciding there is no unrecorded exposure, and it is directly contradicted by the largest new liability of the month. S10 also contradicts itself: a claim described as resolved in June cannot both be settled and be reversed once a release is signed."
+    },
+    {
+      "id": "C9",
+      "verdict": "accept",
+      "reason": "Both figures tie. Billed freight rose $5,400, from 128,500 to 133,900, or 4.2 percent, while inbound freight rose $27,600, from 244,300 to 271,900, or 11.3 percent. The company is recovering less than it is paying and the net freight position worsened by $22,200 in a single month. One correction to the framing: this does not touch the memo's defined product gross margin, because that is 4000 less 5000 and both freight accounts sit outside it. It hits operating profit instead, and it is compounded by S6, which admits August freight invoices were pushed to September, so the $27,600 is understated and the true gap is wider than $22,200."
+    },
+    {
+      "id": "C10",
+      "verdict": "accept",
+      "reason": "The $27,600 ties, 244,300 to 271,900. The driver S5 names, temporary labor added at Northgate, affects account 6050 temporary labor, which is warehouse labor cost and has nothing to do with what carriers charge to bring product in. So the entire $27,600 is unexplained. The likely answer is sitting in the same table: inbound freight rose 11.3 percent while cost of product sold rose 11.6 percent, so freight is tracking purchase volume, and someone should say that and show the rate per hundredweight to prove it is volume rather than rate."
+    },
+    {
+      "id": "C11",
+      "verdict": "accept",
+      "reason": "The correct period is August, because the fuel and freight were consumed in August and a vendor portal closing early is a control failure rather than an accounting basis. The entry should have been an August accrual, debit the relevant expense accounts and credit accrued liabilities for $31,200, reversing in September against the invoices. One qualification on the challenge: S6 describes fuel and freight invoices, so the whole $31,200 cannot all sit on 5100 inbound freight, and part belongs on 6100 fleet fuel. The memo never gives the split, which is its own problem, because a material share landing on 6100 would take fuel from a $6,200 movement to well over both gates and make it a line requiring commentary."
+    },
+    {
+      "id": "C12",
+      "verdict": "accept",
+      "reason": "The account shows $47,300 in both months, a zero variance to the dollar, and I agree that a memo does not get to declare a line out of scope on the reader's behalf. I would soften the demand, because at zero movement the line fails the threshold and I would not hold a release over it, but I do want two things before signing. First, confirmation that the $47,300 is a computed monthly amortization from the policy schedule rather than a figure carried forward from July. Second, given the $185,000 legal settlement accrual booked in the same month, confirmation of whether that exposure is insured and whether any premium, deductible or coverage change is coming."
+    },
+    {
+      "id": "C13",
+      "verdict": "accept",
+      "reason": "The $507,000 ties, 5,398,000 to 5,905,000, or 9.4 percent. Before I accept share gains in the independent restaurant channel I would need revenue split by channel for both months, the customer count and new account wins in that channel, and a volume against price breakout showing the growth is units rather than pricing. I have seen none of it. The claim also runs straight into S11, which concludes the channel mix did not move. Both cannot be true, and I lean toward S1 being directionally right, because a mix shift into independents is the most plausible explanation for margin falling from 23.5 percent to 21.9 percent in the same month."
+    },
+    {
+      "id": "C14",
+      "verdict": "accept",
+      "reason": "The percentage is the 16.1, and the $16,100 is those same digits written as dollars. The account moved $12,300, from 76,300 to 88,600, and 16.1 percent of 76,300 is $12,284, which confirms the percentage is the sound figure and the dollar amount is the fabricated one. It should read that interest expense rose 16.1 percent, or $12,300, on the revolver draw. I would also press the driver, because funding inventory capitalizes cost onto the balance sheet and cannot be the explanation for cost of product sold rising 11.6 percent in the same month."
+    }
+  ],
+  "confidence": 80
+}

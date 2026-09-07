@@ -1,0 +1,20 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Utilities only moved $3,300, which is well under the $25,000 line, so a three-part story for that size change seems like more than the memo needs."},
+    {"id": "C2", "verdict": "accept", "reason": "S12 mentions $12,800 of July fieldwork that will not be recorded until August, and that sounds like it belongs in July if the work happened then."},
+    {"id": "C3", "verdict": "reject", "reason": "The prior column for account 5100 this month is $287,800, not $214,000, so comparing to $214,000 is comparing against the wrong month entirely."},
+    {"id": "C4", "verdict": "accept", "reason": "S5 credits inbound freight rates for the cost of product sold change, but the memo itself says inbound freight sits outside cost of product sold."},
+    {"id": "C5", "verdict": "accept", "reason": "S4 gives $74,900 for warehouse wages but the table shows account 6000 moved $79,400, so the two numbers do not line up."},
+    {"id": "C6", "verdict": "accept", "reason": "S2 explains the $96,400 marketing number by pointing to a trade show in September, which is a strange reason for a July number to be high."},
+    {"id": "C7", "verdict": "accept", "reason": "S6 blames the revenue drop on school nutrition seasonality without any account list or year over year numbers to back it up."},
+    {"id": "C8", "verdict": "accept", "reason": "Inventory shrink jumped $62,300, which is a 700 percent move, and I cannot find one sentence anywhere in the memo about it."},
+    {"id": "C9", "verdict": "reject", "reason": "The table shows software subscriptions moved $1,600 and 5.3 percent, not the $16,000 and 53 percent this challenge uses, so it clears neither leg."},
+    {"id": "C10", "verdict": "accept", "reason": "Service revenue and repairs move in opposite directions the same month and nothing in the memo says whether the two are connected, so I would ask."},
+    {"id": "C11", "verdict": "reject", "reason": "S8 already says the freight billed movement fails both legs of the threshold, so asking the controller for a closing entry seems like overkill for this one."},
+    {"id": "C12", "verdict": "accept", "reason": "S3 gives $84,700 as the bad debt drop but the account only moved $52,500 according to the table, so the sentence and the table disagree."},
+    {"id": "C13", "verdict": "accept", "reason": "Fleet fuel shows a $31,600 increase in the table, so S9 saying it declined is going in the wrong direction."},
+    {"id": "C14", "verdict": "accept", "reason": "S10 says the repair program is done for the year, and then S11 describes a second phase of repairs the very next line, so they conflict."}
+  ],
+  "findings": [],
+  "confidence": 80
+}

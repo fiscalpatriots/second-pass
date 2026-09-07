@@ -1,0 +1,75 @@
+{
+  "responses": [
+    {
+      "id": "C1",
+      "verdict": "accept",
+      "reason": "Account 4300 runs $42,000 to $214,000, a $172,000 move at 409.5 percent, and no sentence in the memo touches it. A movement four times the base cannot be released on silence. I would ask for the rebate agreement, the volume tiers, and the months the earnings relate to, because a lump like this usually carries prior period earnings and does not belong in August at full value."
+    },
+    {
+      "id": "C2",
+      "verdict": "accept",
+      "reason": "Recomputing unrounded, July margin is $1,267,000 over $5,398,000, which is 23.47 percent, and August is $1,293,000 over $5,905,000, which is 21.90 percent. The conclusion does not survive. Margin fell about 157 basis points, roughly $93,000 of gross profit at August volume, so S11 is false before rounding is even argued. The tag on account 5000 is loose since $1,293,000 is August gross profit rather than a cost movement, but the substance of the challenge is right."
+    },
+    {
+      "id": "C3",
+      "verdict": "accept",
+      "reason": "Account 4100 went from $1,096,000 to $1,014,000, so it fell $82,000, which the table shows as negative 7.5 percent. S2 says it grew. The sentence is not merely mislabeled, it is explaining a renewal-driven increase that never happened, and the real question of why maintenance revenue dropped 7.5 percent in Southline is left with no answer at all."
+    },
+    {
+      "id": "C4",
+      "verdict": "reject",
+      "reason": "The amount is attached to the wrong account. Account 6000 warehouse wages moved from $781,900 to $744,200, which is a decrease of $37,700, not $86,800. The $86,800 belongs to account 6050 temporary labor, $34,600 to $121,400. The underlying idea of a transfer between the two lines is sound and I raised it myself, since total labor went from $816,500 to $865,600 and rose $49,100, but a challenge that cites a figure the named account never moved does not hold as written."
+    },
+    {
+      "id": "C5",
+      "verdict": "accept",
+      "reason": "If the delivery claim was resolved in June then the loss was probable and estimable in June, so the $185,000 charge on account 7300 belongs in June and August is carrying a prior period item. The entry in June should have been a debit to legal settlement expense and a credit to accrued liabilities for the settled amount, relieved by cash on payment. Booking it in August also means June results were understated by the same $185,000."
+    },
+    {
+      "id": "C6",
+      "verdict": "accept",
+      "reason": "Account 6050 moved $121,400 less $34,600, which is $86,800, and S4 states $68,800. The difference is exactly $18,000 and the digits are transposed. The table percent of 250.9 percent is computed off $86,800, so the memo contradicts itself, and anyone reconciling the prose to the schedule ends up $18,000 short on the single fastest-growing expense line in the month."
+    },
+    {
+      "id": "C7",
+      "verdict": "accept",
+      "reason": "Account 6400 moved $1,700 on a $25,000 and 10 percent threshold, so it clears neither test and needs no sentence at all. S7 gives it three clauses, a reserve percentage and a payment plan, while account 5000 at $481,000 and account 4300 at $172,000 get nothing. That sentence displaced the cost of product sold discussion, which is the one thing a reader actually needs to understand August."
+    },
+    {
+      "id": "C8",
+      "verdict": "accept",
+      "reason": "The pair is S9 and S10. S9 says no new legal matters arose in August while account 7300 went from zero to $185,000, and S10 describes the matter behind that accrual. I believe the accrual, because a booked $185,000 entry is harder evidence than a blanket assertion. It matters because S9 is the sentence a lender or an auditor relies on for completeness of contingencies, and a false completeness statement is a bigger problem than a misclassified expense."
+    },
+    {
+      "id": "C9",
+      "verdict": "reject",
+      "reason": "The two amounts are right, $5,400 on account 4200 and $27,600 on account 5100, but the inference does not follow. Inbound freight is freight-in on purchased product, while freight billed to customers is outbound delivery recovery, so they are different movements of different goods and one does not absorb the other. The memo also defines product gross margin as account 4000 less account 5000, so neither line enters that margin at all and the claimed margin effect does not exist under the stated definition. The real question is why inbound freight rose 11.3 percent when it should track purchase volume."
+    },
+    {
+      "id": "C10",
+      "verdict": "accept",
+      "reason": "The driver in S5 is temporary labor, which lives in account 6050 and moved $86,800, and warehouse labor cannot generate inbound carrier charges. What is left unexplained is the whole $27,600 on account 5100, an 11.3 percent rise that is over threshold on both tests. Inbound freight tracks purchase volume, lane mix and carrier rates, and with account 5000 up 11.6 percent in the same month the purchasing explanation is sitting right there unused."
+    },
+    {
+      "id": "C11",
+      "verdict": "accept",
+      "reason": "The period point holds. Those invoices relate to August service and belong in August under accrual accounting, so the correct entry is a debit to inbound freight and fleet fuel with a credit to accrued liabilities for $31,200, reversed when the vendor invoices post in September. A closed vendor portal is not an accounting cutoff. One correction to the challenge, S6 describes fuel and freight invoices together, so the $31,200 splits across account 5100 and account 6100 rather than landing entirely on 5100, and the fuel share may push account 6100 over the $25,000 threshold it currently escapes at $6,200."
+    },
+    {
+      "id": "C12",
+      "verdict": "reject",
+      "reason": "Account 6700 moved zero dollars and zero percent, so it fails both limbs of the $25,000 and 10 percent test and no commentary is required. Demanding the policy schedule before release for a line with no variance is the same inverted effort the memo is already guilty of on bad debt, and it burns reviewer time that account 5000 and account 4300 have a real claim on. I would ask one question, whether $47,300 is straight amortization or an accrual nobody has trued up, but that is a curiosity and not a challenge that should hold up a close."
+    },
+    {
+      "id": "C13",
+      "verdict": "accept",
+      "reason": "Before I accept share gains in the independent restaurant channel for $507,000 on account 4000 I would need customer counts and revenue by channel for both months, volume split from price, and new account additions with their first invoice dates. I have seen none of that, and what I can see cuts against it, since cost of product sold rose 11.6 percent against revenue up 9.4 percent, which is what buying volume with price concessions looks like. Worth noting the line is under threshold at 9.4 percent, so this driver was volunteered rather than required, and a volunteered driver still has to be supportable."
+    },
+    {
+      "id": "C14",
+      "verdict": "accept",
+      "reason": "The percentage is the 16.1, and the memo dressed it as $16,100 by moving a decimal and adding a dollar sign. Account 7100 actually moved $88,600 less $76,300, which is $12,300. The sentence should read that interest expense rose $12,300, or 16.1 percent, on the revolver draw taken to fund inventory ahead of the fall menu change, and I would still want the draw amount and the rate to prove that $12,300 is the whole story."
+    }
+  ],
+  "confidence": 85
+}

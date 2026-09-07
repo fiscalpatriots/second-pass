@@ -1,0 +1,21 @@
+{
+  "findings": [
+    "Accounts 4000 and 5000, product gross margin: S1 says margin held at 22 percent in both months once rounded, but July is $1,267,000 over $5,398,000, which is 23.5 percent, and August is $1,293,000 over $5,905,000, which is 21.9 percent, so margin fell 1.6 points and the conclusion that channel mix did not move rests entirely on rounding",
+    "Account 5000 Cost of product sold rose $481,000, 11.6 percent, clears both legs of the threshold, and no sentence in the commentary gives it a driver",
+    "Account 4100 Service revenue: S3 says service revenue grew $111,000 on Southline renewals, but $1,096,000 to $985,000 is a $111,000 decline, down 10.1 percent, so the direction is reversed and a required line is explained backwards",
+    "Account 4300 Supplier rebates, other income rose $172,000 from $42,000 to $214,000, 409.5 percent, clears both legs of the threshold, and nothing in the commentary mentions it at all",
+    "Account 4300 Supplier rebates: $214,000 of rebates earned on purchases is parked in other income and held outside the margin calculation in the same month cost of product sold rose $481,000, which flatters the margin discussion in S1; rebates on inventory purchases normally reduce cost of product sold",
+    "Account 5100 Inbound freight: S4 says three August freight invoices totalling $31,200 were posted to September because the vendor portal closed early, which leaves an August cost unaccrued, and the $31,200 appears nowhere in the table",
+    "Account 5100 Inbound freight rose $27,600, 11.3 percent, clearing both legs, and the only sentence that touches freight is the S4 deferral, so the movement itself has no driver anywhere in the memo",
+    "Accounts 6050 Temporary labor and 6000 Warehouse wages: S5 explains $86,800 of temporary labor by the Northgate summer peak while S8 credits a productivity program for the $37,700 fall in warehouse wages, but this is the same labor moving between two accounts, net labor is up $49,100, and neither sentence mentions the substitution",
+    "Account 6000 Warehouse wages fell $37,700, only 4.8 percent, which fails the percent leg, so S8 comments on a line that requires no commentary and draws a favorable productivity conclusion from a movement the memo did not need to explain",
+    "Account 6800 Marketing and trade shows: S9 says the July trade show accrual was released into August expense ahead of the September show, but the account fell $67,500 from $96,400 to $28,900; releasing an accrual reduces expense and cannot simultaneously be August expense, so the sentence contradicts both the table and itself",
+    "Account 7300 Legal settlement accrual: S10 says no new legal matters arose during August while S11 books $185,000 for a delivery claim notified to the broker in August; both sentences cannot be true and the $185,000 is the largest single movement in the memo",
+    "Account 7400 Inventory shrink adjustment: S12 reuses the same warehouse productivity program S8 offered for wages to explain a $44,800, 62.9 percent fall in its first month, so one unsupported driver is carrying two different accounts",
+    "Account 6400 Bad debt expense: S6 spends three clauses on a $1,700 move, 17.9 percent, that fails the $25,000 dollar leg, while account 4300 at $172,000 and account 5000 at $481,000 get no sentence at all",
+    "Account 6700 Insurance: S7 explains a movement of exactly zero, which requires no commentary under either leg, while account 7000 Depreciation is equally flat and correctly silent",
+    "Account 4000 Product revenue, distribution: S2 credits share gains in the independent restaurant channel for the $507,000 rise, which contradicts S1's claim that the channel mix did not move, and at 9.4 percent the line fails the percent leg so no commentary was required"
+  ],
+  "confidence": 85,
+  "soundness": 3
+}

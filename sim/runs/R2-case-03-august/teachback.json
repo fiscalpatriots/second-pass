@@ -1,0 +1,19 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "S2 just says share gains in the restaurant channel for the $507,000 move, and I don't remember seeing any schedule or contract behind that number, so I'd want to see one before release."},
+    {"id": "C2", "verdict": "accept", "reason": "This lines up with what I noticed too, S4's $31,200 of September-posted freight invoices doesn't match the $27,600 actually recorded against account 5100, so the period does look off."},
+    {"id": "C3", "verdict": "accept", "reason": "I didn't re-run the margin math myself, but if S1's 22 percent doesn't hold up once you unround the $481,000 of cost against $507,000 of revenue, the flat-margin line is wrong."},
+    {"id": "C4", "verdict": "accept", "reason": "S10 flatly says no new legal matters arose in August, and S11 right after it describes a brand new $185,000 accrual from an August claim, so one of those two has to be wrong."},
+    {"id": "C5", "verdict": "accept", "reason": "I took S9's explanation of the $67,500 marketing drop at face value the first time, but if the accrual timing described there is off, the period in S9 needs to be fixed."},
+    {"id": "C6", "verdict": "accept", "reason": "I hadn't connected warehouse wages and temp labor as one being a transfer of the other, but $37,700 out of account 6000 against $86,800 into 6050 at the same depot is worth checking before calling S8 a clean productivity gain."},
+    {"id": "C7", "verdict": "accept", "reason": "This is the same $172,000 supplier rebate jump I flagged, account 4300 moved 409 percent and nobody wrote a sentence about it, so I agree it can't go out without a driver."},
+    {"id": "C8", "verdict": "accept", "reason": "S7 gives a specific reason for the $0 movement on insurance, the amortization schedule to March 2027, but confirming that with the controller on a zero-variance line seems like reasonable caution."},
+    {"id": "C9", "verdict": "reject", "reason": "Depot repairs only moved $8,400 on account 6200, and the memo's own rule up top needs more than $25,000 and 10 percent both, so this one fails the dollar leg and doesn't need a driver."},
+    {"id": "C10", "verdict": "accept", "reason": "This is the one I already caught, account 4100 shows ($111,000) in the table, which is a decline, and S3 describes that same amount as growth, so S3 has the direction backwards."},
+    {"id": "C11", "verdict": "reject", "reason": "I don't recall a June figure anywhere in this memo, it's framed as August against July only, so I can't back up a $91,200 June number for account 6100 that isn't in the table I read."},
+    {"id": "C12", "verdict": "reject", "reason": "Bad debt only moved $1,700 on account 6400, well under the $25,000 leg of the threshold even though the percentage is high, so by the memo's own rule S6 didn't need to be there."},
+    {"id": "C13", "verdict": "accept", "reason": "S12 borrows the same productivity-program explanation S8 already used for warehouse wages, and if that driver really belongs to account 6000, the $44,800 shrink change on 7400 is still unexplained on its own."}
+  ],
+  "findings": [],
+  "confidence": 75
+}

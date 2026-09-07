@@ -1,0 +1,19 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Exactly what I flagged, 172,000 on rebates with a 409 percent jump and nothing explaining it anywhere."},
+    {"id": "C2", "verdict": "accept", "reason": "I ran the same numbers, August rounds to 22 but July is really 23.5 percent, so the flat-margin claim doesn't hold."},
+    {"id": "C3", "verdict": "accept", "reason": "1,096,000 to 1,014,000 is an 82,000 drop, not growth, S2 has the direction backwards."},
+    {"id": "C4", "verdict": "reject", "reason": "Account 6000 actually moved 37,700 per the table, not 86,800, that number belongs to temporary labor instead."},
+    {"id": "C5", "verdict": "reject", "reason": "S10 already tells us this is a June matter being cleared now, that reads like ordinary cleanup to me, not an error."},
+    {"id": "C6", "verdict": "accept", "reason": "I caught this too, 121,400 minus 34,600 is 86,800, not the 68,800 S4 states, an 18,000 gap."},
+    {"id": "C7", "verdict": "accept", "reason": "Fair point, 1,700 is nowhere near material and yet it gets more detail than 5000 or 4300 get with nothing."},
+    {"id": "C8", "verdict": "reject", "reason": "No new matters plus an old June matter being closed out don't actually contradict each other the way I read it."},
+    {"id": "C9", "verdict": "accept", "reason": "5,400 versus 27,600 checks out against the table, so freight cost is outrunning what's billed and nobody addresses that squeeze."},
+    {"id": "C10", "verdict": "reject", "reason": "Temporary labor at Northgate is a plausible enough story to cover freight too, I'm not going to argue over which account it technically belongs to."},
+    {"id": "C11", "verdict": "reject", "reason": "The vendor portal closing early and posting in September is disclosed right there, that's a normal cutoff to me."},
+    {"id": "C12", "verdict": "reject", "reason": "It's flat at 47,300 both months, zero change, I'm not chasing a policy schedule for a line that didn't move."},
+    {"id": "C13", "verdict": "reject", "reason": "Share gains in the independent restaurant channel is reason enough for me, and the 507,000 and 9.4 percent both tie."},
+    {"id": "C14", "verdict": "accept", "reason": "Same one I found, 88,600 minus 76,300 is 12,300, the 16,100 in S8 is really the 16.1 percent restated as dollars."}
+  ],
+  "confidence": 55
+}

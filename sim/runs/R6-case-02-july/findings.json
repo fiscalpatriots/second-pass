@@ -1,0 +1,19 @@
+{
+  "findings": [
+    "Account 6400 bad debt expense: S3 calls the fall a reduction of $84,700, but $62,000 less $9,500 is $52,500; the 84.7 percent figure has been written down as dollars",
+    "Account 6000 warehouse wages: S4 cites a rise of $74,900, but $781,900 less $702,500 is $79,400, so the sentence understates the movement by $4,500",
+    "Account 6100 fleet fuel: S9 says fuel declined $31,600 on diesel coming off its June peak, but $91,200 to $122,800 is a $31,600 increase, up 34.6 percent, so the direction and the driver are both backwards",
+    "Account 7400 inventory shrink adjustment rose $62,300 from $8,900 to $71,200, 700.0 percent, passes both legs of the threshold, and no sentence in the commentary explains it at all",
+    "Account 5100 inbound freight fell $43,500, 15.1 percent, passes both legs and has no driver of its own anywhere in the memo",
+    "Account 5000 cost of product sold: S5 attributes the $147,000 decline to renegotiated inbound freight rates, but the memo's own note says inbound freight is excluded from 5000 and sits on account 5100, so the driver is attached to the wrong account",
+    "Account 6200 repairs and maintenance: S10 says the depot repair program closed in June with no further repair spend expected this year while S11 explains $36,400 of July repairs as the second phase of the Southline dock program; the two sentences cannot both be true",
+    "Account 6800 marketing and trade shows: $96,400, up $74,400 or 338.2 percent, is explained by a regional trade show in September, an event in a later period, with nothing to say the July charge is a prepayment or why a September show belongs in July expense",
+    "Account 6500 professional fees: S12 says a July interim review invoice of roughly $12,800 will arrive and be recorded in August, which leaves a July service unaccrued, and the $12,800 appears nowhere in the table where 6500 moved only $5,300",
+    "Account 6600 utilities at the depots: S7 spends three clauses on a $3,300 move, 6.0 percent, that fails both legs of the threshold, while the $62,300 shrink movement on account 7400 gets no sentence at all",
+    "Account 4100 service revenue: S1 comments on a $55,000, 5.3 percent movement that clears the dollar leg but fails the 10 percent leg and therefore requires no commentary",
+    "Account 4200 freight billed to customers: S8 is right that $7,500 and 6.2 percent fail both legs, but it then states the June reclassification of customer freight billings into distribution revenue is complete while 4200 still carries $121,000 and $128,500 and is growing",
+    "Account 4000 product revenue, distribution: S6 claims the 3.8 percent decline is consistent with the same month last year, and no prior-year figure appears anywhere in the schedule to support that comparison"
+  ],
+  "confidence": 75,
+  "soundness": 3
+}

@@ -1,0 +1,12 @@
+{
+  "findings": [
+    "Account 4100 Service revenue: S2 says it grew by 28,200, but the table shows 812,000 to 1,041,000, a 229,000 increase (28.2%). Looks like the 28.2% got typed in as a dollar figure instead of the real variance.",
+    "Account 5100 Inbound freight: S4 says it declined to 287,800, but the table shows 214,000 to 287,800, which is a 73,800 increase, up 34.5%. That is growth, not a decline, and it's backwards from what's written.",
+    "Account 4200 Freight billed to customers: down 65,000 (-34.9%), over the commentary threshold, but I don't see any commentary line that actually covers this account. S4 talks about a freight number but it ties to account 5100's balance, not this one.",
+    "Account 6000 Warehouse wages: up 72,500 (11.5%), over the commentary threshold, but there's no commentary sentence for it anywhere in the draft.",
+    "Account 6400 Bad debt expense: S7 says the increase was 42,000, but 62,000 minus 15,000 is 47,000. That's a 5,000 gap on the account with the biggest percent swing on the page.",
+    "Accounts 4000/5000 gross margin: S10 claims 24 percent in both May and June. Recomputing (4000-5000)/4000 gives 1,310,000/5,240,000 = 25.0% for May and 1,334,000/5,612,000 = 23.8% for June. May was actually 25%, not 24%, so margin was not as flat as stated."
+  ],
+  "confidence": 60,
+  "soundness": 2
+}

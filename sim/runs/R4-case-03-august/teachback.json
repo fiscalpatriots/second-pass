@@ -1,0 +1,19 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Five hundred seven thousand is the single biggest line in the whole memo and S2 just names restaurant channel share gains with nothing behind it, I would want a customer or channel split before signing this one."},
+    {"id": "C2", "verdict": "accept", "reason": "Thirty one thousand two hundred of August freight is being pushed into September while the account only shows a twenty seven thousand six hundred increase, so properly matched the account would be up even more than reported."},
+    {"id": "C3", "verdict": "accept", "reason": "Unrounded, July is 1,267,000 over 5,398,000, about 23.5 percent, and August is 1,293,000 over 5,905,000, about 21.9 percent, so the flat 22 percent stable story does not survive, margin actually slipped."},
+    {"id": "C4", "verdict": "accept", "reason": "S10 says no new legal matters arose in August while S11 describes a $185,000 accrual for a delivery claim notified to the broker in August, those cannot both stand and the close needs to know which one is true."},
+    {"id": "C5", "verdict": "accept", "reason": "Releasing a prior accrual into expense should not read as the reason expense fell, and tying $67,500 to a September show that has not happened yet means this decline sits in the wrong period, not real August activity."},
+    {"id": "C6", "verdict": "reject", "reason": "Warehouse wages and temp labor each already have their own separate driver in S8 and S5, productivity program against summer peak, and the dollar amounts don't line up as a swap either, so there is no transfer to pull out here."},
+    {"id": "C7", "verdict": "accept", "reason": "Supplier rebates moved $172,000 at 409.5 percent, clears both legs of the threshold easily, and nothing in the memo names what drove it, I would want the rebate agreement or the supplier statement before release."},
+    {"id": "C8", "verdict": "reject", "reason": "Insurance sitting flat at $47,300 is exactly what straight line amortization to March 2027 looks like, and S7 already states no endorsement was issued, so there is no missed accrual to chase here."},
+    {"id": "C9", "verdict": "reject", "reason": "Depot repairs only moved $8,400, well under the $25,000 leg even though the percent is 23, both legs are required together so no contractor schedule is owed for this line."},
+    {"id": "C10", "verdict": "accept", "reason": "The table goes from $1,096,000 down to $985,000, that is a fall of $111,000, so the account actually went down and S3's growth story about Southline renewals has the direction backwards."},
+    {"id": "C11", "verdict": "reject", "reason": "This memo's own table shows fleet fuel going from $122,800 in July to $129,400 in August, there is no $91,200 June figure anywhere in this case to compare against, so I can't confirm a third month of the same problem."},
+    {"id": "C12", "verdict": "accept", "reason": "Bad debt only moved $1,700 which fails the dollar leg on its own, so S6's three clause explanation didn't need to be in the memo and took up space that could have gone to the $172,000 rebate line instead."},
+    {"id": "C13", "verdict": "accept", "reason": "Warehouse wages moving $37,700 is a labor efficiency story, it doesn't by itself explain why physical inventory shrink fell $44,800, the dollar amounts don't even match, and no link between the two is actually shown."}
+  ],
+  "findings": [],
+  "confidence": 75
+}

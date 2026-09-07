@@ -1,0 +1,19 @@
+{
+  "findings": [
+    "Account 6400 bad debt expense: S2 says the increase was $42,000, but the table shows $15,000 going to $62,000, a movement of $47,000 and 313.3 percent. The sentence is $5,000 short of the line it is explaining and the Coastal Grocers reserve is offered for the whole of it.",
+    "Account 5100 inbound freight: S6 says it declined to $287,800, but the table shows $214,000 rising to $287,800, up $73,800 and 34.5 percent. The direction is reversed, and easing fuel surcharges cannot explain a 34.5 percent increase in freight cost.",
+    "Account 4100 service revenue: S9 says $84,000 of annual maintenance plans billed in June and covering twelve months to May 2027 was all recognised in June. Only one month, $7,000, belongs in June and $77,000 should sit in deferred revenue, so a third of the starred $229,000 growth is a recognition error.",
+    "Account 4000 against account 5000: S11 says product gross margin was 24 percent in both months once rounded. Recomputed, May is 1,310,000 on 5,240,000 or 25.00 percent and June is 1,334,000 on 5,612,000 or 23.77 percent, a fall of 1.2 points, so mix and pricing were not stable.",
+    "Account 6200 repairs and maintenance: S1 says the roof and dock leveler program finished on June 30 and S10 says the remaining depot repairs are scheduled to finish in August. Both sentences cannot be true about the same program.",
+    "Account 6200 repairs and maintenance: a roof and dock leveler program is capital work, not repairs expense. The $77,600 and 189.3 percent movement needs to be tested against the capitalisation policy before it is left sitting in operating expense.",
+    "Account 7100 interest expense: S7 attributes the $31,200 rise to depot equipment additions that also sit in depreciation, but account 7000 depreciation is flat at $128,000 with zero movement. The additions the sentence leans on are not in these numbers, and a 51 percent rise in interest looks like revolver borrowing.",
+    "Account 6000 warehouse wages rose $72,500 or 11.5 percent, is starred as passing both legs of the threshold, and no sentence in the memo mentions it anywhere.",
+    "Account 4200 freight billed to customers fell $65,000 or 34.9 percent, is starred, and has no driver. S5 speaks of both revenue lines when there are three, and the one it leaves out is the one that fell.",
+    "Account 6100 fleet fuel: S8 says two June invoices totaling $19,400 arrived after close and will be recorded in July. Those costs belong in June and should be accrued, which turns the reported $5,200 decline into a $14,200 increase, and the $19,400 appears nowhere in the table.",
+    "Account 4000 distribution revenue: S4 credits continued customer demand across all four depots while S5 credits the Tri-State depot ramp for the growth in the revenue lines. The two drivers contradict each other on the same movement.",
+    "Account 6300 software subscriptions: a $1,600 movement that fails both legs of the threshold gets the longest and most detailed sentence in the memo, down to prorated seats and the annual plan discount, while account 4200 and account 6000 get nothing.",
+    "Account 6500 professional fees: S12 writes commentary on a $7,500 movement while conceding in the same sentence that it fails the dollar leg, which is more space spent on a line that needed none."
+  ],
+  "confidence": 78,
+  "soundness": 3
+}

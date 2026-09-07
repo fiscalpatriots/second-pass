@@ -1,0 +1,17 @@
+{
+  "findings": [
+    "Account 6200 Repairs and maintenance, depots: S1 says the roof and dock leveler program finished on June 30 while S10 says the remaining depot repairs are scheduled to finish in August and that spend is not yet in the numbers; both cannot be true of the same $77,600 movement",
+    "Account 6400 Bad debt expense: S2 says the increase was $42,000, but $62,000 less $15,000 is $47,000, so the memo understates the Coastal Grocers reserve movement by $5,000",
+    "Account 5100 Inbound freight: S6 says inbound freight declined to $287,800 on easing carrier fuel surcharges, but $214,000 to $287,800 is a $73,800 increase, up 34.5 percent, so the direction and the driver are both backwards",
+    "Account 4200 Freight billed to customers fell $65,000, 34.9 percent, clears both legs of the threshold, and no sentence in the memo explains it; S5 speaks of both revenue lines and simply skips the third one",
+    "Account 4100 Service revenue: S9 says $84,000 of annual maintenance plans billed in June and covering the twelve months to May 2027 were all recognised in June, so roughly $77,000 belongs in deferred revenue and the $229,000 movement on the account is overstated",
+    "Account 6000 Warehouse wages rose $72,500, 11.5 percent, clears both legs of the threshold, and there is no driver for it anywhere in the commentary",
+    "Account 7100 Interest expense: S7 attributes the $31,200 rise to depot equipment additions that also sit in depreciation, but account 7000 Depreciation is flat at $128,000 in both months, so the table contradicts the driver offered",
+    "Account 6100 Fleet fuel: S8 holds two June fuel invoices totalling $19,400 out of June and records them in July, so a June cost is left unaccrued and the $5,200 decline on the account is not real",
+    "Accounts 4000 and 5000, product gross margin: S11 says margin was 24 percent in both months once rounded, but May is $1,310,000 over $5,240,000, which is 25.0 percent, and June is $1,334,000 over $5,612,000, which is 23.8 percent, so margin fell 1.2 points and the stability conclusion rests entirely on rounding",
+    "Account 6300 Software subscriptions: S3 spends three clauses on a $1,600 move, 5.6 percent, that fails both legs of the threshold, while accounts 6000 and 4200 both clear the threshold and get no sentence at all",
+    "Account 4000 Product revenue, distribution: S4 credits continued customer demand across all four depots and S5 credits the Tri-State depot ramp for the same growth, which are different drivers for one $372,000 movement, and the line fails the 10 percent leg at 7.1 percent so it required no commentary in the first place"
+  ],
+  "confidence": 80,
+  "soundness": 3
+}

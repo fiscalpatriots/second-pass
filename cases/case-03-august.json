@@ -1,0 +1,219 @@
+{
+  "schema": "second-pass/case/v1",
+  "id": "case-03-august",
+  "title": "August 2026 close, distribution and service",
+  "notice": "Every figure, name and sentence in this file is invented for training. Halyard Provisioning Group does not exist. Nothing here is drawn from any real company, engagement or dataset.",
+  "company": {
+    "name": "Halyard Provisioning Group, Inc.",
+    "fictional": true,
+    "profile": "Food service distribution and equipment maintenance, four regional depots, roughly $85 million of annual revenue and 240 employees. Privately held, revolver in place, monthly close on the fifth business day."
+  },
+  "period": {
+    "current": "August 2026",
+    "prior": "July 2026"
+  },
+  "materiality": {
+    "amount": 25000,
+    "percent": 10,
+    "basis": "Accounts shown are those with activity in either month."
+  },
+  "margin_definition": "Product gross margin is account 4000 less account 5000, divided by account 4000. Supplier rebates in account 4300 are recorded as other income and are outside the margin calculation.",
+  "accounts": [
+    { "line": "4000", "name": "Product revenue, distribution", "prior": 5398000, "current": 5905000 },
+    { "line": "4100", "name": "Service revenue, equipment maintenance", "prior": 1096000, "current": 985000 },
+    { "line": "4200", "name": "Freight billed to customers", "prior": 128500, "current": 133900 },
+    { "line": "4300", "name": "Supplier rebates, other income", "prior": 42000, "current": 214000 },
+    { "line": "5000", "name": "Cost of product sold", "prior": 4131000, "current": 4612000 },
+    { "line": "5100", "name": "Inbound freight", "prior": 244300, "current": 271900 },
+    { "line": "6000", "name": "Warehouse wages", "prior": 781900, "current": 744200 },
+    { "line": "6050", "name": "Temporary labor", "prior": 34600, "current": 121400 },
+    { "line": "6100", "name": "Fleet fuel", "prior": 122800, "current": 129400 },
+    { "line": "6200", "name": "Repairs and maintenance, depots", "prior": 36400, "current": 44800 },
+    { "line": "6400", "name": "Bad debt expense", "prior": 9500, "current": 11200 },
+    { "line": "6700", "name": "Insurance", "prior": 47300, "current": 47300 },
+    { "line": "6800", "name": "Marketing and trade shows", "prior": 96400, "current": 28900 },
+    { "line": "7000", "name": "Depreciation", "prior": 128000, "current": 128000 },
+    { "line": "7100", "name": "Interest expense", "prior": 93800, "current": 106100 },
+    { "line": "7300", "name": "Legal settlement accrual", "prior": 0, "current": 185000 },
+    { "line": "7400", "name": "Inventory shrink adjustment", "prior": 71200, "current": 26400 }
+  ],
+  "subtotals": [
+    {
+      "key": "revenue_total",
+      "label": "Total revenue",
+      "lines": ["4000", "4100", "4200"],
+      "note": "Supplier rebates in account 4300 are other income and are not in this total."
+    },
+    {
+      "key": "operating_expense",
+      "label": "Operating expense",
+      "lines": ["6000", "6050", "6100", "6200", "6400", "6700", "6800", "7000", "7100", "7300", "7400"],
+      "note": "Every account from 6000 down. Cost of product sold and inbound freight are outside it."
+    }
+  ],
+  "commentary": {
+    "author": "Assistant controller, drafted with the close assistant and lightly edited",
+    "sentences": [
+      { "id": "S1", "text": "Product gross margin held at 22 percent in both July and August once rounded, so the channel mix did not move." },
+      { "id": "S2", "text": "Distribution revenue of $5,905,000 rose 9.4 percent on share gains in the independent restaurant channel." },
+      { "id": "S3", "text": "Service revenue grew $111,000 on maintenance contract renewals in the Southline territory." },
+      { "id": "S4", "text": "Three August freight invoices totaling $31,200 were posted to September because the vendor portal closed early." },
+      { "id": "S5", "text": "Temporary labor rose $86,800 to cover the summer peak at the Northgate depot." },
+      { "id": "S6", "text": "Bad debt expense rose $1,700 because one Southline account moved past ninety days, the reserve percentage for that aging bucket is unchanged at 15 percent, and the customer has since agreed a payment plan that we expect to hold." },
+      { "id": "S7", "text": "Insurance was flat at $47,300 because the policy amortises straight line to March 2027 and no endorsement was issued in the month." },
+      { "id": "S8", "text": "Warehouse wages fell 4.8 percent on the productivity program launched at the start of the month." },
+      { "id": "S9", "text": "Marketing fell $67,500 as the trade show accrual carried in July was released into August expense ahead of the September show." },
+      { "id": "S10", "text": "No new legal matters arose during August." },
+      { "id": "S11", "text": "The legal settlement accrual of $185,000 covers the delivery claim notified to the broker in August and will be reversed once the release is signed." },
+      { "id": "S12", "text": "Inventory shrink fell $44,800 because of the same warehouse productivity program that reduced warehouse wages." }
+    ]
+  },
+  "answer_key": [
+    {
+      "id": "D1",
+      "type": "rounding_flips_conclusion",
+      "tag": "amount",
+      "sentence": "S1",
+      "line": "5000",
+      "amount": 481000,
+      "counterparty": { "line": "4000", "note": "That account is the denominator in the margin definition given above the table." },
+      "claim": "The memo says product gross margin held at 22 percent in both months once rounded, so channel mix did not move.",
+      "correct": "July margin was 23.5 percent, being $1,267,000 on $5,398,000. August margin was 21.9 percent, being $1,293,000 on $5,905,000. July does not round to 22 percent at all, and the real movement is a decline of 1.6 points worth roughly $93,000 of margin at August revenue. The conclusion that mix did not move is contradicted by the numbers used to reach it.",
+      "match": { "aliases": ["5000", "4000", "gross margin", "margin", "22 percent", "22%"], "keywords": ["23.5", "21.9", "declin", "fell", "round", "not stable", "did move", "hides", "1.6", "point", "basis", "conclusion"] }
+    },
+    {
+      "id": "D2",
+      "type": "cutoff",
+      "tag": "period",
+      "sentence": "S4",
+      "line": "5100",
+      "amount": 31200,
+      "focus": { "amount": 31200, "what": "August freight invoices the memo posts to September" },
+      "claim": "The memo says August invoices were posted to September because the vendor portal closed early.",
+      "correct": "August freight is an August cost. A vendor portal date does not change the period a cost belongs to. The account moved $27,600 in the month and the deferred amount is $31,200, which is larger than the movement recorded, so August freight is understated by more than it appears to have risen unless an accrual was posted. The memo offers a system reason in place of an accounting answer.",
+      "match": { "aliases": ["5100", "31,200", "31200", "vendor portal", "invoices"], "keywords": ["accrue", "accrual", "cutoff", "cut-off", "belongs in august", "should be recorded in august", "period", "understate", "portal is not a reason"] }
+    },
+    {
+      "id": "D3",
+      "type": "immaterial_over_explained",
+      "tag": "threshold",
+      "sentence": "S6",
+      "line": "6400",
+      "amount": 1700,
+      "claim": "The memo gives bad debt expense the longest explanation in the document.",
+      "correct": "The movement is $1,700 and 17.9 percent, which clears the percentage leg and fails the dollar leg, so no commentary is due. It takes three clauses while a $172,000 rebate movement takes none, and the payment plan expectation adds a forward looking claim to a line that did not need commentary at all.",
+      "match": { "aliases": ["6400", "bad debt", "1,700", "1700", "payment plan"], "keywords": ["immaterial", "below threshold", "fails", "not material", "too much detail", "over explained", "over-explained", "disproportionate", "trivial", "forward looking"] }
+    },
+    {
+      "id": "D4",
+      "type": "reclass_as_growth",
+      "tag": "transfer",
+      "sentence": "S8",
+      "line": "6000",
+      "amount": 37700,
+      "counterparty": { "line": "6050", "note": "Both movements are at the same depot in the same month, and the memo explains only one of them." },
+      "claim": "The memo presents the fall in warehouse wages as a productivity program.",
+      "correct": "Warehouse wages fell $37,700 while temporary labor rose $86,800 at the same depot in the same month. Total labor cost rose $49,100. A cost that moved between two accounts is presented as a saving, and the memo explains only the half that looks good.",
+      "match": { "aliases": ["6000", "6050", "warehouse wages", "temporary labor", "temp labor", "productivity"], "keywords": ["moved", "shift", "reclass", "not a saving", "total labor", "49,100", "49100", "offset", "both lines", "net", "rose overall"] }
+    },
+    {
+      "id": "D5",
+      "type": "unsupported_driver",
+      "tag": "driver",
+      "sentence": "S2",
+      "line": "4000",
+      "amount": 507000,
+      "claim": "The memo attributes revenue growth to share gains in the independent restaurant channel.",
+      "correct": "Share gain is a market claim and nothing in the schedule supports it. There is no channel split, no customer count, no case volume and no market data. Growth of $507,000 in one month has no evidenced driver.",
+      "match": { "aliases": ["4000", "share gain", "independent restaurant", "distribution revenue"], "keywords": ["support", "unsupported", "evidence", "tie out", "tie-out", "no data", "market", "asserted", "how do we know", "substantiat", "channel split", "volume"] }
+    },
+    {
+      "id": "D6",
+      "type": "wrong_sign",
+      "tag": "direction",
+      "sentence": "S3",
+      "line": "4100",
+      "amount": 111000,
+      "claim": "The memo says service revenue grew $111,000.",
+      "correct": "Service revenue fell $111,000, from $1,096,000 to $985,000, a decline of 10.1 percent. The memo states a decline as growth, and the renewal story then explains a movement that did not happen.",
+      "match": { "aliases": ["4100", "service revenue", "111,000", "111000"], "keywords": ["fell", "decline", "declined", "down", "decrease", "wrong direction", "backwards", "opposite", "sign", "did not grow", "not growth"] }
+    },
+    {
+      "id": "D7",
+      "type": "missing_driver_material",
+      "tag": "driver",
+      "sentence": null,
+      "line": "4300",
+      "amount": 172000,
+      "claim": "The memo never mentions supplier rebates.",
+      "correct": "Supplier rebates rose $172,000, from $42,000 to $214,000, an increase of 410 percent. It is one of the largest movements in the month, it lands in other income, and it carries no commentary. A rebate spike of that size usually means a volume tier was reached or a prior period true-up was booked, and both change how the month should be read.",
+      "match": { "aliases": ["4300", "rebate", "rebates", "other income", "214,000", "214000", "172,000", "172000"], "keywords": ["no commentary", "not explained", "no explanation", "missing", "unexplained", "never mentioned", "not addressed", "silent", "410", "largest"] }
+    },
+    {
+      "id": "D8",
+      "type": "driver_wrong_account",
+      "tag": "classification",
+      "sentence": "S12",
+      "line": "7400",
+      "amount": 44800,
+      "counterparty": { "line": "6000", "note": "The memo offers that account's movement as the reason this one moved." },
+      "claim": "The memo explains the fall in inventory shrink by the warehouse productivity program that reduced warehouse wages.",
+      "correct": "A wage saving does not produce a shrink reduction. The two accounts measure different things: shrink is a count or costing variance and wages are a payroll cost. Warehouse wages fell only because the labour moved to temporary labor in account 6050, so the driver the memo borrows did not happen either. The $44,800 shrink reversal is unexplained, and a swing of that size after a $62,300 rise in the prior month is the first thing to ask about.",
+      "match": { "aliases": ["7400", "shrink", "inventory", "44,800", "44800", "6000", "productivity"], "keywords": ["different account", "wrong account", "does not explain", "cannot cause", "unrelated", "not a driver", "unexplained", "borrow", "count", "costing"] }
+    },
+    {
+      "id": "D9",
+      "type": "wrong_period",
+      "tag": "period",
+      "sentence": "S9",
+      "line": "6800",
+      "amount": 67500,
+      "claim": "The memo says the July trade show accrual was released into August expense ahead of the September show.",
+      "correct": "A cost for a September event belongs in September, not in July and not in August. The July treatment was wrong and moving it to August does not fix it: the amount should sit in prepaid expense until the show takes place. The memo describes a second wrong period as though it were a correction.",
+      "match": { "aliases": ["6800", "marketing", "trade show", "67,500", "67500"], "keywords": ["prepaid", "prepay", "september", "wrong period", "defer", "does not belong", "matching", "should not be in august", "still wrong", "expense recognition"] }
+    },
+    {
+      "id": "D10",
+      "type": "contradiction",
+      "tag": "contradiction",
+      "sentence": "S10",
+      "line": "7300",
+      "amount": 185000,
+      "claim": "One sentence says no new legal matters arose in August and the next books a $185,000 accrual for a claim notified in August.",
+      "correct": "S10 and S11 cannot sit in the same memo. A delivery claim notified to the broker in August is a new legal matter in August, so either S10 is false or the notification date in S11 is wrong. A reader signing this memo is signing both statements.",
+      "match": { "aliases": ["7300", "legal", "settlement", "s10", "s11"], "keywords": ["contradict", "inconsistent", "conflict", "both", "cannot", "no new matters", "which is it", "disagree", "same memo", "new matter"] }
+    }
+  ],
+  "distractors": [
+    {
+      "id": "X1",
+      "shape": "below_threshold_document",
+      "tag": "threshold",
+      "sentence": null,
+      "line": "6200",
+      "amount": 8400,
+      "text": "Depot repairs rose 23 percent and the memo does not mention them anywhere. Obtain the contractor schedule and the open purchase orders before this memo is released.",
+      "why_wrong": "The movement is $8,400 against a $25,000 threshold. It clears the percentage leg and fails the dollar leg, and the rule requires both, so no commentary is due. The reviewer should reject this challenge."
+    },
+    {
+      "id": "X2",
+      "shape": "wrong_period_named",
+      "tag": "period",
+      "sentence": null,
+      "line": "6100",
+      "amount": 6600,
+      "text": "Fleet fuel of $129,400 in August is well above the $91,200 it carried in June, so the invoice cutoff problem has repeated for a third month. Obtain the fuel card report for June, July and August.",
+      "why_wrong": "This schedule compares August to July, and July carried $122,800. June is not on this pack at all. Against the prior column the movement is $6,600, which fails both legs of the threshold, and the challenge builds its conclusion on a month the reader cannot see. The reviewer should reject this challenge."
+    },
+    {
+      "id": "X3",
+      "shape": "restates_correct_explanation",
+      "tag": "driver",
+      "sentence": "S7",
+      "line": "6700",
+      "amount": 0,
+      "text": "Insurance shows no movement at all across the two months. Ask the controller to confirm that the policy is being amortised and that no endorsement was issued, because a nil variance can hide a missed accrual.",
+      "why_wrong": "S7 states both facts, and a nil variance is exactly what a straight line policy amortisation looks like. The challenge asks back what the memo has already answered, on a movement of zero that fails both legs of the threshold. The reviewer should reject this challenge."
+    }
+  ]
+}

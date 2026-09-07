@@ -1,0 +1,12 @@
+{
+  "findings": [
+    "Account 5000 Cost of product sold: up 481,000 (11.6%), over the commentary threshold and the second-biggest dollar move on the page, but I can't find any sentence that actually explains it.",
+    "Account 4300 Supplier rebates: up 172,000, a 409.5% swing and over the commentary threshold, but there's no commentary line covering it anywhere in the draft.",
+    "Account 4100 Service revenue: S2 says it grew 82,000, but the table shows 1,096,000 down to 1,014,000, which is a decline of 82,000 (-7.5%). Same amount, wrong direction.",
+    "Account 6050 Temporary labor: S4 says it rose 68,800, but 121,400 minus 34,600 is 86,800. That's an 18,000 gap on a line that's over threshold at 250.9%.",
+    "Account 7100 Interest expense: S8 says the increase was 16,100, but 88,600 minus 76,300 is 12,300. The 16.1 percent figure is right, so it looks like the percent got reused as the dollar amount.",
+    "Accounts 4000/5000 gross margin: S11 claims margin held at 22 percent in both July and August. Recomputing, July is 1,267,000/5,398,000 = 23.5%, not 22%. Only August (1,293,000/5,905,000 = 21.9%) is close to the stated number."
+  ],
+  "confidence": 60,
+  "soundness": 2
+}

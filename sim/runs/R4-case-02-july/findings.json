@@ -1,0 +1,11 @@
+{
+  "findings": [
+    "Account 6400 bad debt expense actually fell $52,500 (from $62,000 to $9,500, -84.7%) but S3 states the reduction as $84,700 - that looks like the 84.7 percent got written down as a dollar figure instead, it is off by $32,200.",
+    "Account 6000 warehouse wages actually moved $79,400 (11.3%, from $702,500 to $781,900) but S4 states the rise as $74,900, a $4,500 gap from the table.",
+    "Account 5100 inbound freight fell $43,500 (15.1%), clears the threshold, but no sentence addresses it directly - S5 instead uses a freight-rate driver to explain account 5000 cost of product sold, even though the header says inbound freight is excluded from that account and sits on its own line.",
+    "Account 6100 fleet fuel actually rose $31,600 (34.6%, from $91,200 to $122,800) but S9 says it declined as diesel prices came off their peak - the direction is backwards from the table.",
+    "Account 6200 repairs and maintenance: S10 says the depot repair program closed in June with no further spend expected this year, but S11 describes the $36,400 of July spend as the second phase of that same program - the two sentences contradict each other."
+  ],
+  "confidence": 55,
+  "soundness": 3
+}

@@ -1,0 +1,10 @@
+{
+  "findings": [
+    "Line 4100, Service revenue, equipment maintenance: S2 says service revenue 'grew by 28,200' but the table shows the variance for this line is $229,000, not $28,200 - those two numbers don't match on the same line.",
+    "Line 5100, Inbound freight: S4 says inbound freight 'declined to $287,800' but the table shows inbound freight went from $214,000 to $287,800, which is a $73,800 increase, so 'declined' doesn't match the table.",
+    "Line 6400, Bad debt expense: S7 says bad debt expense 'increased $42,000' but the table shows the variance on that line is $47,000, a $5,000 gap from what the commentary states.",
+    "Line 6200, Repairs and maintenance, depots: S5 says the roof and dock leveler program 'finished on June 30' but S9 then says remaining depot repairs are scheduled to finish in August - those two sentences about the same repairs line seem to contradict each other."
+  ],
+  "confidence": 60,
+  "soundness": 3
+}

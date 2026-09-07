@@ -1,0 +1,19 @@
+{
+  "findings": [
+    "Account 4000 against account 5000: S1 says product gross margin held at 22 percent in both months once rounded. Recomputed, July is 1,267,000 on 5,398,000 or 23.5 percent and August is 1,293,000 on 5,905,000 or 21.9 percent, so margin fell about 1.6 points and the conclusion that channel mix did not move rests on a rounding claim that is simply not true.",
+    "Account 5000 cost of product sold rose $481,000 or 11.6 percent and is marked as passing both threshold legs, yet no sentence anywhere gives a driver for it. The only sentence in that neighbourhood, S1, is arithmetically wrong.",
+    "Account 4100 service revenue: S3 says it grew $111,000, but the table shows $1,096,000 falling to $985,000, a decline of $111,000 and 10.1 percent. The direction is reversed and the real decline has no driver at all.",
+    "Account 4300 supplier rebates moved $172,000, from $42,000 to $214,000 or 409.5 percent, and is starred as requiring commentary, but no sentence in the memo mentions it. A $172,000 swing in other income is the largest unexplained item in the pack.",
+    "Account 5100 inbound freight: S4 says three August invoices totaling $31,200 were posted to September. That figure appears nowhere in the table, and if it is right then August is understated and the true movement is $58,800 rather than the $27,600 shown. The memo describes a cutoff error and then leaves it uncorrected.",
+    "Account 6800 marketing: S9 says the July trade show accrual was released into August expense, which would push August expense up, but the line fell $67,500 from $96,400 to $28,900. Releasing an accrual in August for a show that has not happened until September is also premature on its own terms.",
+    "Account 7300 legal settlement accrual: S10 says no new legal matters arose during August and S11 says the $185,000 accrual covers a delivery claim notified to the broker in August. Both sentences cannot be true at once.",
+    "Account 6000 warehouse wages: S8 credits a productivity program for the 4.8 percent fall, but account 6050 temporary labor rose $86,800 in the same month, so total labor rose $49,100. Labor was substituted, not saved, and the stated driver does not survive the pair of lines.",
+    "Account 7400 inventory shrink: S12 attributes the $44,800 fall to the same productivity program that the temporary labor increase already undermines. There is no count, no reserve movement and no cause offered that ties shrink to warehouse hours.",
+    "Account 6400 bad debt expense: a $1,700 movement that fails the dollar leg of the threshold gets the longest sentence in the memo, including a forward looking assertion that a payment plan will hold, while account 4300 at $172,000 gets nothing.",
+    "Account 6700 insurance: S7 writes commentary on a zero variance where none is required, which again spends space that the starred lines did not get.",
+    "Account 4000: S2 attributes the 9.4 percent rise to share gains in the independent restaurant channel, which contradicts S1 in the same memo saying the channel mix did not move.",
+    "Account 7100 interest expense rose $12,300 or 13.1 percent with no comment. It fails the dollar leg so none is required, but for a revolver borrower taking on a $185,000 accrual in the same month I would want the line."
+  ],
+  "confidence": 75,
+  "soundness": 3
+}

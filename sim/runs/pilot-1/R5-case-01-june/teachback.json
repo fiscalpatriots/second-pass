@@ -1,0 +1,65 @@
+{
+  "responses": [
+    {
+      "id": "C1",
+      "verdict": "accept",
+      "reason": "Account 6300 moved $1,600 at 5.6 percent and fails both limbs of the $25,000 and 10 percent test, so it needed no sentence at all. S8 spends seat counts, mid-month proration and an annual plan discount on it, the longest sentence in the memo. What it displaced is account 6000 at $72,500 and account 4200 at $65,000, both starred and both with nothing written about them. Detail this fine on a line this small is also a tell that the preparer wrote what was easy rather than what mattered."
+    },
+    {
+      "id": "C2",
+      "verdict": "accept",
+      "reason": "The 28,200 in S2 is the 28.2 percent column with the decimal shifted and the sign dropped. Account 4100 actually moved $1,041,000 less $812,000, which is $229,000. The sentence should read that service revenue grew $229,000, or 28.2 percent, on the equipment maintenance contracts signed in the spring. As written the memo understates the movement by about $200,800, and a reader tying prose to schedule cannot make the two agree."
+    },
+    {
+      "id": "C3",
+      "verdict": "accept",
+      "reason": "The fuel was consumed in June so the cost belongs in June, and the correct entry is a debit to account 6100 fleet fuel and a credit to accrued liabilities for $19,400, reversed when the servicer invoices post in July. Invoices arriving after the books closed is precisely the condition an accrual exists to handle. The effect is not cosmetic either, since $91,200 plus $19,400 is $110,600, which turns a reported $5,200 decline into a $14,200 increase and flips the sign in the table."
+    },
+    {
+      "id": "C4",
+      "verdict": "reject",
+      "reason": "Account 6500 moved $55,000 to $47,500, a fall of $7,500 at 13.6 percent. It passes the percent test and fails the dollar test, and the policy requires both, so no driver is owed and the absence of one is not a defect. Nothing else in the file points at professional fees either. Holding a memo for a legal and audit tie-out on $7,500 while account 4200 loses $65,000 with no comment is the same misdirected effort the memo is already guilty of on software subscriptions."
+    },
+    {
+      "id": "C5",
+      "verdict": "accept",
+      "reason": "The pair is S5 and S9. S5 says the roof and dock leveler program finished on June 30, and S9 says the remaining depot repairs are scheduled to finish in August and that spend is not yet in these numbers. I believe S9, because a program with work still to run in August fits a $77,600 step better than a single completed job. It matters to the close because if the program is unfinished then June holds a stage payment and I need the contract value to size the accrual, and if it truly finished on June 30 then everything performed must be accrued whether or not it is invoiced."
+    },
+    {
+      "id": "C6",
+      "verdict": "accept",
+      "reason": "Recomputing unrounded, May margin is $1,310,000 over $5,240,000, which is exactly 25.0 percent, and June is $1,334,000 over $5,612,000, which is 23.77 percent. The conclusion does not survive at all. May is nowhere near 24 percent, margin fell about 123 basis points, and at June volume that is roughly $69,000 of gross profit gone. Mix and pricing were not stable, they moved against the company, and the rounding is what hides it. The tag on account 5000 is loose since $1,334,000 is June gross profit rather than a cost movement, but the point stands."
+    },
+    {
+      "id": "C7",
+      "verdict": "accept",
+      "reason": "Account 6400 went $15,000 to $62,000, which is $47,000, and S7 says $42,000. The difference is $5,000 and the sentence gives no home for it. The memo figure looks like the specific Coastal Grocers reserve while the account also absorbed about $5,000 of general provision, so the sentence explains part of the movement and presents it as all of it. I want the receivable balance, the aging and whether $47,000 is the full exposure or a first tranche."
+    },
+    {
+      "id": "C8",
+      "verdict": "accept",
+      "reason": "Account 6000 rose $72,500 or 11.5 percent and clears both limbs of the threshold, so a driver is owed and none was written. On roughly 240 employees an 11.5 percent step in a single month is headcount, overtime, a rate change or an accrual correction, and those have very different implications for the run rate. I would ask for headcount by depot for both months, regular against overtime hours, any wage adjustment effective date, and confirmation that no vacation or bonus accrual true-up landed in the month."
+    },
+    {
+      "id": "C9",
+      "verdict": "accept",
+      "reason": "Account 5100 rose, it did not decline. $287,800 less $214,000 is an increase of $73,800, or 34.5 percent, and S4 tells the reader the opposite. That guts the sentence twice over, because the direction is wrong and the driver is wrong with it. Easing carrier fuel surcharges would push freight down, and where fuel did ease is account 6100, which fell $5,200. The largest cost movement in the memo after product cost is left with no explanation at all."
+    },
+    {
+      "id": "C10",
+      "verdict": "accept",
+      "reason": "The other side is account 4200, freight billed to customers, which fell exactly $65,000 from $186,000 to $121,000 in the same month that account 4000 rose. If freight recovery is being bundled into product pricing rather than billed separately, then $65,000 of the $372,000 increase in account 4000 is a reclassification and not demand. Underlying product revenue growth is $307,000, or 5.9 percent rather than 7.1 percent, which matters because cost of product sold rose 8.9 percent and the gap between the two is wider than the memo admits. The challenge tags the amount to account 4000 when $65,000 is the movement on 4200, but naming the receiving side is the right way round for a transfer question."
+    },
+    {
+      "id": "C11",
+      "verdict": "reject",
+      "reason": "Account 7000 moved zero dollars and zero percent, so it fails both threshold tests and no explanation is owed. The premise is also assumed rather than observed, because the memo records no new depot assets, it records $118,600 of repairs expense in account 6200. And even if that work were capitalized, S5 puts the program finishing on June 30, so under any normal in-service convention June depreciation would properly be zero and flat is the correct answer, not the anomaly. The real question is whether a roof and dock levelers belong in repairs expense at all, and that question sits on account 6200, which is where I raised it."
+    },
+    {
+      "id": "C12",
+      "verdict": "accept",
+      "reason": "Before I accept the Tri-State depot ramp for $372,000 on account 4000 I would need revenue by depot for both months, volume against price, new customer counts with first invoice dates, and the ramp plan the depot was measured against. I have seen none of it. What I can see cuts the other way, because S1 attributes the same growth to continued demand across all four depots while S3 attributes it to one depot, and those two sentences cannot both be true. The line is also under threshold at 7.1 percent, so this driver was volunteered rather than required, and a volunteered driver still has to be supportable."
+    }
+  ],
+  "confidence": 85
+}

@@ -1,0 +1,228 @@
+{
+  "schema": "second-pass/case/v1",
+  "id": "case-02-july",
+  "title": "July 2026 close, distribution and service",
+  "notice": "Every figure, name and sentence in this file is invented for training. Halyard Provisioning Group does not exist. Nothing here is drawn from any real company, engagement or dataset.",
+  "company": {
+    "name": "Halyard Provisioning Group, Inc.",
+    "fictional": true,
+    "profile": "Food service distribution and equipment maintenance, four regional depots, roughly $85 million of annual revenue and 240 employees. Privately held, revolver in place, monthly close on the fifth business day."
+  },
+  "period": {
+    "current": "July 2026",
+    "prior": "June 2026"
+  },
+  "materiality": {
+    "amount": 25000,
+    "percent": 10,
+    "basis": "Accounts shown are those with activity in either month."
+  },
+  "margin_definition": "Product gross margin is account 4000 less account 5000, divided by account 4000. Inbound freight is excluded from cost of product sold and sits on its own line.",
+  "accounts": [
+    { "line": "4000", "name": "Product revenue, distribution", "prior": 5612000, "current": 5398000 },
+    { "line": "4100", "name": "Service revenue, equipment maintenance", "prior": 1041000, "current": 1096000 },
+    { "line": "4200", "name": "Freight billed to customers", "prior": 121000, "current": 128500 },
+    { "line": "5000", "name": "Cost of product sold", "prior": 4278000, "current": 4131000 },
+    { "line": "5100", "name": "Inbound freight", "prior": 287800, "current": 244300 },
+    { "line": "6000", "name": "Warehouse wages", "prior": 702500, "current": 781900 },
+    { "line": "6100", "name": "Fleet fuel", "prior": 91200, "current": 122800 },
+    { "line": "6200", "name": "Repairs and maintenance, depots", "prior": 118600, "current": 36400 },
+    { "line": "6300", "name": "Software subscriptions", "prior": 30100, "current": 31700 },
+    { "line": "6400", "name": "Bad debt expense", "prior": 62000, "current": 9500 },
+    { "line": "6500", "name": "Professional fees", "prior": 47500, "current": 52800 },
+    { "line": "6600", "name": "Utilities, depots", "prior": 54900, "current": 58200 },
+    { "line": "6800", "name": "Marketing and trade shows", "prior": 22000, "current": 96400 },
+    { "line": "7000", "name": "Depreciation", "prior": 128000, "current": 128000 },
+    { "line": "7100", "name": "Interest expense", "prior": 92400, "current": 93800 },
+    { "line": "7400", "name": "Inventory shrink adjustment", "prior": 8900, "current": 71200 }
+  ],
+  "subtotals": [
+    {
+      "key": "revenue_total",
+      "label": "Total revenue",
+      "lines": ["4000", "4100", "4200"],
+      "note": "The denominator for any revenue ratio in the commentary."
+    },
+    {
+      "key": "operating_expense",
+      "label": "Operating expense",
+      "lines": ["6000", "6100", "6200", "6300", "6400", "6500", "6600", "6800", "7000", "7100", "7400"],
+      "note": "Every account from 6000 down. Cost of product sold and inbound freight are outside it."
+    }
+  ],
+  "commentary": {
+    "author": "Assistant controller, drafted with the close assistant and lightly edited",
+    "sentences": [
+      { "id": "S1", "text": "Service revenue grew 5.3 percent on new maintenance contracts in the Northgate and Tri-State territories." },
+      { "id": "S2", "text": "Marketing of $96,400 relates to the regional trade show in September, which is why July is elevated against a quiet June." },
+      { "id": "S3", "text": "Bad debt expense fell 84.7 percent, a reduction of $84,700, as the Coastal Grocers reserve was released." },
+      { "id": "S4", "text": "Warehouse wages rose $74,900 on overtime in the Northgate depot during the summer volume peak." },
+      { "id": "S5", "text": "The decline in cost of product sold is driven by the renegotiated inbound freight rates that took effect on July 1." },
+      { "id": "S6", "text": "Distribution revenue of $5,398,000 was down 3.8 percent from June on the seasonal slowdown in the school nutrition accounts, which is consistent with the same month last year." },
+      { "id": "S7", "text": "Utilities at the depots rose $3,300 because the Southline meter was re-rated onto the summer demand tariff at the start of the month, the Northgate site carried two weeks of chiller load while the dock was closed, and the remaining two depots billed on the usual monthly schedule at unchanged rates." },
+      { "id": "S8", "text": "Freight billed to customers rose $7,500, which fails both legs of the threshold, and the June reclassification of customer freight billings into distribution revenue is complete." },
+      { "id": "S9", "text": "Fleet fuel declined $31,600 as diesel prices came off their June peak." },
+      { "id": "S10", "text": "The depot repair program closed in June and no further repair spend is expected this year." },
+      { "id": "S11", "text": "Repairs of $36,400 in July are the second phase of the dock program at the Southline depot." },
+      { "id": "S12", "text": "The July invoice for interim review fieldwork, roughly $12,800, will arrive in August and be recorded then, which is consistent with our normal practice." }
+    ]
+  },
+  "answer_key": [
+    {
+      "id": "D1",
+      "type": "percent_as_absolute",
+      "tag": "amount",
+      "sentence": "S3",
+      "line": "6400",
+      "amount": 52500,
+      "claim": "The memo says bad debt expense fell 84.7 percent, a reduction of $84,700.",
+      "correct": "The percentage is right and the dollar figure is not. Bad debt expense fell $52,500, from $62,000 to $9,500. The memo has restated the percentage as a dollar amount and overstated the reduction by $32,200. A release larger than the account's opening balance is not possible.",
+      "match": { "aliases": ["6400", "bad debt", "84,700", "84700"], "keywords": ["52,500", "52500", "percent", "percentage", "not dollars", "dollar", "amount", "confus", "mixed", "does not agree", "impossible", "larger than"] }
+    },
+    {
+      "id": "D2",
+      "type": "missing_driver_material",
+      "tag": "driver",
+      "sentence": null,
+      "line": "7400",
+      "amount": 62300,
+      "claim": "The memo never mentions the inventory shrink adjustment.",
+      "correct": "Inventory shrink rose $62,300, from $8,900 to $71,200, an increase of 700 percent. It is the largest percentage movement in the month, it clears both legs of the threshold, and it carries no commentary. A shrink movement of that size normally means a count variance, a theft issue or a costing error, and it is the first thing a reviewer should ask about.",
+      "match": { "aliases": ["7400", "shrink", "inventory", "71,200", "71200", "62,300", "62300"], "keywords": ["no commentary", "not explained", "no explanation", "missing", "unexplained", "never mentioned", "not addressed", "silent", "700", "largest"] }
+    },
+    {
+      "id": "D3",
+      "type": "immaterial_over_explained",
+      "tag": "threshold",
+      "sentence": "S7",
+      "line": "6600",
+      "amount": 3300,
+      "claim": "The memo gives depot utilities the longest explanation in the document.",
+      "correct": "The movement is $3,300 and 6.0 percent, which fails both legs of the threshold. It takes three clauses and names every depot, while a $62,300 shrink movement takes none. Effort is pointed at the wrong line.",
+      "match": { "aliases": ["6600", "utilities", "3,300", "3300"], "keywords": ["immaterial", "below threshold", "fails", "not material", "too much detail", "over explained", "over-explained", "disproportionate", "waste", "trivial"] }
+    },
+    {
+      "id": "D4",
+      "type": "wrong_sign",
+      "tag": "direction",
+      "sentence": "S9",
+      "line": "6100",
+      "amount": 31600,
+      "claim": "The memo says fleet fuel declined $31,600.",
+      "correct": "Fleet fuel rose $31,600, from $91,200 to $122,800, an increase of 34.6 percent. The amount is right and the direction is backwards. Part of the rise is the June invoices the June memo said would land in July.",
+      "match": { "aliases": ["6100", "fleet fuel", "fuel", "31,600", "31600"], "keywords": ["rose", "increase", "increased", "up", "higher", "wrong direction", "backwards", "opposite", "sign", "did not decline", "not a decline"] }
+    },
+    {
+      "id": "D5",
+      "type": "driver_wrong_account",
+      "tag": "classification",
+      "sentence": "S5",
+      "line": "5000",
+      "amount": 147000,
+      "counterparty": { "line": "5100", "note": "The margin definition above the table puts that account outside cost of product sold." },
+      "claim": "The memo explains the fall in cost of product sold by renegotiated inbound freight rates.",
+      "correct": "Inbound freight is account 5100 and it is not inside cost of product sold. The freight saving is $43,500 and sits on its own line, which is under a third of the $147,000 fall it is offered to explain. The movement in cost of product sold is unexplained, and the driver named belongs to a different account.",
+      "match": { "aliases": ["5000", "5100", "cost of product sold", "cogs", "inbound freight"], "keywords": ["different account", "wrong account", "separate line", "does not explain", "not in cogs", "not part of", "43,500", "43500", "unexplained", "belongs to", "outside"] }
+    },
+    {
+      "id": "D6",
+      "type": "contradiction",
+      "tag": "contradiction",
+      "sentence": "S10",
+      "line": "6200",
+      "amount": 82200,
+      "claim": "One sentence says no further repair spend is expected and the next reports July repairs as phase two of the dock program.",
+      "correct": "S10 and S11 cannot both be true. If phase two is running, the program did not close in June and further spend is expected, which also means the June statement that the program had finished was wrong and any June accrual has to be revisited.",
+      "match": { "aliases": ["6200", "repairs", "maintenance", "s10", "s11"], "keywords": ["contradict", "inconsistent", "conflict", "both", "cannot", "closed", "phase two", "second phase", "which is it", "disagree"] }
+    },
+    {
+      "id": "D7",
+      "type": "reclass_as_growth",
+      "tag": "transfer",
+      "sentence": "S1",
+      "line": "4100",
+      "amount": 55000,
+      "counterparty": { "line": "6200", "note": "Neither sentence in the memo mentions a transfer between the two." },
+      "claim": "The memo presents service revenue growth as new maintenance contracts.",
+      "correct": "Depot repair labor of $38,000 was recharged out of account 6200 and into service revenue this month. That is roughly two thirds of the $55,000 movement, and it is also part of why repairs fell. Neither line discloses the transfer, so an internal cost recharge is presented as external demand.",
+      "match": { "aliases": ["4100", "6200", "service revenue", "38,000", "38000", "recharge"], "keywords": ["reclass", "moved", "shift", "recharge", "internal", "not growth", "not new contracts", "offset", "transfer", "both lines"] }
+    },
+    {
+      "id": "D8",
+      "type": "wrong_period",
+      "tag": "period",
+      "sentence": "S2",
+      "line": "6800",
+      "amount": 74400,
+      "claim": "The memo explains July marketing expense by a September trade show.",
+      "correct": "A cost incurred for a September event does not belong in July expense. It should sit in prepaid expense and release in September. The memo names the wrong period as the reason the account is elevated, and offers that as the explanation rather than as the exception it is.",
+      "match": { "aliases": ["6800", "marketing", "trade show", "96,400", "96400"], "keywords": ["prepaid", "prepay", "september", "wrong period", "defer", "does not belong", "matching", "should not be in july", "expense recognition"] }
+    },
+    {
+      "id": "D9",
+      "type": "cutoff",
+      "tag": "period",
+      "sentence": "S12",
+      "line": "6500",
+      "amount": 12800,
+      "focus": { "amount": 12800, "what": "July fieldwork the memo defers into August" },
+      "claim": "The memo says a July cost will land in August and calls that normal practice.",
+      "correct": "Fieldwork performed in July is a July cost. Calling the practice normal does not make it right. The account moved only $5,300 in the month, so the deferred amount is more than twice the recorded movement, and July professional fees are understated by roughly $12,800 unless an accrual was posted. The memo should say whether one was.",
+      "match": { "aliases": ["6500", "12,800", "12800", "professional fees", "fieldwork", "interim review"], "keywords": ["accrue", "accrual", "cutoff", "cut-off", "belongs in july", "should be recorded in july", "period", "understate", "not normal", "practice is wrong"] }
+    },
+    {
+      "id": "D10",
+      "type": "mismatched_amount",
+      "tag": "amount",
+      "sentence": "S4",
+      "line": "6000",
+      "amount": 79400,
+      "claim": "The memo says warehouse wages rose $74,900.",
+      "correct": "Warehouse wages rose $79,400, from $702,500 to $781,900. The memo cites $74,900, which is $4,500 short and is the June interest expense balance carried across from account 7100.",
+      "match": { "aliases": ["6000", "warehouse wages", "wages", "74,900", "74900"], "keywords": ["79,400", "79400", "does not agree", "disagree", "mismatch", "wrong amount", "differ", "tie", "interest", "swapped", "4,500", "4500"] }
+    },
+    {
+      "id": "D11",
+      "type": "unsupported_driver",
+      "tag": "driver",
+      "sentence": "S6",
+      "line": "4000",
+      "amount": 214000,
+      "claim": "The memo attributes the revenue decline to school nutrition seasonality and to a prior year comparison.",
+      "correct": "Neither claim is supported. There is no customer or channel split showing school nutrition volume, and no prior year column exists in this schedule, so the comparison cannot be checked from anything provided.",
+      "match": { "aliases": ["4000", "school nutrition", "distribution revenue", "seasonal"], "keywords": ["support", "unsupported", "evidence", "tie out", "tie-out", "prior year", "last year", "no data", "cannot check", "not in the schedule", "substantiat", "asserted"] }
+    }
+  ],
+  "distractors": [
+    {
+      "id": "X1",
+      "shape": "wrong_period_named",
+      "tag": "period",
+      "sentence": null,
+      "line": "5100",
+      "amount": 43500,
+      "text": "Inbound freight of $244,300 is above the $214,000 it carried in May, so the renegotiated carrier rates have not taken effect. Obtain the signed rate card and a May to July comparison before the memo is released.",
+      "why_wrong": "This schedule compares July to June, and June carried $287,800. May is not on this pack at all. Against the prior column freight fell $43,500, so the challenge reaches its conclusion from a figure the reader cannot see and a month the schedule does not carry. The reviewer should reject this challenge, and the real question about freight sits on account 5000."
+    },
+    {
+      "id": "X2",
+      "shape": "restates_correct_explanation",
+      "tag": "threshold",
+      "sentence": "S8",
+      "line": "4200",
+      "amount": 7500,
+      "text": "Freight billed to customers rose $7,500 and the memo says last month's reclassification is complete. Ask the controller to confirm that it is complete and to produce the entry that closed it.",
+      "why_wrong": "S8 states both facts and the table supports them. The movement is $7,500, which fails both legs of the threshold, and the account has returned to a normal run rate after June. The challenge asks back exactly what the memo has already answered. The reviewer should reject this challenge."
+    },
+    {
+      "id": "X3",
+      "shape": "bad_recomputation",
+      "tag": "amount",
+      "sentence": null,
+      "line": "6300",
+      "amount": 16000,
+      "text": "Software subscriptions rose from $30,100 to $31,700, an increase of $16,000 and 53 percent, which clears both legs of the threshold, and no seat count is given anywhere in the memo.",
+      "why_wrong": "The arithmetic is wrong by a factor of ten. The movement is $1,600 and 5.3 percent, which fails both legs, so no commentary is due and no seat count is owed. A reviewer who subtracts the two balances rejects this in one line. The reviewer should reject this challenge."
+    }
+  ]
+}

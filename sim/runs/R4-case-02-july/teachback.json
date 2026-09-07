@@ -1,0 +1,20 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Utilities only moved $3,300 which fails the dollar leg on its own, so the three part meter story in S7 was not required and used space that could have gone to inventory shrink instead."},
+    {"id": "C2", "verdict": "accept", "reason": "Twelve thousand eight hundred of July fieldwork is being pushed into August while the account only shows a five thousand three hundred increase, so properly matched professional fees would be up more than reported for July."},
+    {"id": "C3", "verdict": "reject", "reason": "This case only runs June to July, there is no May column in this table, the account actually fell from $287,800 in June to $244,300 in July, a decline consistent with better rates, not evidence the rates failed."},
+    {"id": "C4", "verdict": "accept", "reason": "The header says inbound freight sits outside cost of product sold on its own line, so crediting renegotiated freight rates for the $147,000 drop in cost of product sold is borrowing a driver that belongs to account 5100, not this one."},
+    {"id": "C5", "verdict": "accept", "reason": "The table takes warehouse wages from $702,500 to $781,900, that is $79,400, but S4 says $74,900, a $4,500 gap that should tie to an overtime or payroll register and does not."},
+    {"id": "C6", "verdict": "accept", "reason": "Booking $96,400 in July for a trade show that does not happen until September puts most of that cost two months ahead of the event it relates to, so this belongs closer to September, not sitting whole in July's expense."},
+    {"id": "C7", "verdict": "accept", "reason": "Two hundred fourteen thousand is the biggest line in the whole memo and S6 just repeats the seasonality claim a second way without a customer count or a prior year number in front of me, I would want that before signing this one."},
+    {"id": "C8", "verdict": "accept", "reason": "Inventory shrink moved $62,300 at 700 percent, clears both legs of the threshold easily, and nothing in the memo names a driver for it, I would want the cycle count detail before this can be released, I should have caught this one myself on the first pass."},
+    {"id": "C9", "verdict": "reject", "reason": "Software subscriptions actually moved $1,600 not $16,000, and 5.3 percent not 53 percent, both figures in this challenge are a tenfold slip, at the real numbers it fails both legs and no seat count is owed."},
+    {"id": "C10", "verdict": "reject", "reason": "Service revenue is a customer maintenance contract line against an internal facility repair expense line, S1 already gives its own contract driver, and nothing about the accounts or the dollar amounts suggests money moving between the two."},
+    {"id": "C11", "verdict": "reject", "reason": "Freight billed to customers only moved $7,500 which fails both legs on its own, so while I would want the reclass note explained given the much bigger distribution revenue line, a formal closing entry for this small line by itself is not owed under the threshold rule."},
+    {"id": "C12", "verdict": "accept", "reason": "Eighty four point seven percent got carried into the sentence as if it were the dollar change, the real movement from $62,000 to $9,500 is $52,500, and that thirty two thousand two hundred dollar gap should have been caught before release."},
+    {"id": "C13", "verdict": "accept", "reason": "The table goes from $91,200 up to $122,800, that is a rise of $31,600, so the account actually went up and S9's decline story about diesel prices easing has the direction backwards."},
+    {"id": "C14", "verdict": "accept", "reason": "S10 says the depot repair program closed in June with no further spend expected this year, while S11 books $36,400 of July spend as a second phase of that same program, those two cannot both stand."}
+  ],
+  "findings": [],
+  "confidence": 76
+}

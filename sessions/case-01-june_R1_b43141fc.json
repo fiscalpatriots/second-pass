@@ -1,0 +1,833 @@
+{
+  "schema": "second-pass/session/v1",
+  "session_id": "case-01-june_R1_b43141fc",
+  "tool_version": "1.0.0",
+  "case_id": "case-01-june",
+  "case_file": "case-01-june.json",
+  "reviewer": "R1",
+  "started_at": "2026-09-05T06:23:27Z",
+  "ended_at": "2026-09-05T06:31:35Z",
+  "state": "finished",
+  "challenger": {
+    "prompt_id": "second-pass/challenger",
+    "prompt_version": 2,
+    "prompt_file": "prompts/challenger.v2.md",
+    "keys": {
+      "ANTHROPIC_API_KEY": "absent",
+      "OPENAI_API_KEY": "absent"
+    },
+    "provider_requested": "auto",
+    "provider_used": "deterministic",
+    "model": null,
+    "dropped": [],
+    "fallback_reason": null,
+    "challenge_count": 14
+  },
+  "challenges": [
+    {
+      "id": "C1",
+      "line": "4200",
+      "account": "Freight billed to customers",
+      "amount": 6500.0,
+      "sentence": null,
+      "citation": "Account 4200 Freight billed to customers, movement $6,500, tag amount",
+      "question": "Freight billed to customers fell from $186,000 to $121,000, a decrease of $6,500 and 3.5 percent. Both legs of the threshold fail, so no commentary is owed on this line. Say whether you agree that nothing is owed here.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "distractor",
+        "ref": "X2",
+        "type": "weak_challenge",
+        "shape": "bad_recomputation"
+      }
+    },
+    {
+      "id": "C2",
+      "line": "6200",
+      "account": "Repairs and maintenance, depots",
+      "amount": 77600.0,
+      "sentence": "S1",
+      "citation": "Account 6200 Repairs and maintenance, depots, movement $77,600, sentence S1, tag contradiction",
+      "question": "Two sentences in this memo cannot both be true about account 6200 Repairs and maintenance, depots and its movement of $77,600. Name the pair, say which one you believe, and say why the difference matters to the close.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D2",
+        "type": "contradiction"
+      }
+    },
+    {
+      "id": "C3",
+      "line": "5100",
+      "account": "Inbound freight",
+      "amount": 73800.0,
+      "sentence": "S6",
+      "citation": "Account 5100 Inbound freight, movement $73,800, sentence S6, tag direction",
+      "question": "Account 5100 Inbound freight moved $73,800 over the month, and Sentence S6 states that movement in the other direction. Recompute it from the table, say which way the account actually went, and say what that does to the sentence.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D4",
+        "type": "wrong_sign"
+      }
+    },
+    {
+      "id": "C4",
+      "line": "4100",
+      "account": "Service revenue, equipment maintenance",
+      "amount": 229000.0,
+      "sentence": "S9",
+      "citation": "Account 4100 Service revenue, equipment maintenance, movement $229,000, sentence S9, tag period",
+      "question": "Sentence S9 ties activity on account 4100 Service revenue, equipment maintenance to a period other than the one the $229,000 movement was recorded in. Say which period the amount belongs in and what the entry should have been. The memo puts $84,000 in play as annual maintenance plans billed in June and covering twelve months, all of it taken to revenue in June, which is inside the movement recorded on the account.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D6",
+        "type": "wrong_period"
+      }
+    },
+    {
+      "id": "C5",
+      "line": "6500",
+      "account": "Professional fees",
+      "amount": 7500.0,
+      "sentence": "S12",
+      "citation": "Account 6500 Professional fees, movement $7,500, sentence S12, tag driver",
+      "question": "Professional fees moved $7,500 and the memo attributes it to audit fee timing. Ask the controller to confirm which month carried the annual audit fee and to produce the engagement letter before the memo is released.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "distractor",
+        "ref": "X3",
+        "type": "weak_challenge",
+        "shape": "restates_correct_explanation"
+      }
+    },
+    {
+      "id": "C6",
+      "line": "7400",
+      "account": "Inventory shrink adjustment",
+      "amount": 2500.0,
+      "sentence": null,
+      "citation": "Account 7400 Inventory shrink adjustment, movement $2,500, tag threshold",
+      "question": "Inventory shrink rose from $6,400 to $8,900, a 39 percent movement, and the memo does not mention it anywhere. Obtain the June cycle count file and the write-off detail before this memo is released.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "distractor",
+        "ref": "X1",
+        "type": "weak_challenge",
+        "shape": "below_threshold_document"
+      }
+    },
+    {
+      "id": "C7",
+      "line": "4000",
+      "account": "Product revenue, distribution",
+      "amount": 372000.0,
+      "sentence": "S5",
+      "citation": "Account 4000 Product revenue, distribution, movement $372,000, sentence S5, tag driver",
+      "question": "Sentence S5 names a driver for the $372,000 movement on account 4000 Product revenue, distribution without citing anything that supports it. Say whether you have seen that support, and what you would ask for before the memo is released.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D10",
+        "type": "unsupported_driver"
+      }
+    },
+    {
+      "id": "C8",
+      "line": "6400",
+      "account": "Bad debt expense",
+      "amount": 47000.0,
+      "sentence": "S2",
+      "citation": "Account 6400 Bad debt expense, movement $47,000, sentence S2, tag amount",
+      "question": "The amount in Sentence S2 does not agree with account 6400 Bad debt expense, which moved $47,000. State the difference and say where the figure in the memo came from.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D9",
+        "type": "mismatched_amount"
+      }
+    },
+    {
+      "id": "C9",
+      "line": "6100",
+      "account": "Fleet fuel",
+      "amount": 5200.0,
+      "sentence": "S8",
+      "citation": "Account 6100 Fleet fuel, movement $5,200, sentence S8, tag period",
+      "question": "Sentence S8 places activity on account 6100 Fleet fuel in a later month than the one it relates to. The account moved $5,200 in total. State the correct period and the entry that should have been posted. The memo puts $19,400 in play as June fuel invoices the memo defers into July, which is larger than the movement recorded on the account.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D8",
+        "type": "cutoff"
+      }
+    },
+    {
+      "id": "C10",
+      "line": "6300",
+      "account": "Software subscriptions",
+      "amount": 1600.0,
+      "sentence": "S3",
+      "citation": "Account 6300 Software subscriptions, movement $1,600, sentence S3, tag threshold",
+      "question": "Account 6300 Software subscriptions moved $1,600. Test that movement against both legs of the threshold, then say whether Sentence S3 should be in the memo at all and what it displaced.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D5",
+        "type": "immaterial_over_explained"
+      }
+    },
+    {
+      "id": "C11",
+      "line": "6000",
+      "account": "Warehouse wages",
+      "amount": 72500.0,
+      "sentence": null,
+      "citation": "Account 6000 Warehouse wages, movement $72,500, tag driver",
+      "question": "Account 6000 Warehouse wages moved $72,500 and the commentary never mentions it. Test that movement against both legs of the threshold, then say why a movement of that size cannot be released without a driver and what you would ask for.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D1",
+        "type": "missing_driver_material"
+      }
+    },
+    {
+      "id": "C12",
+      "line": "4000",
+      "account": "Product revenue, distribution",
+      "amount": 372000.0,
+      "sentence": "S4",
+      "citation": "Account 4000 Product revenue, distribution, movement $372,000, sentence S4, tag transfer",
+      "question": "Account 4000 Product revenue, distribution moved $372,000, and Sentence S4 presents that as an operating change. Say how much of it is a transfer between the two accounts named in this challenge and what is left once you take the transfer out. Account 4200 Freight billed to customers moved $65,000 in the opposite direction. Neither sentence in the memo mentions a transfer between the two.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D7",
+        "type": "reclass_as_growth"
+      }
+    },
+    {
+      "id": "C13",
+      "line": "5000",
+      "account": "Cost of product sold",
+      "amount": 348000.0,
+      "sentence": "S11",
+      "citation": "Account 5000 Cost of product sold, movement $348,000, sentence S11, tag amount",
+      "question": "Sentence S11 reaches a conclusion from rounded figures, and account 5000 Cost of product sold moved $348,000 in the period it covers. Recompute the ratio unrounded for both months and say whether the conclusion survives. Account 4000 Product revenue, distribution moved $372,000 in the same direction. That account is the denominator in the margin definition given above the table.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D11",
+        "type": "rounding_flips_conclusion"
+      }
+    },
+    {
+      "id": "C14",
+      "line": "7100",
+      "account": "Interest expense",
+      "amount": 31200.0,
+      "sentence": "S7",
+      "citation": "Account 7100 Interest expense, movement $31,200, sentence S7, tag classification",
+      "question": "Sentence S7 explains the $31,200 movement on account 7100 Interest expense using a driver that belongs to a different account. Name the account the driver actually affects and say what is left unexplained. Account 7000 Depreciation moved $0 over the same month. The memo offers that account as the reason this one moved.",
+      "source": "deterministic",
+      "truth": {
+        "kind": "defect",
+        "ref": "D3",
+        "type": "driver_wrong_account"
+      }
+    }
+  ],
+  "commitments": [
+    "Account 6200 depot repairs is confusing: S1 says the roof and dock leveler program finished on June 30, but S10 says the remaining depot repairs are scheduled to finish in August, so it isn't clear if the $118,600 is the whole project",
+    "Account 5100 inbound freight rose $73,800 to $287,800 per the table, but S6 says freight declined",
+    "Account 4200 freight billed to customers dropped $65,000 which is 34.9% and is starred for commentary, but there is no sentence about it, S5 only talks about two revenue lines growing",
+    "Account 6000 warehouse wages moved $72,500 which is 11.5% and is starred, but nothing in the memo explains why wages went up",
+    "Account 7100 interest expense: S7 says it comes from depot equipment additions that also sit in depreciation, but account 7000 depreciation shows zero variance for the month"
+  ],
+  "aided_findings": [],
+  "teachbacks": {
+    "C1": {
+      "verdict": "reject",
+      "reason": "The table shows account 4200 fell $65,000 and 34.9 percent, not the $6,500 and 3.5 percent this challenge cites, so the conclusion is wrong too.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C2": {
+      "verdict": "accept",
+      "reason": "S1 says the repair program finished June 30 but S10 calls part of it remaining work due in August, so the two sentences cannot both be true.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C3": {
+      "verdict": "accept",
+      "reason": "The table has account 5100 going from $214,000 to $287,800, which is an increase, so S6 saying it declined looks backwards to me.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C4": {
+      "verdict": "accept",
+      "reason": "S9 says the $84,000 covers twelve months to May 2027 but books all of it as June revenue, which does not sound like where it belongs.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C5": {
+      "verdict": "reject",
+      "reason": "S12 already states that professional fees fails the dollar leg of the threshold, so I do not think an engagement letter is needed for something that small.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C6": {
+      "verdict": "reject",
+      "reason": "Inventory shrink only moved $2,500 against a $25,000 threshold, so asking for the cycle count file on a line this size seems like more than is owed.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C7": {
+      "verdict": "accept",
+      "reason": "S5 names the Tri-State depot ramp as the reason for the $372,000 change without a schedule, contract, or rate change behind it anywhere in the memo.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C8": {
+      "verdict": "accept",
+      "reason": "S2 states bad debt increased $42,000 but the table shows account 6400 moving $47,000, and those two figures do not agree with each other.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C9": {
+      "verdict": "accept",
+      "reason": "S8 mentions $19,400 of fuel invoices pushed into July, which is larger than the $5,200 the account shows for the whole month, so June looks light.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C10": {
+      "verdict": "accept",
+      "reason": "Software subscriptions moved only $1,600 on 5.6 percent, which fails both legs of the threshold, so S3 probably should not be a full sentence in this memo.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C11": {
+      "verdict": "accept",
+      "reason": "Warehouse wages moved $72,500, which clears both the dollar and percent threshold, and I cannot find a sentence anywhere that explains what drove it.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C12": {
+      "verdict": "accept",
+      "reason": "Account 4000 rose $372,000 the same month account 4200 fell $65,000, and neither sentence says whether freight billing moved into product revenue.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C13": {
+      "verdict": "accept",
+      "reason": "S11 rounds both months to 24 percent, and if May was actually nearer 25 before rounding, the stable mix and pricing story does not hold up the same way.",
+      "at": "2026-09-05T06:31:35Z"
+    },
+    "C14": {
+      "verdict": "accept",
+      "reason": "S7 blames the $31,200 interest increase on equipment that also sits in depreciation, but account 7000 shows zero variance, so depreciation does not back that up.",
+      "at": "2026-09-05T06:31:35Z"
+    }
+  },
+  "confidence": {
+    "unaided": 60.0,
+    "aided": 60.0,
+    "soundness_rating": 4,
+    "post_teachback": 80.0
+  },
+  "timing": {
+    "seconds_phase_1": 226,
+    "seconds_phase_2": 261
+  },
+  "scores": {
+    "case_id": "case-01-june",
+    "reviewer": "R1",
+    "defects_present": 11,
+    "caught_unaided": 3,
+    "caught_aided": 11,
+    "caught_unaided_ids": [
+      "D2",
+      "D4",
+      "D1"
+    ],
+    "caught_aided_ids": [
+      "D2",
+      "D4",
+      "D1",
+      "D6",
+      "D10",
+      "D9",
+      "D8",
+      "D5",
+      "D7",
+      "D11",
+      "D3"
+    ],
+    "missed_ids": [],
+    "catch_rate_unaided": 27.3,
+    "catch_rate_aided": 100.0,
+    "lift": 72.7,
+    "false_challenges_unaided": 2,
+    "findings_outside_key": 2,
+    "findings_outside_key_matched_weak": 1,
+    "findings_outside_key_unadjudicated": 1,
+    "precision_unaided": 60.0,
+    "precision_basis": "against the answer key",
+    "catch_ceiling_unaided": false,
+    "confidence_unaided": 60.0,
+    "confidence_aided": 60.0,
+    "confidence_gap_unaided": 32.7,
+    "confidence_gap_aided": -40.0,
+    "soundness_rating": 4,
+    "seconds_phase_1": 226,
+    "seconds_phase_2": 261,
+    "challenges_shown": 14,
+    "teachbacks_answered": 14,
+    "teachback_completeness": 100.0,
+    "teachback_accuracy": 100.0,
+    "distractors_shown": 3,
+    "distractors_rejected": 3,
+    "min_reason_words": 8
+  },
+  "match_trail": {
+    "unaided": [
+      {
+        "index": 0,
+        "text": "Account 6200 depot repairs is confusing: S1 says the roof and dock leveler program finished on June 30, but S10 says the remaining depot repairs are scheduled to finish in August, so it isn't clear if the $118,600 is the whole project",
+        "matched_defect": "D2",
+        "evidence": {
+          "defect_id": "D2",
+          "defect_type": "contradiction",
+          "alias_matched": "6200",
+          "keyword_matched": "finished",
+          "amount_matched": null,
+          "score": 1
+        }
+      },
+      {
+        "index": 1,
+        "text": "Account 5100 inbound freight rose $73,800 to $287,800 per the table, but S6 says freight declined",
+        "matched_defect": "D4",
+        "evidence": {
+          "defect_id": "D4",
+          "defect_type": "wrong_sign",
+          "alias_matched": "5100",
+          "keyword_matched": "rose",
+          "amount_matched": "73800",
+          "score": 2
+        }
+      },
+      {
+        "index": 2,
+        "text": "Account 4200 freight billed to customers dropped $65,000 which is 34.9% and is starred for commentary, but there is no sentence about it, S5 only talks about two revenue lines growing",
+        "matched_defect": null,
+        "evidence": {
+          "reason": "no defect matched",
+          "normalized": "account 4200 freight billed to customers dropped 65000 which is 34.9 and is starred for commentary but there is no sentence about it s5 only talks about two revenue lines growing"
+        },
+        "matched_distractor": "X2"
+      },
+      {
+        "index": 3,
+        "text": "Account 6000 warehouse wages moved $72,500 which is 11.5% and is starred, but nothing in the memo explains why wages went up",
+        "matched_defect": "D1",
+        "evidence": {
+          "defect_id": "D1",
+          "defect_type": "missing_driver_material",
+          "alias_matched": "6000",
+          "keyword_matched": "72,500",
+          "amount_matched": "72500",
+          "score": 2
+        }
+      },
+      {
+        "index": 4,
+        "text": "Account 7100 interest expense: S7 says it comes from depot equipment additions that also sit in depreciation, but account 7000 depreciation shows zero variance for the month",
+        "matched_defect": null,
+        "evidence": {
+          "reason": "no defect matched",
+          "normalized": "account 7100 interest expense s7 says it comes from depot equipment additions that also sit in depreciation but account 7000 depreciation shows zero variance for the month"
+        }
+      }
+    ],
+    "aided": []
+  },
+  "teachback_detail": [
+    {
+      "challenge_id": "C1",
+      "line": "4200",
+      "truth_kind": "distractor",
+      "truth_ref": "X2",
+      "verdict": "reject",
+      "reason_words": 25,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C2",
+      "line": "6200",
+      "truth_kind": "defect",
+      "truth_ref": "D2",
+      "verdict": "accept",
+      "reason_words": 27,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C3",
+      "line": "5100",
+      "truth_kind": "defect",
+      "truth_ref": "D4",
+      "verdict": "accept",
+      "reason_words": 23,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C4",
+      "line": "4100",
+      "truth_kind": "defect",
+      "truth_ref": "D6",
+      "verdict": "accept",
+      "reason_words": 26,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C5",
+      "line": "6500",
+      "truth_kind": "distractor",
+      "truth_ref": "X3",
+      "verdict": "reject",
+      "reason_words": 27,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C6",
+      "line": "7400",
+      "truth_kind": "distractor",
+      "truth_ref": "X1",
+      "verdict": "reject",
+      "reason_words": 27,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C7",
+      "line": "4000",
+      "truth_kind": "defect",
+      "truth_ref": "D10",
+      "verdict": "accept",
+      "reason_words": 26,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C8",
+      "line": "6400",
+      "truth_kind": "defect",
+      "truth_ref": "D9",
+      "verdict": "accept",
+      "reason_words": 24,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C9",
+      "line": "6100",
+      "truth_kind": "defect",
+      "truth_ref": "D8",
+      "verdict": "accept",
+      "reason_words": 26,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C10",
+      "line": "6300",
+      "truth_kind": "defect",
+      "truth_ref": "D5",
+      "verdict": "accept",
+      "reason_words": 27,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C11",
+      "line": "6000",
+      "truth_kind": "defect",
+      "truth_ref": "D1",
+      "verdict": "accept",
+      "reason_words": 24,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C12",
+      "line": "4000",
+      "truth_kind": "defect",
+      "truth_ref": "D7",
+      "verdict": "accept",
+      "reason_words": 22,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C13",
+      "line": "5000",
+      "truth_kind": "defect",
+      "truth_ref": "D11",
+      "verdict": "accept",
+      "reason_words": 29,
+      "complete": true,
+      "correct": true
+    },
+    {
+      "challenge_id": "C14",
+      "line": "7100",
+      "truth_kind": "defect",
+      "truth_ref": "D3",
+      "verdict": "accept",
+      "reason_words": 26,
+      "complete": true,
+      "correct": true
+    }
+  ],
+  "findings_outside_key": [
+    {
+      "text": "Account 4200 freight billed to customers dropped $65,000 which is 34.9% and is starred for commentary, but there is no sentence about it, S5 only talks about two revenue lines growing",
+      "matched_planted_weak": "X2",
+      "verdict": "matched a planted weak lead"
+    },
+    {
+      "text": "Account 7100 interest expense: S7 says it comes from depot equipment additions that also sit in depreciation, but account 7000 depreciation shows zero variance for the month",
+      "matched_planted_weak": null,
+      "verdict": "outside the answer key, for facilitator adjudication"
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-09-05T06:23:27Z",
+      "event": "session_opened",
+      "state": "briefing",
+      "cause": "reviewer opened case case-01-june"
+    },
+    {
+      "at": "2026-09-05T06:23:27Z",
+      "event": "simulated_session_opened",
+      "state": "briefing",
+      "cause": "a simulated reviewer opened the case through the sim driver",
+      "detail": {
+        "persona": "novice",
+        "dir": "C:\\Users\\Khaled\\Documents\\Coach Dashboard HQ\\drafts-2026-09-05-aina\\second-pass\\sim\\runs\\R1-case-01-june"
+      }
+    },
+    {
+      "at": "2026-09-05T06:27:13Z",
+      "event": "confidence_unaided_recorded",
+      "state": "phase_1_open",
+      "cause": "reviewer stated expectation before working",
+      "detail": {
+        "confidence": 60.0,
+        "soundness": 4
+      }
+    },
+    {
+      "at": "2026-09-05T06:27:13Z",
+      "event": "findings_committed",
+      "state": "phase_1_committed",
+      "cause": "reviewer sealed their unaided findings",
+      "detail": {
+        "count": 5,
+        "seconds": 226
+      }
+    },
+    {
+      "at": "2026-09-05T06:27:13Z",
+      "event": "confidence_aided_recorded",
+      "state": "confidence_2_set",
+      "cause": "reviewer stated expectation before the challenge list",
+      "detail": {
+        "confidence": 60.0
+      }
+    },
+    {
+      "at": "2026-09-05T06:27:13Z",
+      "event": "challenges_revealed",
+      "state": "challenges_revealed",
+      "cause": "commitment sealed, AI layer released",
+      "detail": {
+        "provider_used": "deterministic",
+        "challenge_count": 14,
+        "dropped": 0,
+        "fallback_reason": null
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C1",
+        "verdict": "reject",
+        "reason_words": 25
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C2",
+        "verdict": "accept",
+        "reason_words": 27
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C3",
+        "verdict": "accept",
+        "reason_words": 23
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C4",
+        "verdict": "accept",
+        "reason_words": 26
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C5",
+        "verdict": "reject",
+        "reason_words": 27
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C6",
+        "verdict": "reject",
+        "reason_words": 27
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C7",
+        "verdict": "accept",
+        "reason_words": 26
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C8",
+        "verdict": "accept",
+        "reason_words": 24
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C9",
+        "verdict": "accept",
+        "reason_words": 26
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C10",
+        "verdict": "accept",
+        "reason_words": 27
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C11",
+        "verdict": "accept",
+        "reason_words": 24
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C12",
+        "verdict": "accept",
+        "reason_words": 22
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C13",
+        "verdict": "accept",
+        "reason_words": 29
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "reviewer defended or refused a challenge in their own words",
+      "detail": {
+        "challenge_id": "C14",
+        "verdict": "accept",
+        "reason_words": 26
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "confidence_post_teachback_recorded",
+      "state": "challenges_revealed",
+      "cause": "simulated reviewer restated confidence after working the challenge list",
+      "detail": {
+        "confidence": 80.0
+      }
+    },
+    {
+      "at": "2026-09-05T06:31:35Z",
+      "event": "session_scored",
+      "state": "finished",
+      "cause": "phase two closed and the session was scored",
+      "detail": {
+        "catch_rate_unaided": 27.3,
+        "catch_rate_aided": 100.0
+      }
+    }
+  ],
+  "simulated": true,
+  "persona": "novice",
+  "sim_dir": "C:\\Users\\Khaled\\Documents\\Coach Dashboard HQ\\drafts-2026-09-05-aina\\second-pass\\sim\\runs\\R1-case-01-june"
+}

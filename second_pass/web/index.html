@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Second Pass</title>
+<style>
+  :root {
+    --ink: #16191d;
+    --muted: #5d6672;
+    --line: #d9dee5;
+    --paper: #ffffff;
+    --ground: #f4f6f8;
+    --accent: #1f4e79;
+    --warn: #8a4b00;
+    --good: #1c6b45;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  header {
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 24px;
+    display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  }
+  header h1 { font-size: 17px; margin: 0; letter-spacing: .2px; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  header .who { margin-left: auto; color: var(--muted); font-size: 13px; }
+  main { max-width: 1080px; margin: 0 auto; padding: 24px; }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+  }
+  h2 { font-size: 15px; margin: 0 0 10px; letter-spacing: .3px; text-transform: uppercase; color: var(--muted); }
+  h3 { font-size: 15px; margin: 18px 0 8px; }
+  p { margin: 0 0 12px; }
+  .rule {
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    background: #f7fafc;
+    margin-bottom: 16px;
+  }
+  .rule strong { display: block; margin-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; table-layout: fixed; }
+  th, td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; }
+  th:nth-child(1), td:nth-child(1) { text-align: left; width: 62px; }
+  th:nth-child(2), td:nth-child(2) { text-align: left; width: auto; }
+  th { color: var(--muted); font-weight: 600; border-bottom: 1px solid #b9c2cd; }
+  tr.material td { font-weight: 600; }
+  tr.material td:nth-child(2)::after { content: " *"; color: var(--warn); }
+  .sentences li { margin-bottom: 8px; }
+  .sentences .sid { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  select, input[type=number], input[type=text], textarea {
+    font: inherit; padding: 7px 9px; border: 1px solid var(--line); border-radius: 5px;
+    background: #fff; color: var(--ink); width: 100%;
+  }
+  textarea { min-height: 86px; resize: vertical; }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .row > div { flex: 1 1 200px; }
+  button {
+    font: inherit; font-weight: 600; padding: 9px 16px; border-radius: 6px;
+    border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer;
+  }
+  button.ghost { background: #fff; color: var(--accent); }
+  button[disabled] { opacity: .45; cursor: not-allowed; }
+  .finding { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+  .finding span { color: var(--muted); font-size: 13px; padding-top: 9px; width: 20px; }
+  .challenge { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin-bottom: 14px; }
+  .challenge .cite { font-size: 12.5px; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  .verdict { display: flex; gap: 10px; margin: 10px 0 8px; }
+  .verdict button { padding: 6px 14px; font-weight: 500; }
+  .verdict button.on { box-shadow: inset 0 0 0 2px var(--ink); }
+  .verdict button.reject { border-color: var(--warn); background: #fff; color: var(--warn); }
+  .verdict button.reject.on { background: var(--warn); color: #fff; }
+  .verdict button.accept { border-color: var(--good); background: #fff; color: var(--good); }
+  .verdict button.accept.on { background: var(--good); color: #fff; }
+  .note { font-size: 13px; color: var(--muted); }
+  .warnbox { background: #fff7ed; border: 1px solid #f0d3ae; border-radius: 6px; padding: 12px 14px; margin-bottom: 14px; }
+  .scorecard { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; white-space: pre-wrap; }
+  .keyitem { border-top: 1px solid var(--line); padding: 10px 0; }
+  .keyitem .tag { font-size: 12px; color: var(--warn); font-weight: 600; }
+  .hidden { display: none; }
+  .steps { display: flex; gap: 6px; font-size: 12px; color: var(--muted); margin-bottom: 16px; flex-wrap: wrap; }
+  .steps span { padding: 3px 9px; border: 1px solid var(--line); border-radius: 20px; background: #fff; }
+  .steps span.now { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .steps span.done { color: var(--good); border-color: #bfe0cd; }
+  footer { color: var(--muted); font-size: 12.5px; padding: 8px 24px 40px; max-width: 1080px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Second Pass</h1>
+  <span class="sub">Teach-back review trainer for month-end flux commentary</span>
+  <span class="who" id="who"></span>
+</header>
+<main>
+  <div class="steps" id="steps"></div>
+  <div id="screens"></div>
+</main>
+<footer id="foot"></footer>
+
+<script>
+"use strict";
+
+var S = {
+  config: null,
+  sessionId: null,
+  reviewer: null,
+  case: null,
+  challenges: [],
+  verdicts: {},
+  minWords: 8,
+  step: 0
+};
+
+var STEPS = ["Brief", "Read", "Commit", "Confidence", "Challenges", "Result"];
+
+function el(id) { return document.getElementById(id); }
+
+function api(method, path, body) {
+  return fetch(path, {
+    method: method,
+    headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined
+  }).then(function (response) {
+    return response.json().then(function (data) {
+      if (!response.ok) {
+        var error = new Error(data.error || ("HTTP " + response.status));
+        error.status = response.status;
+        error.withheld = data.withheld;
+        throw error;
+      }
+      return data;
+    });
+  });
+}
+
+function money(value) {
+  if (value === null || value === undefined) { return "n/a"; }
+  var text = "$" + Math.abs(Math.round(value)).toLocaleString("en-US");
+  return value < 0 ? "(" + text + ")" : text;
+}
+
+function percent(value) {
+  return (value === null || value === undefined) ? "n/a" : value.toFixed(1) + "%";
+}
+
+function drawSteps() {
+  el("steps").innerHTML = STEPS.map(function (name, index) {
+    var cls = index === S.step ? "now" : (index < S.step ? "done" : "");
+    return '<span class="' + cls + '">' + (index + 1) + ". " + name + "</span>";
+  }).join("");
+}
+
+function show(html) {
+  el("screens").innerHTML = html;
+  drawSteps();
+  window.scrollTo(0, 0);
+}
+
+function fail(error) {
+  var box = document.createElement("div");
+  box.className = "warnbox";
+  box.textContent = error.withheld
+    ? ("Withheld by the tool: " + error.message)
+    : ("Stopped: " + error.message);
+  el("screens").insertBefore(box, el("screens").firstChild);
+  window.scrollTo(0, 0);
+}
+
+// ------------------------------------------------------------------ screen 1
+
+function screenBrief() {
+  S.step = 0;
+  var options = S.config.cases.map(function (item) {
+    return '<option value="' + item.id + '">' + item.id + ", " + item.title
+      + " (" + item.accounts + " accounts, " + item.sentences + " sentences)</option>";
+  }).join("");
+  var reviewers = S.config.reviewers.map(function (name) {
+    return '<option value="' + name + '"' + (name === S.config.suggested_reviewer ? " selected" : "")
+      + ">" + name + "</option>";
+  }).join("");
+  show(
+    '<div class="card">' +
+      "<h2>Before you start</h2>" +
+      '<div class="rule"><strong>The rule this tool runs on</strong>' + S.config.rule + "</div>" +
+      "<p>You will read a month-end account movement schedule and the draft commentary written to " +
+      "explain it. You write down what you would challenge, and you commit that list. Only then " +
+      "does the tool show you what it produced. It cannot be persuaded to show you earlier, " +
+      "because the list does not exist until you have committed.</p>" +
+      "<p>Then you take each machine challenge and either accept it or reject it, in your own " +
+      "words. Some of them are not worth accepting. A verdict without a reason does not count.</p>" +
+      '<div class="warnbox">No name is recorded. You are a letter and a number, the data is ' +
+      "invented, and the pilot reports aggregate numbers only.</div>" +
+      '<div class="row">' +
+        "<div><label>Case</label><select id=\"caseId\">" + options + "</select></div>" +
+        "<div><label>You are</label><select id=\"reviewer\">" + reviewers + "</select></div>" +
+      "</div>" +
+      '<button id="start">Open the case</button>' +
+      '<p class="note" style="margin-top:12px">AI layer for this run: <strong>' + S.config.provider +
+      "</strong>. Prompt: " + S.config.prompt + ".</p>" +
+    "</div>"
+  );
+  el("start").onclick = function () {
+    api("POST", "/api/session", {
+      case_id: el("caseId").value,
+      reviewer: el("reviewer").value
+    }).then(function (data) {
+      S.sessionId = data.session_id;
+      S.reviewer = data.reviewer;
+      S.case = data.case;
+      el("who").textContent = "Reviewer " + data.reviewer + " . case " + data.case.id;
+      el("foot").textContent = data.case.notice;
+      screenRead();
+    }).catch(fail);
+  };
+}
+
+// ------------------------------------------------------------------ screen 2
+
+function caseHtml() {
+  var rows = S.case.accounts.map(function (row) {
+    return '<tr class="' + (row.material ? "material" : "") + '"><td>' + row.line + "</td><td>" + row.name +
+      "</td><td>" + money(row.prior) + "</td><td>" + money(row.current) +
+      "</td><td>" + money(row.variance) + "</td><td>" + percent(row.percent) + "</td></tr>";
+  }).join("");
+  var sentences = S.case.commentary.sentences.map(function (item) {
+    return '<li><span class="sid">' + item.id + "</span>" + item.text + "</li>";
+  }).join("");
+  var subtotals = "";
+  if (S.case.subtotals && S.case.subtotals.length) {
+    var subRows = S.case.subtotals.map(function (row) {
+      return "<tr><td>" + row.label + "</td><td>" + row.lines.join(" + ") +
+        "</td><td>" + money(row.prior) + "</td><td>" + money(row.current) +
+        "</td><td>" + money(row.variance) + "</td><td>" + percent(row.percent) + "</td></tr>";
+    }).join("");
+    var notes = S.case.subtotals.filter(function (row) { return row.note; }).map(function (row) {
+      return row.label + ": " + row.note;
+    }).join(" ");
+    subtotals =
+      '<p class="note" style="margin-top:14px">Subtotals, computed from the balances above, so a ' +
+      "ratio test does not require adding the lines up by hand.</p>" +
+      "<table><thead><tr><th>Subtotal</th><th>Lines</th><th>Prior</th><th>Current</th>" +
+      "<th>Variance</th><th>Percent</th></tr></thead><tbody>" + subRows + "</tbody></table>" +
+      (notes ? '<p class="note">' + notes + "</p>" : "");
+  }
+  return '<div class="card">' +
+      "<h2>" + S.case.company.name + ", " + S.case.period.current + " against " + S.case.period.prior + "</h2>" +
+      '<p class="note">' + S.case.company.profile + "</p>" +
+      '<div class="warnbox">' + S.case.materiality_rule + "</div>" +
+      '<p class="note">' + S.case.materiality.basis + " " + (S.case.margin_definition || "") + "</p>" +
+      "<table><thead><tr><th>Line</th><th>Account</th><th>Prior</th><th>Current</th>" +
+      "<th>Variance</th><th>Percent</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+      '<p class="note" style="margin-top:8px">Lines marked * pass both legs of the threshold. ' +
+      S.case.materiality_rule + "</p>" +
+      subtotals +
+      "<h3>Draft commentary from management</h3>" +
+      '<ol class="sentences" style="padding-left:18px">' + sentences + "</ol>" +
+    "</div>";
+}
+
+function screenRead() {
+  S.step = 1;
+  show(caseHtml() +
+    '<div class="card">' +
+      "<h2>Two questions before you work</h2>" +
+      "<p>Answer on instinct. These are the measurement, so they have to come before you start " +
+      "looking, and they are locked once you continue.</p>" +
+      '<div class="row">' +
+        '<div><label>How sound does this memo look, 1 poor to 5 sound</label>' +
+        '<input type="number" id="soundness" min="1" max="5" step="1" value="3"></div>' +
+        '<div><label>Of the problems in it, what percent do you expect to find</label>' +
+        '<input type="number" id="confidence" min="0" max="100" step="5" value="60"></div>' +
+      "</div>" +
+      '<button id="toPhase1">Start phase one</button>' +
+    "</div>");
+  el("toPhase1").onclick = function () {
+    api("POST", "/api/session/" + S.sessionId + "/phase1", {
+      soundness: Number(el("soundness").value),
+      confidence: Number(el("confidence").value)
+    }).then(screenCommit).catch(fail);
+  };
+}
+
+// ------------------------------------------------------------------ screen 3
+
+function findingRow(index) {
+  return '<div class="finding"><span>' + index + '</span>' +
+    '<textarea class="findingBox" placeholder="Name the account and say what is wrong with it. ' +
+    'For example: account 5100 inbound freight rose $73,800 and the memo says it fell."></textarea></div>';
+}
+
+function screenCommit() {
+  S.step = 2;
+  show(caseHtml() +
+    '<div class="card">' +
+      "<h2>Phase one, unaided</h2>" +
+      "<p>Write what you would challenge. One finding per box. Name the account, because a " +
+      "finding that does not point at a line cannot be scored, and because that is what a memo " +
+      "reviewer has to do anyway.</p>" +
+      '<div id="findings">' + findingRow(1) + findingRow(2) + findingRow(3) + "</div>" +
+      '<button class="ghost" id="more">Add another</button> ' +
+      '<button id="commit">Commit my findings</button>' +
+      '<p class="note" style="margin-top:12px">Committing seals this list. You cannot edit it ' +
+      "afterwards, and the tool will not show you anything it produced until you do.</p>" +
+    "</div>");
+  el("more").onclick = function () {
+    var box = el("findings");
+    box.insertAdjacentHTML("beforeend", findingRow(box.children.length + 1));
+  };
+  el("commit").onclick = function () {
+    var boxes = document.querySelectorAll(".findingBox");
+    var findings = [];
+    for (var i = 0; i < boxes.length; i++) {
+      if (boxes[i].value.trim()) { findings.push(boxes[i].value.trim()); }
+    }
+    if (!findings.length && !window.confirm("Commit an empty list? That is a valid answer and it will be scored as one.")) {
+      return;
+    }
+    api("POST", "/api/session/" + S.sessionId + "/commit", { findings: findings })
+      .then(function (data) { screenConfidence2(data); }).catch(fail);
+  };
+}
+
+// ------------------------------------------------------------------ screen 4
+
+function screenConfidence2(committed) {
+  S.step = 3;
+  show('<div class="card">' +
+      "<h2>Sealed</h2>" +
+      "<p>" + committed.committed + " finding(s) committed in " + committed.seconds + " seconds. " +
+      "They are now part of the record and cannot be changed.</p>" +
+      "<p>One more question before the tool speaks.</p>" +
+      '<div class="row"><div><label>Of the problems in that memo, what percent do you think you ' +
+      'just found</label><input type="number" id="confidence2" min="0" max="100" step="5" value="60"></div></div>' +
+      '<button id="reveal">Show me the challenge list</button>' +
+    "</div>");
+  el("reveal").onclick = function () {
+    api("POST", "/api/session/" + S.sessionId + "/confidence2", { confidence: Number(el("confidence2").value) })
+      .then(function () { return api("GET", "/api/session/" + S.sessionId + "/challenges"); })
+      .then(function (data) {
+        S.challenges = data.challenges;
+        S.minWords = data.min_reason_words;
+        screenTeachback(data.provider_used);
+      }).catch(fail);
+  };
+}
+
+// ------------------------------------------------------------------ screen 5
+
+function screenTeachback(provider) {
+  S.step = 4;
+  var blocks = S.challenges.map(function (challenge) {
+    return '<div class="challenge" data-id="' + challenge.id + '">' +
+      '<div class="cite">' + challenge.id + " . " + challenge.citation + "</div>" +
+      "<div>" + challenge.question + "</div>" +
+      (challenge.evidence
+        ? '<p class="note">What would count as evidence: ' + challenge.evidence + "</p>"
+        : "") +
+      '<div class="verdict">' +
+        '<button class="accept" data-v="accept" data-id="' + challenge.id + '">Accept</button>' +
+        '<button class="reject" data-v="reject" data-id="' + challenge.id + '">Reject</button>' +
+      "</div>" +
+      '<textarea class="reason" data-id="' + challenge.id + '" placeholder="In your own words: if you ' +
+      'accept it, say what is wrong and what you would ask for. If you reject it, say why it does not hold."></textarea>' +
+      '<p class="note wordnote" data-id="' + challenge.id + '">0 words. A reason under ' + S.minWords +
+      " words does not count as a teach-back.</p>" +
+    "</div>";
+  }).join("");
+  show(caseHtml() +
+    '<div class="card">' +
+      "<h2>Phase two, the challenge list</h2>" +
+      "<p>" + S.challenges.length + " challenges, produced by the <strong>" + provider +
+      "</strong> layer. The amount in each citation is the movement of the account named, " +
+      "current less prior, so you can check it against the table. Each one also carries a " +
+      "one-word tag saying what kind of test to run first. The tag says nothing about whether " +
+      "the challenge holds.</p>" +
+      '<div class="warnbox">Not all of these hold. The tool does not know which of its own ' +
+      "challenges are worth raising, and it is not entitled to your agreement. Accept the ones " +
+      "that survive your reading and reject the ones that do not, with a reason either way. " +
+      "Refusing a weak challenge with a reason scores exactly as highly as accepting a real " +
+      "one.</div>" +
+      blocks +
+      "<h3>Anything the list missed</h3>" +
+      "<p>If you can now see something neither you nor the list raised, write it here.</p>" +
+      '<div id="extra">' + findingRow(1) + "</div>" +
+      '<button class="ghost" id="moreExtra">Add another</button> ' +
+      '<button id="finish">Finish and score</button>' +
+      '<p class="note" id="outstanding" style="margin-top:12px"></p>' +
+    "</div>");
+
+  var buttons = document.querySelectorAll(".verdict button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].onclick = function (event) {
+      var id = event.target.getAttribute("data-id");
+      var verdict = event.target.getAttribute("data-v");
+      S.verdicts[id] = verdict;
+      var group = document.querySelectorAll('.verdict button[data-id="' + id + '"]');
+      for (var j = 0; j < group.length; j++) { group[j].classList.remove("on"); }
+      event.target.classList.add("on");
+      updateOutstanding();
+    };
+  }
+  var reasons = document.querySelectorAll(".reason");
+  for (var k = 0; k < reasons.length; k++) {
+    reasons[k].oninput = function (event) {
+      var id = event.target.getAttribute("data-id");
+      var words = event.target.value.split(/\s+/).filter(function (word) { return word.length; }).length;
+      var note = document.querySelector('.wordnote[data-id="' + id + '"]');
+      note.textContent = words + " words." + (words < S.minWords
+        ? " A reason under " + S.minWords + " words does not count as a teach-back."
+        : " Counted.");
+      note.style.color = words < S.minWords ? "" : "var(--good)";
+      updateOutstanding();
+    };
+  }
+  el("moreExtra").onclick = function () {
+    var box = el("extra");
+    box.insertAdjacentHTML("beforeend", findingRow(box.children.length + 1));
+  };
+  el("finish").onclick = submitAll;
+  updateOutstanding();
+}
+
+function updateOutstanding() {
+  var missing = 0;
+  S.challenges.forEach(function (challenge) {
+    if (!S.verdicts[challenge.id]) { missing++; }
+  });
+  el("outstanding").textContent = missing
+    ? (missing + " challenge(s) still have no verdict. You can finish anyway, and an unanswered " +
+       "challenge scores as an unanswered challenge.")
+    : "Every challenge has a verdict.";
+}
+
+function submitAll() {
+  var calls = [];
+  S.challenges.forEach(function (challenge) {
+    var verdict = S.verdicts[challenge.id];
+    if (!verdict) { return; }
+    var box = document.querySelector('.reason[data-id="' + challenge.id + '"]');
+    calls.push(api("POST", "/api/session/" + S.sessionId + "/teachback", {
+      challenge_id: challenge.id,
+      verdict: verdict,
+      reason: box ? box.value : ""
+    }));
+  });
+  var extras = [];
+  var boxes = el("extra").querySelectorAll(".findingBox");
+  for (var i = 0; i < boxes.length; i++) {
+    if (boxes[i].value.trim()) { extras.push(boxes[i].value.trim()); }
+  }
+  Promise.all(calls)
+    .then(function () { return api("POST", "/api/session/" + S.sessionId + "/aided", { findings: extras }); })
+    .then(function () { return api("POST", "/api/session/" + S.sessionId + "/finish", {}); })
+    .then(screenResult)
+    .catch(fail);
+}
+
+// ------------------------------------------------------------------ screen 6
+
+function screenResult(data) {
+  S.step = 5;
+  var caught = data.scores.caught_aided_ids || [];
+  var key = data.answer_key.map(function (item) {
+    var got = caught.indexOf(item.id) >= 0;
+    return '<div class="keyitem"><div class="tag">' + item.id + " . " + item.label +
+      " . account " + item.line + " . " + money(item.amount) +
+      (item.type === "weak_challenge" ? "" : (got ? " . caught" : " . missed")) + "</div>" +
+      "<div>" + item.correct + "</div></div>";
+  }).join("");
+  show('<div class="card">' +
+      "<h2>Result</h2>" +
+      '<div class="scorecard">' + data.scorecard.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</div>" +
+      '<p class="note" style="margin-top:14px">Session log: sessions/' + data.log_file +
+      ". It holds the case, your commitments, the challenge list, your teach-backs and these " +
+      "scores, so anybody can recompute them.</p>" +
+    "</div>" +
+    '<div class="card"><h2>What was planted</h2>' + key + "</div>" +
+    '<div class="card"><button id="again">Run another case</button></div>');
+  el("again").onclick = function () {
+    S.sessionId = null; S.challenges = []; S.verdicts = {};
+    screenBrief();
+  };
+}
+
+// ------------------------------------------------------------------- startup
+
+api("GET", "/api/config").then(function (config) {
+  S.config = config;
+  el("foot").textContent = "Second Pass " + config.version +
+    ". All case data is invented. Keys: ANTHROPIC " + config.keys.ANTHROPIC_API_KEY +
+    ", OPENAI " + config.keys.OPENAI_API_KEY + ".";
+  screenBrief();
+}).catch(function (error) {
+  el("screens").innerHTML = '<div class="card">Could not reach the local server: ' + error.message + "</div>";
+});
+</script>
+</body>
+</html>

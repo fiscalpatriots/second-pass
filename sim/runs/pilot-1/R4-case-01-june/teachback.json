@@ -1,0 +1,17 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Agreed, 6000 warehouse wages is over threshold with zero explanation while this immaterial line gets a full paragraph, that balance is backwards."},
+    {"id": "C2", "verdict": "accept", "reason": "I checked this myself, 1,041,000 minus 812,000 is 229,000, so 28,200 is really the 28.2 percent misread as dollars."},
+    {"id": "C3", "verdict": "reject", "reason": "S6 already tells us the invoices arrived late and will post in July, that reads like normal timing to me, not an error."},
+    {"id": "C4", "verdict": "reject", "reason": "7,500 doesn't clear the memo's own 25,000 threshold, so a named driver isn't required here by policy."},
+    {"id": "C5", "verdict": "accept", "reason": "S5 says the roof and dock program finished June 30, S9 says repairs remain into August, both can't be true."},
+    {"id": "C6", "verdict": "accept", "reason": "I recomputed this too, May is 1,310,000 over 5,240,000, that's 25.0 percent, not the 24 percent the memo claims."},
+    {"id": "C7", "verdict": "accept", "reason": "62,000 minus 15,000 is 47,000, not the 42,000 in S7, a 5,000 gap I can't explain away."},
+    {"id": "C8", "verdict": "accept", "reason": "72,500 is well over the threshold and I searched the whole memo, there is truly no sentence covering it."},
+    {"id": "C9", "verdict": "accept", "reason": "214,000 to 287,800 is a 73,800 increase, 34.5 percent up, so declined is the wrong word entirely."},
+    {"id": "C10", "verdict": "reject", "reason": "Account 4000 moved 372,000 in the table, not 65,000, so I don't know what this challenge is even pointing at."},
+    {"id": "C11", "verdict": "reject", "reason": "Zero movement doesn't come close to the 25,000 and 10 percent test, flat depreciation isn't strange to me."},
+    {"id": "C12", "verdict": "reject", "reason": "The Tri-State ramp story lines up with the revenue increase I already checked, that's enough of a driver for me."}
+  ],
+  "confidence": 58
+}

@@ -1,0 +1,14 @@
+{
+  "findings": [
+    "Account 5100 inbound freight rose $73,800 (34.5%, from $214,000 to $287,800) but S6 says it declined to $287,800 as fuel surcharges eased, the direction is backwards from the table.",
+    "Account 6000 warehouse wages rose $72,500 (11.5%), clears both threshold legs, and there is no commentary sentence anywhere in the memo that addresses it.",
+    "Account 6200 repairs and maintenance: S1 says the roof and dock leveler program finished on June 30, but S10 says remaining depot repairs are scheduled to finish in August and are not yet in these numbers, the two statements contradict each other about whether the program is done.",
+    "Account 4200 freight billed to customers fell $65,000 (34.9%), clears both threshold legs, and no sentence in the memo addresses this decline at all.",
+    "Account 6400 bad debt expense moved $47,000 per the table (from $15,000 to $62,000) but S2 states the increase as $42,000, a $5,000 gap that is not explained.",
+    "Account 5000 cost of product sold rose $348,000 (8.9%) and S11 claims gross margin was 24 percent in both May and June, but recomputing precisely, May's margin was exactly 25.0 percent, not 24 percent, so margin actually moved and the real driver behind the increase is not explained.",
+    "Account 7100 interest expense rose $31,200 and S7 attributes it to depot equipment additions that also sit in depreciation, but account 7000 depreciation shows exactly $0 variance in the table, so the equipment-addition story is not supported by the other account it names.",
+    "Account 4100 service revenue grew $229,000 (28.2%) and S9 says $84,000 of that is a twelve-month maintenance plan running June 2026 to May 2027 that was recognised entirely in June, but only about $7,000 of a ratably-earned annual plan belongs in this one month, so roughly $77,000 of the reported growth looks like revenue pulled forward."
+  ],
+  "confidence": 65,
+  "soundness": 2
+}

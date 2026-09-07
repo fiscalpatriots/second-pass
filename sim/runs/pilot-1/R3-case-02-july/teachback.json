@@ -1,0 +1,18 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "reject", "reason": "The number ties to the table fine, and a seasonal drop in school nutrition sounds like a normal yearly pattern to me; I would not ask for prior-year backup on this one."},
+    {"id": "C2", "verdict": "accept", "reason": "S7 says the repair program closed in June with nothing more expected this year, then S8 reports $36,400 spent in July on a second phase of that same program; they cannot both be right."},
+    {"id": "C3", "verdict": "accept", "reason": "Shrink adjustment moved $62,300, which is 700 percent and clears the threshold easily, and there is not one sentence about it anywhere in the memo; that is too big to leave silent."},
+    {"id": "C4", "verdict": "accept", "reason": "Table shows interest expense moved $1,400, not $1,900; 1.9 percent of $74,900 is about $1,400, so the percent is right and the dollar figure in the sentence is wrong."},
+    {"id": "C5", "verdict": "reject", "reason": "The memo already ties the spend to the September trade show, and marketing dollars going out ahead of an event does not strike me as unusual or worth pushing back on."},
+    {"id": "C6", "verdict": "accept", "reason": "Renegotiated freight rates would hit account 5100 inbound freight, not account 5000 cost of product sold, so the $147,000 drop in cost of product sold is still sitting there unexplained."},
+    {"id": "C7", "verdict": "reject", "reason": "Account 6000 wages moved $79,400 in the table, and I cannot find $98,900 anywhere tied to that line, so there is nothing here for me to recompute against."},
+    {"id": "C8", "verdict": "reject", "reason": "This account only moved $7,500 and 6.2 percent, and the memo's own rule needs both $25,000 and 10 percent before commentary is required, so nothing was actually owed here."},
+    {"id": "C9", "verdict": "reject", "reason": "The table has this account moving $55,000 overall, not $38,000, and new contracts in two territories is a fine enough reason to me without more detail behind it."},
+    {"id": "C10", "verdict": "accept", "reason": "Bad debt dropped $52,500, which is 84.7 percent, well past both thresholds, and there is no sentence anywhere in the memo that touches this account at all."},
+    {"id": "C11", "verdict": "accept", "reason": "Table shows fuel went from $91,200 up to $108,700, an increase of $17,500, but the sentence says it declined; the account moved the opposite way from the write-up."},
+    {"id": "C12", "verdict": "accept", "reason": "Wages actually moved $79,400 per the table, and the memo says $74,900, which is off by $4,500 from what the account really did that month."},
+    {"id": "C13", "verdict": "reject", "reason": "The memo calls this normal monthly practice for the last week of fuel billing, and that reads as routine to me, not something I would send back."}
+  ],
+  "confidence": 65
+}

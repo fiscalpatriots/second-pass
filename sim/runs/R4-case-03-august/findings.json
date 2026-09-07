@@ -1,0 +1,11 @@
+{
+  "findings": [
+    "Account 7300 legal settlement accrual of $185,000 is described in S11 as covering a delivery claim notified to the broker in August, but S10 says no new legal matters arose during August - those two sentences contradict each other.",
+    "Account 4100 service revenue actually fell $111,000 (-10.1%, from $1,096,000 to $985,000) but S3 says it grew $111,000 on Southline contract renewals - the dollar amount matches the table but the direction is backwards.",
+    "Account 4300 supplier rebates moved $172,000 (409.5%), clears the threshold, but no sentence anywhere in the memo names a driver for it.",
+    "Product gross margin in S1: recomputing 4000 less 5000 over 4000 gives about 23.5% in July and about 21.9% in August, not a flat 22% in both months - margin actually slipped roughly 1.6 points, so channel mix did move.",
+    "Account 5000 cost of product sold moved $481,000 (11.6%), clears the threshold, but nothing in the memo gives a direct driver for the COGS increase itself, only the indirect margin-ratio claim in S1."
+  ],
+  "confidence": 58,
+  "soundness": 3
+}

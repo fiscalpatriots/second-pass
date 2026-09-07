@@ -1,0 +1,9 @@
+{
+  "findings": [
+    "Line 6100, Fleet fuel: S4 says fleet fuel 'declined $17,500' but the table shows fleet fuel went from $91,200 to $108,700, which is a $17,500 increase, not a decline.",
+    "Line 6000, Warehouse wages: S6 says wages 'rose $74,900' but the table shows the variance on that line is $79,400, a $4,500 gap from what the commentary states.",
+    "Line 6200, Repairs and maintenance, depots: S7 says the depot repair program 'closed in June and no further repair spend is expected this year,' but S8 then describes $36,400 of July repairs as the second phase of the dock program on the same line - those two sentences contradict each other."
+  ],
+  "confidence": 55,
+  "soundness": 3
+}

@@ -1,0 +1,62 @@
+{
+  "C1": {
+    "kind": "defect",
+    "ref": "D9",
+    "type": "immaterial_over_explained"
+  },
+  "C2": {
+    "kind": "defect",
+    "ref": "D2",
+    "type": "percent_as_absolute"
+  },
+  "C3": {
+    "kind": "defect",
+    "ref": "D6",
+    "type": "cutoff"
+  },
+  "C4": {
+    "kind": "distractor",
+    "ref": "X2",
+    "type": "weak_challenge"
+  },
+  "C5": {
+    "kind": "defect",
+    "ref": "D8",
+    "type": "contradiction"
+  },
+  "C6": {
+    "kind": "defect",
+    "ref": "D10",
+    "type": "rounding_flips_conclusion"
+  },
+  "C7": {
+    "kind": "defect",
+    "ref": "D4",
+    "type": "mismatched_amount"
+  },
+  "C8": {
+    "kind": "defect",
+    "ref": "D5",
+    "type": "missing_driver_material"
+  },
+  "C9": {
+    "kind": "defect",
+    "ref": "D1",
+    "type": "wrong_sign"
+  },
+  "C10": {
+    "kind": "defect",
+    "ref": "D7",
+    "type": "reclass_as_growth"
+  },
+  "C11": {
+    "kind": "distractor",
+    "ref": "X1",
+    "type": "weak_challenge"
+  },
+  "C12": {
+    "kind": "defect",
+    "ref": "D3",
+    "type": "unsupported_driver"
+  }
+}

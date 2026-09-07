@@ -1,0 +1,67 @@
+{
+  "C1": {
+    "kind": "defect",
+    "ref": "D3",
+    "type": "unsupported_driver"
+  },
+  "C2": {
+    "kind": "defect",
+    "ref": "D9",
+    "type": "contradiction"
+  },
+  "C3": {
+    "kind": "defect",
+    "ref": "D5",
+    "type": "missing_driver_material"
+  },
+  "C4": {
+    "kind": "defect",
+    "ref": "D8",
+    "type": "percent_as_absolute"
+  },
+  "C5": {
+    "kind": "defect",
+    "ref": "D2",
+    "type": "wrong_period"
+  },
+  "C6": {
+    "kind": "defect",
+    "ref": "D10",
+    "type": "driver_wrong_account"
+  },
+  "C7": {
+    "kind": "defect",
+    "ref": "D11",
+    "type": "rounding_flips_conclusion"
+  },
+  "C8": {
+    "kind": "distractor",
+    "ref": "X2",
+    "type": "weak_challenge"
+  },
+  "C9": {
+    "kind": "defect",
+    "ref": "D7",
+    "type": "reclass_as_growth"
+  },
+  "C10": {
+    "kind": "distractor",
+    "ref": "X1",
+    "type": "weak_challenge"
+  },
+  "C11": {
+    "kind": "defect",
+    "ref": "D1",
+    "type": "wrong_sign"
+  },
+  "C12": {
+    "kind": "defect",
+    "ref": "D4",
+    "type": "mismatched_amount"
+  },
+  "C13": {
+    "kind": "defect",
+    "ref": "D6",
+    "type": "cutoff"
+  }
+}

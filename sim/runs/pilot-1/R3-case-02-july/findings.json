@@ -1,0 +1,13 @@
+{
+  "findings": [
+    "Line 6000, Warehouse wages: recomputing $781,900 minus $702,500 gives $79,400 (11.3%), matching the table, but S6 says wages 'rose $74,900' -- that's $4,500 off from the actual variance.",
+    "Line 6200, Repairs and maintenance, depots: S7 says the repair program closed in June with no further spend expected this year, then S8 turns around and says $36,400 was spent in July as a second phase of the same dock program. Those two sentences can't both be true.",
+    "Line 5000, Cost of product sold: S3 says the $147,000 decline is driven by renegotiated inbound freight rates, but inbound freight is its own separate line, account 5100, with its own $43,500 decline. The driver named doesn't belong to the account it's attached to.",
+    "Line 6100, Fleet fuel: S4 says fuel 'declined $17,500,' but the table shows fuel went from $91,200 to $108,700, which is up $17,500 (19.2%), not down. The direction is backwards.",
+    "Line 6400, Bad debt expense: flagged over threshold, down $52,500 (-84.7%, $62,000 to $9,500), and there's no commentary anywhere covering it.",
+    "Line 7200, Inventory shrink adjustment: also flagged over threshold, up $62,300 which is 700%, the largest percent move in the whole schedule, and it has no commentary either.",
+    "Summary statement S11 on operating expense (accounts 6000-7200): recomputing against revenue gives roughly 17.8% of revenue in July and about 16% in June. Neither month actually comes out to the '15 percent held' the commentary claims."
+  ],
+  "confidence": 60,
+  "soundness": 2
+}

@@ -1,0 +1,15 @@
+{"responses": [
+{"id": "C1", "verdict": "accept", "reason": "S1 just names the school nutrition slowdown for the $214,000 drop and I have not seen anything backing that claim up."},
+{"id": "C2", "verdict": "accept", "reason": "Agreed, S7 says the repair program closed in June and S8 describes new July repair spend, those two cannot both be right."},
+{"id": "C3", "verdict": "accept", "reason": "Right, a 700 percent move on 7200 with zero commentary is exactly the kind of gap that needs a driver before release."},
+{"id": "C4", "verdict": "accept", "reason": "Something does not line up on 7100, the table shows $1,400 moved and S10 quotes $1,900, so the sentence needs restating."},
+{"id": "C5", "verdict": "accept", "reason": "Fair, if the $74,400 in marketing relates to a September show then booking it all in July looks like the wrong period."},
+{"id": "C6", "verdict": "accept", "reason": "That makes sense, the freight rate story in S3 really describes account 5100, so the $147,000 move on 5000 is still unexplained on its own."},
+{"id": "C7", "verdict": "accept", "reason": "I did not recompute the operating expense ratio myself, so I will take it on faith that the rounded 15 percent claim does not survive unrounded."},
+{"id": "C8", "verdict": "reject", "reason": "Freight billed only moved $7,500, which is under both thresholds in the rules stated at the top, so demanding a driver here does not fit what I read."},
+{"id": "C9", "verdict": "reject", "reason": "The table shows account 4100 moved $55,000, not $38,000, so this one is citing a figure that does not match what I read."},
+{"id": "C10", "verdict": "accept", "reason": "Agreed, an 85 percent swing on bad debt with no sentence anywhere explaining it is too big to leave silent."},
+{"id": "C11", "verdict": "accept", "reason": "Checking back, the table has fleet fuel rising $17,500 while S4 says it declined, so the sentence really does have the direction backwards."},
+{"id": "C12", "verdict": "accept", "reason": "S6 says warehouse wages rose $74,900 but the table for 6000 shows $79,400, so the sentence and the schedule do not match."},
+{"id": "C13", "verdict": "accept", "reason": "Even if management calls it normal practice, shifting $9,800 of July fuel activity into August is still a period question worth naming properly."}
+], "confidence": 62}

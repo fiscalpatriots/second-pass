@@ -1,0 +1,13 @@
+{
+  "findings": [
+    "Account 6100 fleet fuel actually rose $31,600 (34.6%, from $91,200 to $122,800) but S9 says fuel declined $31,600 as diesel prices came off their peak, the direction is backwards from the table.",
+    "Account 6400 bad debt expense variance is $52,500 (from $62,000 down to $9,500) but S3 says the reduction was $84,700, which looks like the 84.7 percent figure got written down as a dollar amount instead.",
+    "Account 6000 warehouse wages moved $79,400 per the table but S4 only credits $74,900 of it to overtime at the Northgate depot, a $4,500 gap that is not explained.",
+    "Account 7400 inventory shrink adjustment jumped $62,300, a 700 percent move that clears both threshold tests, and there is no commentary sentence anywhere that addresses it.",
+    "Account 6200 repairs and maintenance: S10 says the depot repair program closed in June with no further spend expected this year, then S11 says the $36,400 spent in July is the second phase of that same program, the two sentences contradict each other.",
+    "Account 5000 cost of product sold fell $147,000 and S5 credits the decline to renegotiated inbound freight rates, but the note above the table says inbound freight is excluded from cost of product sold and sits on its own line, so freight rates should not be moving this account.",
+    "Account 5100 inbound freight dropped $43,500, a 15.1 percent move that clears both threshold tests, but nothing in the commentary explains the freight line itself, S5 only ties freight rates to the cost of product sold line instead."
+  ],
+  "confidence": 60,
+  "soundness": 2
+}

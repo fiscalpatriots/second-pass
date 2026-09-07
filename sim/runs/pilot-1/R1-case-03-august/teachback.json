@@ -1,0 +1,19 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Supplier rebates jumped $172,000 and four hundred percent with nothing said about it, so that needs an explanation."},
+    {"id": "C2", "verdict": "accept", "reason": "I did not redo the math myself, but if it fails unrounded then the steady margin line should not stand."},
+    {"id": "C3", "verdict": "accept", "reason": "This is exactly what I found, S2 says it grew but the table shows this line actually fell $82,000."},
+    {"id": "C4", "verdict": "accept", "reason": "I cannot rule that out myself, wages falling while temp labor jumps that much makes me wonder if it is just relabeled cost."},
+    {"id": "C5", "verdict": "accept", "reason": "Booking a June-resolved claim as a new August accrual does sound like it landed two months later than it should have."},
+    {"id": "C6", "verdict": "accept", "reason": "I caught this one too, S4 says $68,800 but the table shows $86,800 moved on the temporary labor line."},
+    {"id": "C7", "verdict": "accept", "reason": "Bad debt only moved $1,700 and is under threshold, yet it gets three clauses of detail, which seems like a lot for that size."},
+    {"id": "C8", "verdict": "accept", "reason": "Saying no new legal matters arose while booking a new $185,000 accrual the same month does sound contradictory once pointed out."},
+    {"id": "C9", "verdict": "reject", "reason": "Freight billed to customers only moved $5,400, well under the stated threshold, so I do not think a margin write-up was owed there."},
+    {"id": "C10", "verdict": "accept", "reason": "Matches what I flagged, temporary labor added at Northgate does not explain a freight account, those are different kinds of cost."},
+    {"id": "C11", "verdict": "accept", "reason": "Sounds like a real cutoff issue, those invoices relate to August activity but only get posted once September opens."},
+    {"id": "C12", "verdict": "reject", "reason": "Insurance really did not move at all, flat at $47,300 both months, so I do not think a policy schedule is needed for that."},
+    {"id": "C13", "verdict": "accept", "reason": "Share gains in the independent restaurant channel is a specific claim but I have not seen channel-level numbers backing it up."},
+    {"id": "C14", "verdict": "accept", "reason": "I noticed this too, the interest expense dollar figure looked off, $16,100 does not match the $12,300 the table shows."}
+  ],
+  "confidence": 55
+}

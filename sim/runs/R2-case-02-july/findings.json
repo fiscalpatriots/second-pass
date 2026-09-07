@@ -1,0 +1,12 @@
+{
+  "findings": [
+    "Account 6000 warehouse wages: the table shows a $79,400 variance but S4 says the rise was $74,900, and the two numbers for the same line don't match.",
+    "Account 6100 fleet fuel: S9 says it declined $31,600, but the table shows fuel went from $91,200 to $122,800, which is an increase of $31,600, not a decline.",
+    "Account 6400 bad debt expense: the table shows a variance of ($52,500) but S3 calls it a reduction of $84,700, so the dollar figure in the text doesn't match the table.",
+    "Account 6200 repairs and maintenance: S10 says the depot repair program closed in June with no further spend expected this year, but S11 right after describes $36,400 of July spend as the second phase of that same program.",
+    "Account 7400 inventory shrink adjustment jumped $62,300, 700 percent, the biggest percentage move in the whole memo, and it's starred as needing commentary, but none of the sentences mention it at all.",
+    "Account 5000 cost of product sold: S5 credits the $147,000 decline to renegotiated inbound freight rates, but the memo says inbound freight is excluded from cost of product sold and sits on its own line, account 5100."
+  ],
+  "confidence": 60,
+  "soundness": 3
+}

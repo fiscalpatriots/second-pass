@@ -1,0 +1,17 @@
+{
+  "responses": [
+    {"id": "C1", "verdict": "accept", "reason": "Fair point, S8 spends a lot of words on a $1,600 line while bigger accounts barely get a sentence."},
+    {"id": "C2", "verdict": "accept", "reason": "I noticed this too, S2 says 28,200 but the table shows $229,000 moved, so it grabbed the percent instead of the dollar figure."},
+    {"id": "C3", "verdict": "accept", "reason": "S6 does say those invoices arrived after close and get booked in July, so that reads like a real cutoff timing issue."},
+    {"id": "C4", "verdict": "reject", "reason": "Professional fees only moved $7,500, under the $25,000 commentary threshold stated up top, so a driver was not actually required here."},
+    {"id": "C5", "verdict": "accept", "reason": "Same thing I flagged, S5 says the program finished June 30 and S9 says repairs are still finishing in August, which cannot both be true."},
+    {"id": "C6", "verdict": "accept", "reason": "I did not redo the math myself, but if it does not hold up unrounded then the stable margin line should not stand as written."},
+    {"id": "C7", "verdict": "accept", "reason": "I caught this one too, S7 says bad debt increased $42,000 but the table shows $47,000 moved on that line."},
+    {"id": "C8", "verdict": "accept", "reason": "Warehouse wages moved $72,500 and is starred in the table, so it should have gotten a driver and it just does not have one."},
+    {"id": "C9", "verdict": "accept", "reason": "Matches what I saw, S4 calls it a decline but the table shows inbound freight rose $73,800, so the direction is backwards."},
+    {"id": "C10", "verdict": "accept", "reason": "I cannot rule that out myself, so if a transfer is sitting inside that revenue number it should be pulled out before calling it organic growth."},
+    {"id": "C11", "verdict": "accept", "reason": "Flat depreciation while the memo talks about depot work does seem worth asking about, even though I have not seen the asset detail."},
+    {"id": "C12", "verdict": "accept", "reason": "S3 just asserts the Tri-State driver without showing depot-level numbers, so I agree we would need that split before taking it as given."}
+  ],
+  "confidence": 55
+}

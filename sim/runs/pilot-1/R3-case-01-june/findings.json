@@ -1,0 +1,14 @@
+{
+  "findings": [
+    "Line 4100, Service revenue, equipment maintenance: table shows this account up $229,000 (28.2%), but S2 says it 'grew by 28,200' -- that number looks like the percent got typed in as a dollar figure, off by about $200,000.",
+    "Line 6200, Repairs and maintenance, depots: S5 says the roof and dock leveler program finished on June 30, then S9 says remaining depot repairs are scheduled to finish in August -- those two statements about the same account contradict each other.",
+    "Line 5100, Inbound freight: S4 says freight 'declined to $287,800,' but the table shows it went from $214,000 up to $287,800, a $73,800 increase of 34.5%, not a decline.",
+    "Line 6000, Warehouse wages: flagged over threshold at $72,500 (11.5%), and there is no commentary anywhere in the memo covering this account.",
+    "Line 4200, Freight billed to customers: flagged over threshold, down $65,000 (-34.9%), and nothing directly explains it; S3's 'growth in both revenue lines' comment does not cover a line that actually fell.",
+    "Line 6400, Bad debt expense: table shows the account up $47,000 (313.3%), but S7 says it 'increased $42,000' -- short by $5,000 of the real variance.",
+    "Accounts 4000 and 5000, product gross margin (S10): recomputing (4000 minus 5000) over 4000 gives exactly 25.0% for May, not 24 percent, while June comes out around 23.8%. May does not round to the '24 percent in both months' the commentary claims.",
+    "Line 6300, Software subscriptions: this account only moved $1,600, well under threshold, yet S8 spends a long, detailed sentence on seat counts and proration for it, while larger required lines like warehouse wages and freight billed to customers get no commentary at all."
+  ],
+  "confidence": 62,
+  "soundness": 2
+}
