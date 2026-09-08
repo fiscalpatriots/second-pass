@@ -6,6 +6,12 @@ Standard library only. No packages were installed to build or run this.
 
 Every command below was run in this folder and the output is pasted verbatim.
 
+Before this repository was published, two kinds of text were replaced throughout it
+and nothing else was touched. Local filesystem paths were rewritten to a neutral
+root, and the name of one person who agreed to help run the human pilot was removed
+from PILOT.md and from two test fixtures. No number, no result, no session record
+and no line of program logic was altered. The full test suite passes unchanged.
+
 ======================================================================
 COMMAND 1   python -m second_pass check
 ======================================================================
@@ -380,7 +386,7 @@ Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are ref
 Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
 
 Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
-Refused: Khaled, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
+Refused: a personal name, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
 Simulated session case-01-june_R1_e3f14747 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
@@ -878,7 +884,7 @@ test_finish_twice_is_refused (__main__.SimDriverTest) ... SECOND PASS SIMULATION
 AI layer under test: deterministic
 
 
-Stopped: --dir C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-okggsfki\simrunsR6-case-02-july resolves to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-okggsfki\simrunsR6-case-02-july, which is outside C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
+Stopped: --dir C:\Temp\secondpass-sim-okggsfki\simrunsR6-case-02-july resolves to C:\Temp\secondpass-sim-okggsfki\simrunsR6-case-02-july, which is outside C:\dev\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
 Refused: a --dir outside sim/runs, with the resolved path echoed back, the forward slash advice, and the note that the working directory does not persist.
 
 Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
@@ -892,13 +898,13 @@ Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are ref
 Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
 
 Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
-Refused: Khaled, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
+Refused: a personal name, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
 Simulated session case-01-june_R1_ea0ea7e4 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -923,18 +929,18 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june
+C:\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 
-Stopped: findings.json not found at C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june\findings.json. Write your own findings first. The challenge list is withheld until they are sealed.
+Stopped: findings.json not found at C:\Temp\secondpass-sim-z4i5o4u7\R1-case-01-june\findings.json. Write your own findings first. The challenge list is withheld until they are sealed.
 Refused: commit before findings.json exists, and no challenge list was written.
 Simulated session case-01-june_R1_04a64720 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-mqgok3lw\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-mqgok3lw\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-mqgok3lw\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-mqgok3lw\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -959,7 +965,7 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-mqgok3lw\R1-case-01-june
+C:\Temp\secondpass-sim-mqgok3lw\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 
@@ -968,9 +974,9 @@ Refused: finish before commit, and no session log was written.
 Simulated session case-01-june_R1_4d2a0ab3 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-7duelbh6\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-7duelbh6\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -995,14 +1001,14 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june
+C:\Temp\secondpass-sim-7duelbh6\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 Findings sealed. 1 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-7duelbh6\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -1040,7 +1046,7 @@ test_full_simulated_session (__main__.SimDriverTest) ...
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\R1-case-01-june
+C:\Temp\secondpass-sim-7duelbh6\R1-case-01-june
 
 ========================================================================================
 Case case-01-june, reviewer R1
@@ -1067,7 +1073,7 @@ What the numbers are
 
 The answer key is withheld from this output. A facilitator can see it with sim finish --debrief, or with show --case case-01-june --key.
 
-Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-7duelbh6\sessions\case-01-june_R1_4d2a0ab3.json
+Session log written to C:\Temp\secondpass-sim-7duelbh6\sessions\case-01-june_R1_4d2a0ab3.json
 It carries simulated: true and persona: experienced.
 
 Stopped: This session is already scored and its log is written.
@@ -1077,9 +1083,9 @@ A full simulated session, run through the command line
 Simulated session case-01-june_R1_4899bc36 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-_gqwbco2\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1104,7 +1110,7 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
+C:\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 start   view.md written, 4304 characters, no key and no challenge list on disk
@@ -1112,7 +1118,7 @@ Findings sealed. 3 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-_gqwbco2\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -1149,7 +1155,7 @@ in the same folder.
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
+C:\Temp\secondpass-sim-_gqwbco2\R1-case-01-june
 commit  14 challenges written, weak ones included and unmarked
 
 ========================================================================================
@@ -1177,16 +1183,16 @@ What the numbers are
 test_results_label_the_population (__main__.SimDriverTest) ... ok
 test_second_commit_is_refused (__main__.SimDriverTest) ... 
 
-Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-_gqwbco2\sessions\case-01-june_R1_4899bc36.json
+Session log written to C:\Temp\secondpass-sim-_gqwbco2\sessions\case-01-june_R1_4899bc36.json
 It carries simulated: true and persona: experienced.
 finish  simulated: true, persona experienced, caught 3 of 11 unaided and 11 of 11 aided, teach-back accuracy 78.6%
 
 Simulated session case-01-june_R1_0f14878c opened.
   Case      case-01-june
   Reviewer  R1, persona novice
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-ufqoiey9\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1211,14 +1217,14 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
+C:\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 Findings sealed. 1 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-ufqoiey9\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -1255,7 +1261,7 @@ in the same folder.
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
+C:\Temp\secondpass-sim-ufqoiey9\R1-case-01-june
 
 ========================================================================================
 Case case-01-june, reviewer R1
@@ -1280,16 +1286,16 @@ What the numbers are
   Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
   Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.
 
-Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ufqoiey9\sessions\case-01-june_R1_0f14878c.json
+Session log written to C:\Temp\secondpass-sim-ufqoiey9\sessions\case-01-june_R1_0f14878c.json
 It carries simulated: true and persona: novice.
 Aggregation: title, four headings and the markdown table all say simulated reviewers, and --only human returns nothing from a simulated set.
 
 Simulated session case-01-june_R1_d0174f68 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-z0fgji3u\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1314,14 +1320,14 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
+C:\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 Findings sealed. 1 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-z0fgji3u\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -1368,16 +1374,16 @@ OK
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
+C:\Temp\secondpass-sim-z0fgji3u\R1-case-01-june
 
 Stopped: This session has already committed. A commitment is sealed once and cannot be reopened, so a reviewer cannot commit, read the challenge list, and then improve their own findings. Current state: 'challenges_revealed'.
 Refused: a second commit. The first commitment of 1 finding stands and the challenge list is unchanged.
 Simulated session case-01-june_R1_db38ec62 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1402,18 +1408,18 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june
+C:\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 
-Stopped: C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june already holds a simulated session. A session directory is used once, so that a reviewer cannot restart after seeing the challenge list. Point --dir somewhere new.
+Stopped: C:\Temp\secondpass-sim-5v8ffdhf\R1-case-01-june already holds a simulated session. A session directory is used once, so that a reviewer cannot restart after seeing the challenge list. Point --dir somewhere new.
 Refused: a second session in a folder that already holds one.
 Simulated session case-01-june_R1_90fbbe5e opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-nhg97yzd\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1438,14 +1444,14 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
+C:\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 Findings sealed. 0 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-nhg97yzd\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -1482,7 +1488,7 @@ in the same folder.
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
+C:\Temp\secondpass-sim-nhg97yzd\R1-case-01-june
 The score block withholds the key from the reviewer and prints it under --debrief, so an agent running all three cases does not learn the taxonomy from case one.
 Printed prompts: both schemas in full, the soundness field, the eight word rule, and what confidence is measured against.
 
@@ -1503,9 +1509,9 @@ $ python -m second_pass sim start --case case-01-june --reviewer R9 \
 Simulated session case-01-june_R9_034723f4 opened.
   Case      case-01-june
   Reviewer  R9, persona experienced
-  Folder    C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs\HANDRUN-case-01-june
+  Folder    C:\dev\second-pass\sim\runs\HANDRUN-case-01-june
 
-Read C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs\HANDRUN-case-01-june\view.md. Do not open any other file.
+Read C:\dev\second-pass\sim\runs\HANDRUN-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1541,7 +1547,7 @@ Findings sealed. 4 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs\HANDRUN-case-01-june\challenges.md
+  Written to C:\dev\second-pass\sim\runs\HANDRUN-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -1608,12 +1614,12 @@ What the numbers are
   Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
   Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.
 
-Session log written to C:/Users/Khaled/AppData/Local/Temp/claude/C--Users-Khaled-Documents-Coach-Dashboard-HQ/cac73d55-fe06-4b57-b27b-65dd2fa92081/scratchpad/verify-sessions\case-01-june_R9_034723f4.json
+Session log written to C:/Temp/claude/workspace/cac73d55-fe06-4b57-b27b-65dd2fa92081/scratchpad/verify-sessions\case-01-june_R9_034723f4.json
 It carries simulated: true and persona: experienced.
 
 $ python -m second_pass sim start --case case-01-june --reviewer R6 --dir simrunsR6-case-02-july
 
-Stopped: --dir simrunsR6-case-02-july resolves to C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\simrunsR6-case-02-july, which is outside C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
+Stopped: --dir simrunsR6-case-02-july resolves to C:\dev\second-pass\simrunsR6-case-02-july, which is outside C:\dev\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
 
 (The last command above returned exit code 2 and created nothing. That is the
 finding 10 guard doing its job, reproduced against the exact folder name pilot
@@ -1862,7 +1868,7 @@ test_finish_twice_is_refused (__main__.SimDriverTest) ... SECOND PASS SIMULATION
 AI layer under test: deterministic
 
 
-Stopped: --dir C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-2l8v41ak\simrunsR6-case-02-july resolves to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-2l8v41ak\simrunsR6-case-02-july, which is outside C:\Users\Khaled\Documents\Coach Dashboard HQ\drafts-2026-09-05-aina\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
+Stopped: --dir C:\Temp\secondpass-sim-2l8v41ak\simrunsR6-case-02-july resolves to C:\Temp\secondpass-sim-2l8v41ak\simrunsR6-case-02-july, which is outside C:\dev\second-pass\sim\runs. A simulated session writes six files, and writing them somewhere unexpected is how pilot one ended up with a folder called simrunsR6-case-02-july at the repository root. That looks like a path whose separators were eaten by the shell. Backslashes are escape characters in bash, so sim\runs\R1-case-01-june arrives as simrunsR1-case-01-june. Use forward slashes: sim/runs/R1-case-01-june. Point --dir inside sim/runs, or pass --allow-any-dir if you meant it. Note also that the working directory does not persist between shell invocations, so every command carries its own --dir.
 Refused: a --dir outside sim/runs, with the resolved path echoed back, the forward slash advice, and the note that the working directory does not persist.
 
 Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
@@ -1876,13 +1882,13 @@ Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are ref
 Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
 
 Stopped: Reviewer must be R1 to R99. Names, initials and email addresses are refused here because the pilot promises that no name appears anywhere in the entry.
-Refused: Khaled, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
+Refused: a personal name, R0, R100, an email address, initials and an empty label. R1 to R99 only, and nothing is written when a label is refused.
 Simulated session case-01-june_R1_dc949b30 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1907,18 +1913,18 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june
+C:\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 
-Stopped: findings.json not found at C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june\findings.json. Write your own findings first. The challenge list is withheld until they are sealed.
+Stopped: findings.json not found at C:\Temp\secondpass-sim-a8e7ui9a\R1-case-01-june\findings.json. Write your own findings first. The challenge list is withheld until they are sealed.
 Refused: commit before findings.json exists, and no challenge list was written.
 Simulated session case-01-june_R1_bf8a4a7e opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-risf_807\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-risf_807\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-risf_807\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-risf_807\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1943,7 +1949,7 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-risf_807\R1-case-01-june
+C:\Temp\secondpass-sim-risf_807\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 
@@ -1952,9 +1958,9 @@ Refused: finish before commit, and no session log was written.
 Simulated session case-01-june_R1_81b3d35f opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-045naq9v\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-045naq9v\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -1979,14 +1985,14 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june
+C:\Temp\secondpass-sim-045naq9v\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 Findings sealed. 1 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june\challenges.mdok
+  Written to C:\Temp\secondpass-sim-045naq9v\R1-case-01-june\challenges.mdok
 test_full_simulated_session (__main__.SimDriverTest) ... 
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
@@ -2024,7 +2030,7 @@ in the same folder.
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\R1-case-01-june
+C:\Temp\secondpass-sim-045naq9v\R1-case-01-june
 
 ========================================================================================
 Case case-01-june, reviewer R1
@@ -2051,7 +2057,7 @@ What the numbers are
 
 The answer key is withheld from this output. A facilitator can see it with sim finish --debrief, or with show --case case-01-june --key.
 
-Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-045naq9v\sessions\case-01-june_R1_81b3d35f.json
+Session log written to C:\Temp\secondpass-sim-045naq9v\sessions\case-01-june_R1_81b3d35f.json
 It carries simulated: true and persona: experienced.
 
 Stopped: This session is already scored and its log is written.
@@ -2061,9 +2067,9 @@ A full simulated session, run through the command line
 Simulated session case-01-june_R1_96f91aa0 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -2088,7 +2094,7 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
+C:\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 start   view.md written, 4304 characters, no key and no challenge list on disk
@@ -2096,7 +2102,7 @@ Findings sealed. 3 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -2133,7 +2139,7 @@ in the same folder.
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
+C:\Temp\secondpass-sim-gkhrjaj5\R1-case-01-june
 commit  14 challenges written, weak ones included and unmarked
 
 ========================================================================================
@@ -2161,16 +2167,16 @@ What the numbers are
 test_results_label_the_population (__main__.SimDriverTest) ... ok
 test_second_commit_is_refused (__main__.SimDriverTest) ... 
 
-Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-gkhrjaj5\sessions\case-01-june_R1_96f91aa0.json
+Session log written to C:\Temp\secondpass-sim-gkhrjaj5\sessions\case-01-june_R1_96f91aa0.json
 It carries simulated: true and persona: experienced.
 finish  simulated: true, persona experienced, caught 3 of 11 unaided and 11 of 11 aided, teach-back accuracy 78.6%
 
 Simulated session case-01-june_R1_08d1e9c5 opened.
   Case      case-01-june
   Reviewer  R1, persona novice
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -2195,14 +2201,14 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
+C:\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 Findings sealed. 1 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -2239,7 +2245,7 @@ in the same folder.
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
+C:\Temp\secondpass-sim-0bkjlfnd\R1-case-01-june
 
 ========================================================================================
 Case case-01-june, reviewer R1
@@ -2264,16 +2270,16 @@ What the numbers are
   Teach-back accuracy: of the challenges judged, the share judged correctly. Accepting a real challenge with a reason of at least eight words counts, and so does refusing a weak one with a reason.
   Precision, against the answer key: findings that matched a planted defect over all findings written. Findings outside the key are counted separately and never reduce a catch rate.
 
-Session log written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-0bkjlfnd\sessions\case-01-june_R1_08d1e9c5.json
+Session log written to C:\Temp\secondpass-sim-0bkjlfnd\sessions\case-01-june_R1_08d1e9c5.json
 It carries simulated: true and persona: novice.
 Aggregation: title, four headings and the markdown table all say simulated reviewers, and --only human returns nothing from a simulated set.
 
 Simulated session case-01-june_R1_b44a197d opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -2298,14 +2304,14 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
+C:\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 Findings sealed. 1 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -2348,16 +2354,16 @@ Pilot two, finding 4. The schema printed by sim start and sim commit ...
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
+C:\Temp\secondpass-sim-ghm_2e9z\R1-case-01-june
 
 Stopped: This session has already committed. A commitment is sealed once and cannot be reopened, so a reviewer cannot commit, read the challenge list, and then improve their own findings. Current state: 'challenges_revealed'.
 Refused: a second commit. The first commitment of 1 finding stands and the challenge list is unchanged.
 Simulated session case-01-june_R1_e98a9c32 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-wlyuulml\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-wlyuulml\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-wlyuulml\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-wlyuulml\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -2382,18 +2388,18 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-wlyuulml\R1-case-01-june
+C:\Temp\secondpass-sim-wlyuulml\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 
-Stopped: C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-wlyuulml\R1-case-01-june already holds a simulated session. A session directory is used once, so that a reviewer cannot restart after seeing the challenge list. Point --dir somewhere new.
+Stopped: C:\Temp\secondpass-sim-wlyuulml\R1-case-01-june already holds a simulated session. A session directory is used once, so that a reviewer cannot restart after seeing the challenge list. Point --dir somewhere new.
 Refused: a second session in a folder that already holds one.
 Simulated session case-01-june_R1_852ee778 opened.
   Case      case-01-june
   Reviewer  R1, persona experienced
-  Folder    C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
+  Folder    C:\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
 
-Read C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june\view.md. Do not open any other file.
+Read C:\Temp\secondpass-sim-qm46_q5y\R1-case-01-june\view.md. Do not open any other file.
 
 Then write findings.json in that folder, holding your own findings, the share of the
 problems you believe you found, and how sound the memo looked to you. One finding per
@@ -2418,14 +2424,14 @@ entry, and name the account in each one.
     figure.
 
 Then run: python -m second_pass sim commit --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
+C:\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
 The challenge list does not exist until you do. It is not written anywhere in this
 folder, in this process, or on any wire, so there is nothing to look at ahead of time.
 Findings sealed. 0 finding(s), and they cannot be edited.
 Phase one took 0 seconds.
 
 Challenge list released: 14 challenge(s) from the deterministic layer.
-  Written to C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june\challenges.md
+  Written to C:\Temp\secondpass-sim-qm46_q5y\R1-case-01-june\challenges.md
 
 Read that file. Some of those challenges do not hold. Accept the ones that do and reject
 the ones that do not, with a reason in your own words for each, and write teachback.json
@@ -2462,7 +2468,7 @@ in the same folder.
     share of the planted defects in this memo you believe you have now caught.
 
 Then run: python -m second_pass sim finish --dir
-C:\Users\Khaled\AppData\Local\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
+C:\Temp\secondpass-sim-qm46_q5y\R1-case-01-june
 The score block withholds the key from the reviewer and prints it under --debrief, so an agent running all three cases does not learn the taxonomy from case one.
 Printed prompts: both schemas in full, the soundness field, the eight word rule, and what confidence is measured against.
 Printed example: 3 invented account(s) and 3 invented figure(s), checked against all 3 case files. 32 planted movements, every account name, every defect claim and every weak challenge checked against what the two commands print.ok

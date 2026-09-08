@@ -267,7 +267,7 @@
       "cause": "a simulated reviewer opened the case through the sim driver",
       "detail": {
         "persona": "experienced",
-        "dir": "C:\\Users\\Khaled\\Documents\\Coach Dashboard HQ\\drafts-2026-09-05-aina\\second-pass\\sim\\runs\\R6-case-02-july"
+        "dir": "C:\\dev\\second-pass\\sim\\runs\\R6-case-02-july"
       }
     },
     {

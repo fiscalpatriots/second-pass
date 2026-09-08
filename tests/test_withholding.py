@@ -96,7 +96,7 @@ class StateMachineTest(unittest.TestCase):
         emit("Confidence cannot be restated once the phase is open.")
 
     def test_reviewer_label_refuses_a_name(self):
-        for label in ("Sebastian", "S. Campos", "khaled", "R1 (Khaled)", ""):
+        for label in ("Alex", "A. Rivera", "alex", "R1 (Alex)", ""):
             with self.assertRaises(session_mod.ReviewerError):
                 session_mod.validate_reviewer(label)
         self.assertEqual(session_mod.validate_reviewer("R5"), "R5")
@@ -238,7 +238,7 @@ class HttpWithholdingTest(unittest.TestCase):
         emit("A fresh session starts closed, and an unknown session id returns nothing.")
 
     def test_named_reviewer_refused_over_http(self):
-        status, body = self.call("POST", "/api/session", {"case_id": CASE_ID, "reviewer": "Sebastian"})
+        status, body = self.call("POST", "/api/session", {"case_id": CASE_ID, "reviewer": "Alex"})
         self.assertEqual(status, 409)
         self.assertIn("R1 to R99", json.loads(body)["error"])
         emit("A named reviewer is refused at the API, not only in the dropdown.")

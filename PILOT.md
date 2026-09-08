@@ -1,7 +1,7 @@
 # Pilot protocol
 
 One hour on Zoom, about five reviewers, before 12 September 2026. The reviewers
-are fraud examiners from the student chapter, gathered through Sebastian Campos.
+are fraud examiners from the student chapter, gathered through its president.
 Everyone runs the tool themselves. The facilitator runs the clock and says as
 little as possible.
 
@@ -11,7 +11,7 @@ is collected, and nobody's name appears anywhere.
 
 ## Before the day
 
-- [ ] Confirm the room with Campos: how many people, and that each has a laptop
+- [ ] Confirm the room with the chapter president: how many people, and that each has a laptop
       with Python and can run one command. Five is the target, three is enough,
       and the write-up reports whatever number turns up.
 - [ ] Send the one-paragraph invitation below at least two days ahead.

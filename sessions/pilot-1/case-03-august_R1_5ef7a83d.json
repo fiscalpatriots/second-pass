@@ -564,7 +564,7 @@
       "cause": "a simulated reviewer opened the case through the sim driver",
       "detail": {
         "persona": "novice",
-        "dir": "C:\\Users\\Khaled\\Documents\\Coach Dashboard HQ\\drafts-2026-09-05-aina\\second-pass\\sim\\runs\\R1-case-03-august"
+        "dir": "C:\\dev\\second-pass\\sim\\runs\\R1-case-03-august"
       }
     },
     {
@@ -784,5 +784,5 @@
   ],
   "simulated": true,
   "persona": "novice",
-  "sim_dir": "C:\\Users\\Khaled\\Documents\\Coach Dashboard HQ\\drafts-2026-09-05-aina\\second-pass\\sim\\runs\\R1-case-03-august"
+  "sim_dir": "C:\\dev\\second-pass\\sim\\runs\\R1-case-03-august"
 }

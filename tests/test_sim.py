@@ -216,14 +216,14 @@ class SimDriverTest(unittest.TestCase):
 
     def test_a_named_reviewer_is_refused(self):
         directory = os.path.join(self.tmp, "named")
-        self.assertEqual(self.start(reviewer="Khaled", directory=directory), 2,
+        self.assertEqual(self.start(reviewer="Alex", directory=directory), 2,
                          "a name must be refused as a reviewer label")
         self.assertFalse(os.path.isdir(directory),
                          "a refused session still created its folder")
-        for bad in ("R0", "R100", "khaled@gmu.edu", "KA", ""):
+        for bad in ("R0", "R100", "alex@example.edu", "AR", ""):
             self.assertEqual(self.start(reviewer=bad, directory=directory), 2,
                              "'%s' should not be accepted as a reviewer label" % bad)
-        emit("Refused: Khaled, R0, R100, an email address, initials and an empty label. "
+        emit("Refused: a personal name, R0, R100, an email address, initials and an empty label. "
              "R1 to R99 only, and nothing is written when a label is refused.")
 
     def test_finish_twice_is_refused(self):
