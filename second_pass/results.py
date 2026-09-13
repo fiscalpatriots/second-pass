@@ -16,6 +16,20 @@ write-up should quote the pooled figure with the denominator beside it.
 Nothing here estimates, extrapolates or projects. If four people show up, the
 report says four.
 
+The aided catch rate is the reviewer's FINAL position, not a union of everything
+they ever said. A defect a reviewer raised on their own and then withdrew under
+challenge leaves the final count, so the aggregate can show the assistance doing
+harm, which a union arithmetically could not. Both halves are carried: the row
+holds what the reviewer had first, what they withdrew, what the challenge list
+added, and where they finished. Repaired 13 September 2026 after an external
+audit found the union.
+
+Logs written before that repair carry the old metric names. They are read
+through `_score()`, which takes the new name first and falls back to the old, so
+a frozen pilot file still aggregates. A log written before the repair cannot
+report a withdrawal, because the old scorer did not record one, and the column
+shows a dash rather than a zero.
+
 A session log written by the simulation driver carries `simulated: true` and the
 persona the reviewer was given. Where any log in the set carries it, the report
 says "simulated reviewers" in its title and in every heading, and the table
@@ -29,6 +43,18 @@ import os
 import statistics
 
 from . import scoring
+
+# v1 is every log written before 13 September 2026. v2 adds the attempt record
+# and the final-position fields. Both aggregate; the reader says which is which.
+SESSION_SCHEMAS = ("second-pass/session/v1", "second-pass/session/v2")
+
+
+def _score(scores, *names):
+    """Read a metric by its current name, then by the names it used to have."""
+    for name in names:
+        if name in scores:
+            return scores[name]
+    return None
 
 
 def load_logs(directory, only=None):
@@ -47,7 +73,7 @@ def load_logs(directory, only=None):
                 data = json.load(handle)
         except ValueError:
             continue
-        if data.get("schema") != "second-pass/session/v1":
+        if data.get("schema") not in SESSION_SCHEMAS:
             continue
         if not data.get("scores"):
             continue
@@ -77,9 +103,15 @@ def aggregate(logs):
             "case": log["case_id"],
             "defects": scores["defects_present"],
             "caught_unaided": scores["caught_unaided"],
-            "caught_aided": scores["caught_aided"],
+            "caught_aided": _score(scores, "caught_final", "caught_aided"),
+            "caught_final": _score(scores, "caught_final", "caught_aided"),
+            "withdrawn": (len(scores["withdrawn_ids"]) if "withdrawn_ids" in scores else None),
+            "added_via_challenge": (len(scores["added_via_challenge_ids"])
+                                    if "added_via_challenge_ids" in scores else None),
+            "decisions_changed": _score(scores, "decisions_changed"),
+            "final_positions_recorded": "withdrawn_ids" in scores,
             "catch_rate_unaided": scores["catch_rate_unaided"],
-            "catch_rate_aided": scores["catch_rate_aided"],
+            "catch_rate_aided": _score(scores, "catch_rate_final", "catch_rate_aided"),
             "lift": scores["lift"],
             "precision_unaided": scores["precision_unaided"],
             "false_challenges": scores["false_challenges_unaided"],
@@ -89,8 +121,11 @@ def aggregate(logs):
             "confidence_gap_unaided": scores["confidence_gap_unaided"],
             "confidence_gap_aided": scores["confidence_gap_aided"],
             "soundness_rating": scores["soundness_rating"],
-            "teachback_completeness": scores["teachback_completeness"],
-            "teachback_accuracy": scores["teachback_accuracy"],
+            "teachback_completion": _score(scores, "teachback_completion",
+                                           "teachback_completeness"),
+            "disposition_accuracy": _score(scores, "disposition_accuracy", "teachback_accuracy"),
+            "reasoning_score": _score(scores, "reasoning_score"),
+            "reasoning_rubrics_scored": _score(scores, "reasoning_rubrics_scored"),
             "distractors_rejected": scores["distractors_rejected"],
             "distractors_shown": scores["distractors_shown"],
             "seconds_phase_1": scores["seconds_phase_1"],
@@ -104,6 +139,10 @@ def aggregate(logs):
     total_defects = sum(row["defects"] for row in rows)
     total_unaided = sum(row["caught_unaided"] for row in rows)
     total_aided = sum(row["caught_aided"] for row in rows)
+    withdrawn_rows = [row for row in rows if row["withdrawn"] is not None]
+    total_withdrawn = sum(row["withdrawn"] for row in withdrawn_rows)
+    total_added = sum(row["added_via_challenge"] for row in rows
+                      if row["added_via_challenge"] is not None)
 
     simulated_rows = [row for row in rows if row["simulated"]]
 
@@ -120,6 +159,10 @@ def aggregate(logs):
         "defects_total": total_defects,
         "caught_unaided_total": total_unaided,
         "caught_aided_total": total_aided,
+        "withdrawn_total": total_withdrawn if withdrawn_rows else None,
+        "added_via_challenge_total": total_added if withdrawn_rows else None,
+        "sessions_without_final_positions": len([row for row in rows
+                                                 if not row["final_positions_recorded"]]),
         "pooled_catch_rate_unaided": _pooled(total_unaided, total_defects),
         "pooled_catch_rate_aided": _pooled(total_aided, total_defects),
         "mean_catch_rate_unaided": _mean([row["catch_rate_unaided"] for row in rows]),
@@ -130,8 +173,9 @@ def aggregate(logs):
         "mean_confidence_gap_unaided": _mean([row["confidence_gap_unaided"] for row in rows]),
         "mean_confidence_gap_aided": _mean([row["confidence_gap_aided"] for row in rows]),
         "mean_soundness_rating": _mean([row["soundness_rating"] for row in rows]),
-        "mean_teachback_completeness": _mean([row["teachback_completeness"] for row in rows]),
-        "mean_teachback_accuracy": _mean([row["teachback_accuracy"] for row in rows]),
+        "mean_teachback_completion": _mean([row["teachback_completion"] for row in rows]),
+        "mean_disposition_accuracy": _mean([row["disposition_accuracy"] for row in rows]),
+        "reasoning_rubrics_scored_total": sum(row["reasoning_rubrics_scored"] or 0 for row in rows),
         "distractors_rejected_total": sum(row["distractors_rejected"] for row in rows),
         "distractors_shown_total": sum(row["distractors_shown"] for row in rows),
         "outside_key_total": sum(row["outside_key"] for row in rows),
@@ -229,7 +273,7 @@ def format_report(aggregated, title="Second Pass pilot results"):
     out.append("")
     simulated = summary.get("any_simulated")
     header = (("Reviewer", "Persona", "Case") if simulated else ("Reviewer", "Case")) + (
-        "Defects", "Unaided", "Aided", "Lift", "Precision", "Conf", "Gap", "Teach", "Sec 1", "Sec 2")
+        "Defects", "Unaided", "Aided", "Lift", "Precision", "Conf", "Gap", "Done", "Sec 1", "Sec 2")
     widths = ((9, 14, 16) if simulated else (9, 16)) + (8, 8, 7, 7, 10, 6, 7, 7, 7, 7)
     out.append("".join(name.ljust(width) for name, width in zip(header, widths)))
     out.append("-" * sum(widths))
@@ -244,7 +288,7 @@ def format_report(aggregated, title="Second Pass pilot results"):
             _p(row["precision_unaided"]),
             _p(row["confidence_unaided"]),
             _n(row["confidence_gap_unaided"]),
-            _p(row["teachback_completeness"]),
+            _p(row["teachback_completion"]),
             _n(row["seconds_phase_1"]),
             _n(row["seconds_phase_2"]),
         )
@@ -274,9 +318,14 @@ def format_report(aggregated, title="Second Pass pilot results"):
     out.append("Pooled over %s, every defect over every defect shown" % who)
     out.append("  Catch rate unaided        %s   (%d of %d)" % (
         _p(summary["pooled_catch_rate_unaided"]), summary["caught_unaided_total"], summary["defects_total"]))
-    out.append("  Catch rate aided          %s   (%d of %d)" % (
+    out.append("  Catch rate final          %s   (%d of %d)" % (
         _p(summary["pooled_catch_rate_aided"]), summary["caught_aided_total"], summary["defects_total"]))
     out.append("  Lift                      %s points" % _n(summary["pooled_lift"]))
+    out.append("  Decisions changed         %s withdrawn under challenge, %s added by it" % (
+        _n(summary["withdrawn_total"]), _n(summary["added_via_challenge_total"])))
+    if summary["sessions_without_final_positions"]:
+        out.append("  %d session(s) predate the final-position repair of 13 September 2026 and "
+                   "cannot report a withdrawal." % summary["sessions_without_final_positions"])
     if _at_ceiling(summary["pooled_catch_rate_unaided"]):
         out.append("  Ceiling: unaided catch was %s, so at most %s points of lift were available. "
                    "A small lift here is a ceiling, not a phase that did nothing." % (
@@ -300,15 +349,20 @@ def format_report(aggregated, title="Second Pass pilot results"):
     out.append("  Memo soundness, 1 to 5    %s" % _n(summary["mean_soundness_rating"]))
     out.append("")
     out.append("Teach-back and time over %s" % who)
-    out.append("  Completeness              %s" % _p(summary["mean_teachback_completeness"]))
-    out.append("  Accuracy                  %s" % _p(summary["mean_teachback_accuracy"]))
+    out.append("  Completion                %s   (word count, not reasoning quality)"
+               % _p(summary["mean_teachback_completion"]))
+    out.append("  Disposition accuracy      %s   (the verdict only)"
+               % _p(summary["mean_disposition_accuracy"]))
+    out.append("  Reasoning rubrics scored  %d, by a person. Nothing in this tool fills one in."
+               % summary["reasoning_rubrics_scored_total"])
     out.append("  Weak challenges refused   %d of %d" % (
         summary["distractors_rejected_total"], summary["distractors_shown_total"]))
     out.append("  Mean seconds, phase 1     %s" % _n(summary["mean_seconds_phase_1"]))
     out.append("  Mean seconds, phase 2     %s" % _n(summary["mean_seconds_phase_2"]))
     out.append("")
     out.append("What the numbers are")
-    for key in ("lift", "confidence_gap", "teachback_accuracy", "precision"):
+    for key in ("lift", "confidence_gap", "teachback_completion", "disposition_accuracy",
+                "reasoning_score", "precision"):
         out.append("  " + scoring.DEFINITIONS[key])
     return "\n".join(out)
 
@@ -336,11 +390,11 @@ def format_markdown(aggregated):
         lines.append("**Simulated reviewers.** %s" % _mix_line(summary))
         lines.append("")
     if simulated:
-        lines.append("| Reviewer | Persona | Case | Defects | Caught unaided | Caught aided | "
+        lines.append("| Reviewer | Persona | Case | Defects | Caught unaided | Caught final | "
                      "Confidence stated | Gap |")
         lines.append("|---|---|---|---|---|---|---|---|")
     else:
-        lines.append("| Reviewer | Case | Defects | Caught unaided | Caught aided | "
+        lines.append("| Reviewer | Case | Defects | Caught unaided | Caught final | "
                      "Confidence stated | Gap |")
         lines.append("|---|---|---|---|---|---|---|")
     for row in rows:
@@ -359,6 +413,12 @@ def format_markdown(aggregated):
         summary["caught_unaided_total"], _p(summary["pooled_catch_rate_unaided"]),
         summary["caught_aided_total"], _p(summary["pooled_catch_rate_aided"]),
         _p(summary["mean_confidence_unaided"]), _n(summary["mean_confidence_gap_unaided"])))
+    if summary.get("withdrawn_total") is not None:
+        lines.append("")
+        lines.append("Caught final is the reviewer's final position. %d defect(s) were withdrawn "
+                     "under challenge and %d were added by it; the original decisions are in the "
+                     "session logs." % (summary["withdrawn_total"],
+                                        summary["added_via_challenge_total"]))
     if summary.get("by_level"):
         lines.append("")
         lines.append("By instruction level, pooled. Catch rates are every defect over every "
@@ -385,7 +445,8 @@ def format_markdown(aggregated):
                                  level["level"], _p(level["catch_rate_unaided"]),
                                  _n(round(100.0 - level["catch_rate_unaided"], 1))))
     lines.append("")
-    for key in ("lift", "confidence_gap", "teachback_accuracy", "precision"):
+    for key in ("lift", "confidence_gap", "teachback_completion", "disposition_accuracy",
+                "reasoning_score", "precision"):
         lines.append(scoring.DEFINITIONS[key])
         lines.append("")
     return "\n".join(lines).rstrip()

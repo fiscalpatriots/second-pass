@@ -26,7 +26,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from second_pass import cases, challenger, scoring  # noqa: E402
+from second_pass import cases, challenger, matching, scoring  # noqa: E402
 
 LONG_REASON = (
     "The account moves in the other direction from the sentence and the amount ties to the "
@@ -43,9 +43,15 @@ def emit(line=""):
 
 
 def finding_for(defect):
-    """A finding written the way a reviewer who saw the defect would write it."""
+    """A finding written the way a reviewer who saw the defect would write it.
+
+    The keyword is an ASSERTION keyword, never a bare figure. Several case files
+    list the defect amount among the keywords, and a reviewer who writes only an
+    account and a number has identified the line without saying anything is
+    wrong with it, which since 13 September 2026 is not a detected defect.
+    """
     alias = defect["match"]["aliases"][0]
-    keyword = defect["match"]["keywords"][0]
+    keyword = matching.first_assertion_keyword(defect)
     return "Account %s %s, %s, %s" % (
         defect["line"], alias, keyword, int(abs(defect["amount"])))
 
@@ -146,13 +152,13 @@ class SmokeTest(unittest.TestCase):
                     case["id"], label,
                     scores["catch_rate_unaided"], scores["catch_rate_aided"], scores["lift"],
                     scores["precision_unaided"] if scores["precision_unaided"] is not None else 0.0,
-                    scores["teachback_completeness"], scores["confidence_gap_unaided"]))
+                    scores["teachback_completion"], scores["confidence_gap_unaided"]))
 
                 if label == "A perfect":
                     self.assertEqual(scores["catch_rate_unaided"], 100.0,
                                      "a reviewer who names every defect must score 100 unaided")
                     self.assertEqual(scores["catch_rate_aided"], 100.0)
-                    self.assertEqual(scores["teachback_accuracy"], 100.0)
+                    self.assertEqual(scores["disposition_accuracy"], 100.0)
                     self.assertEqual(scores["false_challenges_unaided"], 0)
                     self.assertEqual(scores["distractors_rejected"], scores["distractors_shown"])
                 if label == "B partial":
@@ -166,7 +172,7 @@ class SmokeTest(unittest.TestCase):
                     self.assertEqual(scores["catch_rate_unaided"], 0.0)
                     self.assertEqual(scores["catch_rate_aided"], 0.0,
                                      "accepting challenges without a reason must not count as catching")
-                    self.assertEqual(scores["teachback_completeness"], 0.0)
+                    self.assertEqual(scores["teachback_completion"], 0.0)
                     self.assertEqual(scores["distractors_rejected"], 0)
         emit()
 
@@ -220,7 +226,8 @@ class SmokeTest(unittest.TestCase):
         self.assertTrue(result["scores"]["catch_ceiling_unaided"])
         card = scoring.format_scorecard(result, case)
         self.assertIn("Ceiling:", card)
-        for key in ("lift", "confidence_gap", "teachback_accuracy", "precision"):
+        for key in ("lift", "confidence_gap", "teachback_completion", "disposition_accuracy",
+                    "reasoning_score", "precision"):
             self.assertIn(scoring.DEFINITIONS[key], card,
                           "the scorecard did not define %s beside the number" % key)
         partial = build_session(case, challenges, [finding_for(case["answer_key"][0])], "correct", 80)
