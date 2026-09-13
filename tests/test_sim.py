@@ -39,6 +39,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from second_pass import cases, cli, results, sim  # noqa: E402
+from second_pass import matching  # noqa: E402
 
 CASE_ID = "case-01-june"
 LONG_REASON = (
@@ -98,7 +99,7 @@ class SimDriverTest(unittest.TestCase):
     def finding_for(self, defect):
         return "Account %s %s, %s, %s" % (
             defect["line"], defect["match"]["aliases"][0],
-            defect["match"]["keywords"][0], int(abs(defect["amount"])))
+            matching.first_assertion_keyword(defect), int(abs(defect["amount"])))
 
     # --------------------------------------------------------------- the tests
 
@@ -145,32 +146,33 @@ class SimDriverTest(unittest.TestCase):
         emit("commit  %d challenges written, weak ones included and unmarked" % len(ids))
 
         # This reviewer accepts everything, including the weak challenges, so
-        # teach-back accuracy has to fall short of 100 percent.
+        # disposition accuracy has to fall short of 100 percent.
         self.write_teachback(lambda cid: "accept", confidence=90)
         self.assertEqual(run(["sim", "finish", "--dir", self.dir, "--allow-any-dir"]), 0)
 
         logs = [name for name in os.listdir(self.sessions) if name.endswith(".json")]
         self.assertEqual(len(logs), 1)
         log = json.loads(read(os.path.join(self.sessions, logs[0])))
-        self.assertEqual(log["schema"], "second-pass/session/v1")
+        self.assertEqual(log["schema"], "second-pass/session/v2")
         self.assertIs(log["simulated"], True)
         self.assertEqual(log["persona"], "experienced")
         self.assertEqual(log["reviewer"], "R1")
         self.assertEqual(log["state"], "finished")
         self.assertEqual(len(log["commitments"]), 3)
         self.assertEqual(log["confidence"]["post_teachback"], 90.0)
-        for field in ("challenger", "challenges", "teachbacks", "confidence", "timing",
-                      "scores", "match_trail", "events"):
+        for field in ("challenger", "challenges", "shown_to_participant", "prompt", "provider",
+                      "teachbacks", "confidence", "timing", "scores", "match_trail",
+                      "attempt", "responses", "scoring", "missing", "events"):
             self.assertIn(field, log, "the simulated log is not the same shape as a real one")
         scores = log["scores"]
         self.assertEqual(scores["caught_unaided"], 3)
         self.assertEqual(scores["distractors_rejected"], 0,
                          "a reviewer who accepts the weak challenges refuses none of them")
-        self.assertLess(scores["teachback_accuracy"], 100.0)
+        self.assertLess(scores["disposition_accuracy"], 100.0)
         emit("finish  simulated: true, persona experienced, caught %d of %d unaided and %d of %d "
-             "aided, teach-back accuracy %s%%" % (
+             "aided, disposition accuracy %s%% (the verdict only)" % (
                  scores["caught_unaided"], scores["defects_present"],
-                 scores["caught_aided"], scores["defects_present"], scores["teachback_accuracy"]))
+                 scores["caught_aided"], scores["defects_present"], scores["disposition_accuracy"]))
         emit()
 
     def test_commit_before_findings_is_refused(self):

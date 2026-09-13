@@ -21,9 +21,22 @@ not generated early and hidden, it does not exist until the reviewer has
 committed, so there is nothing in the process, in memory, or on the wire for a
 determined reviewer to look at ahead of time.
 
-Anonymity is enforced here too. A reviewer is R1 to R99 and nothing else. The
-pilot promises that no name appears anywhere in the entry, and a field that
-accepts free text is a field that eventually holds somebody's name.
+Pseudonymity is enforced here too, and pseudonymity is the accurate word. A
+reviewer is R1 to R99 and nothing else, no name is stored, and a field that
+accepts free text is a field that eventually holds somebody's name, so there is
+no such field. What that gives is a codename: in a live room a facilitator can
+see who is sitting at which laptop, and a reviewer can recognise their own
+answers. It is not anonymity and this package stopped calling it that on 13
+September 2026.
+
+The export is the other half of this file's job. A session log has to let a
+third party recompute every number from scratch, so it carries what the
+participant was actually shown, challenge tag and evidence included, the whole
+prompt, the case version, and the provider's raw answer. It also carries the
+minimum attempt record: an attempt block, one response block per item, and a
+scoring block. Fields nobody collected are present and null, and they are named
+in `missing`. A missing question stays missing rather than being filled with a
+default that would then be analysed as though somebody had answered it.
 """
 
 import datetime
@@ -95,12 +108,22 @@ def _utc_now():
 
 
 class ReviewSession(object):
-    def __init__(self, case, reviewer, provider="auto", root=None, min_reason_words=scoring.MIN_REASON_WORDS):
+    def __init__(self, case, reviewer, provider="auto", root=None,
+                 min_reason_words=scoring.MIN_REASON_WORDS, consent_version=None, role=None,
+                 form=None, mode=None, first_attempt=None, test_attempt=False):
         self.case = case
         self.reviewer = validate_reviewer(reviewer)
         self.provider = provider
         self.root = root
         self.min_reason_words = min_reason_words
+        # Attempt-record context. Every one of these may be unknown, and an
+        # unknown one stays None and is listed in the export's `missing` block.
+        self.consent_version = consent_version
+        self.role = role
+        self.form = form
+        self.mode = mode
+        self.first_attempt = first_attempt
+        self.test_attempt = bool(test_attempt)
         self.session_id = "%s_%s_%s" % (
             case["id"], self.reviewer, uuid.uuid4().hex[:8]
         )
@@ -119,6 +142,10 @@ class ReviewSession(object):
         }
         self.challenges = None
         self.challenger_meta = None
+        # Exactly what crossed to the participant, kept so the export does not
+        # have to reconstruct it and cannot quietly differ from it.
+        self.shown_to_participant = None
+        self.challenges_revealed_at = None
         self._clock_1 = None
         self._clock_2 = None
         self.result = None
@@ -189,6 +216,8 @@ class ReviewSession(object):
             self.case, provider=self.provider
         )
         self.state = "challenges_revealed"
+        self.shown_to_participant = challenger.public_challenges(self.challenges)
+        self.challenges_revealed_at = _utc_now()
         self._clock_2 = time.time()
         self._log("challenges_revealed", "commitment sealed, AI layer released", {
             "provider_used": self.challenger_meta["provider_used"],
@@ -256,32 +285,57 @@ class ReviewSession(object):
     # -------------------------------------------------------------------- log
 
     def to_log(self):
-        """Everything a third party needs to recompute the scores from scratch."""
+        """Everything a third party needs to recompute the scores from scratch.
+
+        Schema v2, 13 September 2026. v1 dropped the challenge tag and the
+        evidence bar, kept no prompt and no provider response, and had no
+        attempt record, so a reader could see the score without seeing what the
+        participant saw.
+        """
+        meta = self.challenger_meta or {}
+        scores = (self.result or {}).get("scores") or {}
         return {
-            "schema": "second-pass/session/v1",
+            "schema": "second-pass/session/v2",
             "session_id": self.session_id,
             "tool_version": __import__("second_pass").__version__,
             "case_id": self.case["id"],
             "case_file": os.path.basename(str(self.case.get("_path", ""))),
+            "case": {
+                "id": self.case["id"],
+                "schema": self.case.get("schema"),
+                "file": os.path.basename(str(self.case.get("_path", ""))),
+                "title": self.case.get("title"),
+                "period": self.case.get("period"),
+                "defects_planted": len(self.case["answer_key"]),
+                "weak_challenges_planted": len(self.case.get("distractors", [])),
+                "sources_declared": len(self.case.get("sources", [])),
+            },
             "reviewer": self.reviewer,
             "started_at": self.started_at,
             "ended_at": _utc_now(),
             "state": self.state,
-            "challenger": self.challenger_meta,
-            "challenges": [
-                {
-                    "id": challenge["id"],
-                    "line": challenge["line"],
-                    "account": challenge["account"],
-                    "amount": challenge["amount"],
-                    "sentence": challenge.get("sentence"),
-                    "citation": challenge["citation"],
-                    "question": challenge["question"],
-                    "source": challenge.get("source"),
-                    "truth": challenge.get("truth"),
-                }
-                for challenge in (self.challenges or [])
-            ],
+            "challenger": meta,
+            "prompt": {
+                "id": meta.get("prompt_id"),
+                "version": meta.get("prompt_version"),
+                "file": meta.get("prompt_file"),
+                "system_prompt": meta.get("system_prompt"),
+                "user_prompt": meta.get("user_prompt"),
+            },
+            "provider": {
+                "requested": meta.get("provider_requested"),
+                "used": meta.get("provider_used"),
+                "model": meta.get("model"),
+                "raw_response": meta.get("raw_response"),
+                "raw_response_note": meta.get("raw_response_note"),
+                "fallback_reason": meta.get("fallback_reason"),
+                "dropped": meta.get("dropped", []),
+            },
+            # The internal record, truth block and all. Scoring reads this.
+            "challenges": [dict(challenge) for challenge in (self.challenges or [])],
+            # The participant's copy, byte for byte as it crossed. Never the
+            # same object as the line above, and never carrying a truth block.
+            "shown_to_participant": self.shown_to_participant or [],
             "commitments": self.data["findings_unaided"],
             "aided_findings": self.data["findings_aided"],
             "teachbacks": self.data["teachbacks"],
@@ -305,8 +359,124 @@ class ReviewSession(object):
             # than have the tool file them as wrong, and nothing in this block
             # reduces a catch rate.
             "findings_outside_key": (self.result or {}).get("findings_outside_key"),
+            # Findings that named a planted account without making a finding of
+            # it, including any that accepted the commentary outright.
+            "findings_for_adjudication": (self.result or {}).get("findings_for_adjudication"),
+            "attempt": self._attempt_block(),
+            "responses": self._response_blocks(),
+            "scoring": self._scoring_block(scores),
+            "missing": self._missing_fields(),
             "events": self.events,
         }
+
+    # --------------------------------------------------- minimum attempt record
+
+    def _attempt_block(self):
+        """The attempt, as the handoff's minimum record names it."""
+        return {
+            "attempt_id": self.session_id,
+            "participant_pseudonym": self.reviewer,
+            "pseudonym_note": ("a codename, not anonymity. No name is stored, and in a live room "
+                               "a facilitator may still be able to link the codename to a person"),
+            "consent_version": self.consent_version,
+            "role": self.role,
+            "product_version": __import__("second_pass").__version__,
+            "case_version": self.case.get("schema"),
+            "case_id": self.case["id"],
+            "form": self.form,
+            "mode": self.mode,
+            "first_attempt": self.first_attempt,
+            "assistance_source": (self.challenger_meta or {}).get("provider_used"),
+            "started": self.started_at,
+            "completed": _utc_now() if self.state == "finished" else None,
+            "submission_state": ("scored and written locally" if self.state == "finished"
+                                 else "incomplete, state '%s'" % self.state),
+            "test_attempt": self.test_attempt,
+        }
+
+    def _response_blocks(self):
+        """One block per item shown. An unanswered item is present and null."""
+        detail = dict((row["challenge_id"], row)
+                      for row in ((self.result or {}).get("teachback_detail") or []))
+        revealed = self.challenges_revealed_at
+        blocks = []
+        for challenge in (self.challenges or []):
+            challenge_id = challenge["id"]
+            entry = self.data["teachbacks"].get(challenge_id)
+            row = detail.get(challenge_id, {})
+            answered = bool(entry)
+            blocks.append({
+                "item_id": challenge_id,
+                "item_line": challenge["line"],
+                "item_tag": challenge.get("tag"),
+                # The reviewer's own position before the list existed is the
+                # sealed commitment, which is one list for the whole phase
+                # rather than one entry per item, so it is referenced rather
+                # than copied per item.
+                "original_decision": "sealed in commitments before this item existed",
+                "actual_reason": (entry or {}).get("reason") if answered else None,
+                "evidence_references": list(challenge.get("evidence_refs") or []),
+                "confidence": None,
+                "assistance_revealed": revealed,
+                "final_decision": (entry or {}).get("verdict") if answered else None,
+                "final_reason": (entry or {}).get("reason") if answered else None,
+                "answered_at": (entry or {}).get("at") if answered else None,
+                "elapsed_active_seconds": None,
+                "skipped_or_missing_reason": None if answered else "not answered",
+                "feedback_revealed_at": None,
+                "completion": row.get("complete"),
+                "disposition_correct": row.get("disposition_correct"),
+                "reasoning_rubric": row.get("reasoning_rubric"),
+            })
+        return blocks
+
+    def _scoring_block(self, scores):
+        return {
+            "key_version": self.case.get("schema"),
+            "key_defects": [defect["id"] for defect in self.case["answer_key"]],
+            "decision_result": {
+                "caught_unaided_ids": scores.get("caught_unaided_ids"),
+                "withdrawn_ids": scores.get("withdrawn_ids"),
+                "added_via_challenge_ids": scores.get("added_via_challenge_ids"),
+                "caught_final_ids": scores.get("caught_final_ids"),
+                "missed_ids": scores.get("missed_ids"),
+                "basis": scores.get("final_outcome_basis"),
+            },
+            "human_rubric_scores": [
+                {"item_id": row["challenge_id"], "rubric": row["reasoning_rubric"]}
+                for row in ((self.result or {}).get("teachback_detail") or [])
+            ],
+            "scorer_id": (scores.get("reasoning_scored_by") or [None])[0],
+            "out_of_key_findings": (self.result or {}).get("findings_outside_key") or [],
+            "adjudication": (self.result or {}).get("findings_for_adjudication") or [],
+            "exclusion_reason": "test attempt, excluded from reporting" if self.test_attempt else None,
+            "final_resolution": None,
+        }
+
+    def _missing_fields(self):
+        """Fields the instrument does not collect. Named, never defaulted."""
+        missing = []
+        if self.consent_version is None:
+            missing.append("attempt.consent_version")
+        if self.role is None:
+            missing.append("attempt.role")
+        if self.form is None:
+            missing.append("attempt.form")
+        if self.mode is None:
+            missing.append("attempt.mode, practice or assessment")
+        if self.first_attempt is None:
+            missing.append("attempt.first_attempt")
+        missing.append("response.confidence, not asked per item in this instrument")
+        missing.append("response.elapsed_active_seconds, only phase totals are timed")
+        missing.append("response.feedback_revealed_at, feedback is revealed once at the debrief")
+        for challenge_id in self.outstanding_teachbacks():
+            missing.append("response.%s, no verdict and no reason" % challenge_id)
+        if not ((self.result or {}).get("teachback_detail") or []):
+            missing.append("scoring.human_rubric_scores, the session is not scored yet")
+        elif not any(row["reasoning_rubric"]["scored"]
+                     for row in (self.result or {}).get("teachback_detail")):
+            missing.append("scoring.human_rubric_scores, no person has scored the reasoning")
+        return missing
 
     def write_log(self, root=None):
         directory = sessions_dir(root or self.root)
