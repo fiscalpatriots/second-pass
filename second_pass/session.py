@@ -142,6 +142,10 @@ class ReviewSession(object):
         }
         self.challenges = None
         self.challenger_meta = None
+        # The checker run behind the mechanical challenges. It is produced at
+        # the same moment the list is, never before, so nothing about the ledger
+        # crosses to the participant ahead of their own commitment.
+        self.checker_run = None
         # Exactly what crossed to the participant, kept so the export does not
         # have to reconstruct it and cannot quietly differ from it.
         self.shown_to_participant = None
@@ -216,12 +220,14 @@ class ReviewSession(object):
             self.case, provider=self.provider
         )
         self.state = "challenges_revealed"
+        self.checker_run = (self.challenger_meta or {}).get("checker")
         self.shown_to_participant = challenger.public_challenges(self.challenges)
         self.challenges_revealed_at = _utc_now()
         self._clock_2 = time.time()
         self._log("challenges_revealed", "commitment sealed, AI layer released", {
             "provider_used": self.challenger_meta["provider_used"],
             "challenge_count": self.challenger_meta["challenge_count"],
+            "checker_run": (self.checker_run or {}).get("run_id"),
             "dropped": len(self.challenger_meta.get("dropped", [])),
             "fallback_reason": self.challenger_meta.get("fallback_reason"),
         })
@@ -315,6 +321,10 @@ class ReviewSession(object):
             "ended_at": _utc_now(),
             "state": self.state,
             "challenger": meta,
+            # The deterministic half, named. The arithmetic, direction,
+            # threshold and silence challenges in the list above were read out
+            # of this run of the published contract, not written by hand.
+            "checker": self.checker_run,
             "prompt": {
                 "id": meta.get("prompt_id"),
                 "version": meta.get("prompt_version"),

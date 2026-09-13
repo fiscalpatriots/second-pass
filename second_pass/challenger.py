@@ -30,7 +30,7 @@ import re
 import urllib.error
 import urllib.request
 
-from . import cases
+from . import cases, checker
 
 PROMPT_ID = "second-pass/challenger"
 PROMPT_VERSION = 2
@@ -352,7 +352,187 @@ def _focus_clause(defect, movements):
         cases.format_amount(amount), focus["what"], relation)
 
 
-def deterministic_challenges(case, max_challenges=None):
+# --------------------------------------------------- the checker, on any case
+#
+# The mechanical challenges no longer come from a template fired at an authored
+# defect. They come from a run of `second_pass.checker`, which is the same
+# contract the browser at checker.html runs, over the case's own ledger and its
+# own commentary. Four kinds of finding are mechanical, and the checker settles
+# all four without a person and without an answer key:
+#
+#     arithmetic   a figure that does not agree with the line it is written about
+#     direction    a direction word that disagrees with the sign of the movement
+#     threshold    a claim about the commentary rule that the rule as set refutes
+#     silence      a line that clears the rule with no sentence about it
+#
+# Whether a driver is real and whether the period is right are not mechanical.
+# Nothing here decides either, and the authored key still carries them.
+
+MECHANICAL_KINDS = ("arithmetic", "direction", "threshold", "silence")
+
+# Which authored defect types the checker settles on its own. A percent stated
+# as an absolute and a rounding that flips a conclusion are left with the
+# authored template: the first needs the sentence read before a template fits
+# it, and the second is a judgment about a ratio, not an arithmetic failure.
+MECHANICAL_BY_DEFECT_TYPE = {
+    "mismatched_amount": "arithmetic",
+    "wrong_sign": "direction",
+    "immaterial_over_explained": "threshold",
+    "missing_driver_material": "silence",
+}
+
+TAG_BY_MECHANICAL = {"arithmetic": "amount", "direction": "direction",
+                     "threshold": "threshold", "silence": "driver"}
+
+_CHECKER_QUESTION = {
+    "arithmetic": (
+        "A figure in {sentence_ref} does not agree with account {line} {account}, which moved "
+        "{amount}. Recompute it from the table, state the difference, and say where the figure in "
+        "the memo came from."
+    ),
+    "direction": (
+        "Account {line} {account} moved {amount} over the month, and {sentence_ref} states that "
+        "movement in the other direction. Recompute it from the table, say which way the account "
+        "actually went, and say what that does to the sentence."
+    ),
+    "threshold": (
+        "{sentence_ref} makes a claim about the commentary rule on account {line} {account}, which "
+        "moved {amount}. Test that movement against both legs of the threshold as it is set and say "
+        "whether the claim in the sentence survives."
+    ),
+    "silence": (
+        "Account {line} {account} moved {amount} and the commentary never mentions it. Test that "
+        "movement against both legs of the threshold, then say why a movement of that size cannot "
+        "be released without a driver and what you would ask for."
+    ),
+}
+
+
+def ledger_text(case):
+    """The case's accounts in the plainest shape the checker reads: account
+    number, name, prior, current, tab separated, no header row."""
+    lines = []
+    for account in case["accounts"]:
+        lines.append("%s\t%s\t%s\t%s" % (account["line"], account["name"],
+                                         account["prior"], account["current"]))
+    return "\n".join(lines)
+
+
+def memo_text(case):
+    """The commentary, each sentence carrying its own identifier as the label,
+    so a finding comes back against the sentence the case names."""
+    return "\n".join("%s. %s" % (sentence["id"], sentence["text"])
+                     for sentence in case["commentary"]["sentences"])
+
+
+def run_checker(case):
+    """One run of the published contract over this case. Deterministic, offline,
+    and identical to what checker.html produces on the same two panes."""
+    materiality = case.get("materiality") or {}
+    return checker.run_check(
+        ledger_text(case), memo_text(case),
+        dollar_floor=materiality.get("amount", 25000),
+        percent_floor=materiality.get("percent", 10),
+        rule="both", zero_prior="owing",
+        period=(case.get("period") or {}).get("current", ""),
+        memo_version=str(case.get("id") or ""),
+        company=(case.get("company") or {}).get("name", ""),
+        case_version=str(case.get("id") or ""))
+
+
+def _row_line(row, account_by_line):
+    """The account a finding row belongs to, where the case carries that line."""
+    for token in re.split(r",\s*", str(row.get("line") or "")):
+        if token in account_by_line:
+            return token
+    return None
+
+
+def checker_findings(case, result=None):
+    """The four mechanical kinds, read out of one checker run."""
+    result = result or run_checker(case)
+    account_by_line = cases.account_index(case)
+    sentence_ids = set(s["id"] for s in case["commentary"]["sentences"])
+    found = []
+    for row in result.rows:
+        if row.get("grp"):
+            continue
+        check = str(row.get("check") or "")
+        status = row.get("status")
+        if check.startswith("Figure ") and status == "failed":
+            kind = "arithmetic"
+        elif check == "Direction" and status == "failed":
+            kind = "direction"
+        elif check == "Threshold claim" and status == "failed":
+            kind = "threshold"
+        elif check == "Silence":
+            kind = "silence"
+        else:
+            continue
+        line = _row_line(row, account_by_line)
+        if not line:
+            continue
+        label = row.get("label")
+        found.append({
+            "kind": kind,
+            "line": line,
+            "sentence": label if label in sentence_ids else None,
+            "check": check,
+            "result": row.get("result"),
+            "finding": row.get("det"),
+            "evidence_id": row.get("ev"),
+        })
+    return found
+
+
+def _checker_challenge(finding, case, movements, account_by_line):
+    """One mechanical challenge, cited against the account's own movement."""
+    line = finding["line"]
+    movement = abs(movements[line])
+    sentence_ref = ("Sentence %s" % finding["sentence"] if finding["sentence"]
+                    else "The commentary")
+    question = _CHECKER_QUESTION[finding["kind"]].format(
+        line=line, account=account_by_line[line]["name"],
+        amount=cases.format_amount(movement), sentence_ref=sentence_ref)
+    return {
+        "line": line,
+        "account": account_by_line[line]["name"],
+        "amount": float(movement),
+        "sentence": finding["sentence"],
+        "tag": TAG_BY_MECHANICAL[finding["kind"]],
+        "evidence_requested": _EVIDENCE_BY_TYPE["missing_driver_material"]
+                              if finding["kind"] == "silence" else "",
+        "evidence_refs": [],
+        "question": question,
+        "template": "checker.%s" % finding["kind"],
+        "truth": {"kind": "checker", "ref": finding["evidence_id"],
+                  "type": finding["kind"], "finding": finding["finding"]},
+    }
+
+
+def checker_challenges(case, max_challenges=None):
+    """The mechanical challenge list for any case, with or without an answer key.
+
+    This is what makes the trainer run on a case nobody wrote a key for: paste a
+    ledger and a memo, and the four kinds the contract settles come back as
+    challenges with the same citation rule as every other challenge here.
+    """
+    result = run_checker(case)
+    account_by_line = cases.account_index(case)
+    movements = account_movements(case)
+    built = [_checker_challenge(f, case, movements, account_by_line)
+             for f in checker_findings(case, result)]
+    if max_challenges:
+        built = built[:max_challenges]
+    for index, challenge in enumerate(built, start=1):
+        challenge["id"] = "C%d" % index
+        challenge["citation"] = _citation(challenge)
+        challenge["source"] = "checker"
+        challenge["evidence"] = _evidence_line(challenge, case)
+    return built, result
+
+
+def _build_challenges(case, max_challenges=None, include_unkeyed=None):
     """Build the challenge list from the case's own answer key and distractors.
 
     The distractors are in the list on purpose. A challenge list a reviewer can
@@ -368,12 +548,34 @@ def deterministic_challenges(case, max_challenges=None):
     """
     account_by_line = cases.account_index(case)
     movements = account_movements(case)
+    answer_key = case.get("answer_key") or []
+    if include_unkeyed is None:
+        include_unkeyed = not answer_key
+
+    # One checker run, before anything is built. The mechanical challenges are
+    # read out of it rather than fired from a template, so the challenge a
+    # reviewer sees is the finding the published contract actually made.
+    result = run_checker(case)
+    unclaimed = checker_findings(case, result)
+
     built = []
-    for defect in case["answer_key"]:
+    for defect in answer_key:
         account = account_by_line[defect["line"]]
         movement = abs(movements[defect["line"]])
-        template, variant = _choose_template(defect, case)
+        kind = MECHANICAL_BY_DEFECT_TYPE.get(defect["type"])
+        settled = None
+        if kind:
+            for finding in unclaimed:
+                if finding["kind"] == kind and finding["line"] == defect["line"]:
+                    settled = finding
+                    break
         sentence_ref = "Sentence %s" % defect["sentence"] if defect.get("sentence") else "The commentary"
+        if settled:
+            unclaimed.remove(settled)
+            template = _CHECKER_QUESTION[kind]
+            variant = "checker." + kind
+        else:
+            template, variant = _choose_template(defect, case)
         question = template.format(
             line=defect["line"],
             account=account["name"],
@@ -395,8 +597,15 @@ def deterministic_challenges(case, max_challenges=None):
             "evidence_refs": list(defect.get("evidence_refs", [])),
             "question": question,
             "template": variant,
-            "truth": {"kind": "defect", "ref": defect["id"], "type": defect["type"]},
+            "truth": {"kind": "defect", "ref": defect["id"], "type": defect["type"],
+                      "settled_by": "checker" if settled else "answer key",
+                      "checker_finding": settled["finding"] if settled else None},
         })
+    if include_unkeyed:
+        # Findings the checker made that the key never authored. A case with no
+        # key is all of them; a case with one gets these only when asked for.
+        for finding in unclaimed:
+            built.append(_checker_challenge(finding, case, movements, account_by_line))
     for distractor in case.get("distractors", []):
         account = account_by_line[distractor["line"]]
         built.append({
@@ -420,14 +629,37 @@ def deterministic_challenges(case, max_challenges=None):
     for index, challenge in enumerate(built, start=1):
         challenge["id"] = "C%d" % index
         challenge["citation"] = _citation(challenge)
-        challenge["source"] = "deterministic"
+        challenge["source"] = ("checker" if challenge["truth"]["kind"] == "checker"
+                               else "deterministic")
         challenge["evidence"] = _evidence_line(challenge, case)
         failures = cases.validate_challenge_bindings(challenge, case)
         if failures:
             raise ChallengerError(
                 "the case pack built a challenge that does not bind to its own case: %s %s"
                 % (challenge["id"], "; ".join(failures)))
+    return built, result
+
+
+def deterministic_challenges(case, max_challenges=None, include_unkeyed=None):
+    """The challenge list alone. See _build_challenges for what goes into it."""
+    built, _result = _build_challenges(case, max_challenges, include_unkeyed)
     return built
+
+
+def checker_meta(result):
+    """What the checker run is, for the session log. The findings, the coverage
+    counts and the run identifier, so a reader can reproduce the mechanical half
+    of the list without rerunning anything."""
+    return {
+        "contract": checker.CONTRACT_VERSION,
+        "run_id": result.runId,
+        "source_version": result.srcV,
+        "coverage": dict(result.stats),
+        "policy": {"dollar_floor": result.floorD, "dollar_rule": "more than",
+                   "percent_floor": result.floorP, "percent_rule": "at least",
+                   "legs": result.rule, "zero_prior_balance": result.zero},
+        "queue_size": len(result.queue),
+    }
 
 
 def _evidence_line(challenge, case):
@@ -665,9 +897,11 @@ def generate_challenges(case, provider="auto", max_challenges=None):
         "case_id": case["id"],
         "case_schema": case.get("schema"),
         "case_file": os.path.basename(str(case.get("_path", ""))),
+        "checker": None,
     }
     if chosen == "deterministic":
-        challenges = deterministic_challenges(case, max_challenges)
+        challenges, result = _build_challenges(case, max_challenges)
+        meta["checker"] = checker_meta(result)
         meta["challenge_count"] = len(challenges)
         meta["raw_response"] = None
         meta["raw_response_note"] = ("the deterministic provider builds from the case file, so "
@@ -700,7 +934,8 @@ def generate_challenges(case, provider="auto", max_challenges=None):
         # header value in the exception text, and nothing here reads the key.
         meta["fallback_reason"] = "%s: %s" % (type(error).__name__, str(error)[:300])
         meta["provider_used"] = "deterministic"
-        challenges = deterministic_challenges(case, max_challenges)
+        challenges, result = _build_challenges(case, max_challenges)
+        meta["checker"] = checker_meta(result)
         meta["challenge_count"] = len(challenges)
         return challenges, meta
 
