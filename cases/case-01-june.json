@@ -18,6 +18,24 @@
     "basis": "Accounts shown are those with activity in either month."
   },
   "margin_definition": "Product gross margin is account 4000 less account 5000, divided by account 4000. Inbound freight is excluded.",
+  "sources": [
+    { "id": "SRC-GL", "name": "general ledger detail", "kind": "ledger_detail" },
+    { "id": "SRC-TB", "name": "trial balance, current and prior month", "kind": "ledger_detail" },
+    { "id": "SRC-JE", "name": "journal entry listing for the month", "kind": "journal_entry" },
+    { "id": "SRC-PAYROLL", "name": "payroll register", "kind": "schedule" },
+    { "id": "SRC-AP", "name": "accounts payable aging and accrual schedule", "kind": "schedule" },
+    { "id": "SRC-AR", "name": "accounts receivable aging", "kind": "schedule" },
+    { "id": "SRC-VOLUME", "name": "shipment and service volume schedule", "kind": "schedule" },
+    { "id": "SRC-PRICE", "name": "price and rate card with effective dates", "kind": "schedule" },
+    { "id": "SRC-DEPR", "name": "fixed asset register and depreciation schedule", "kind": "schedule" },
+    { "id": "SRC-DEBT", "name": "loan agreement and interest amortisation schedule", "kind": "contract" },
+    { "id": "SRC-COUNT", "name": "cycle count file and write-off detail", "kind": "count_sheet" },
+    { "id": "SRC-CUTOFF", "name": "cutoff testing worksheet for the period end", "kind": "reconciliation" },
+    { "id": "SRC-FREIGHT", "name": "inbound freight invoice file", "kind": "invoice", "lines": ["5100"] },
+    { "id": "SRC-REPAIRS", "name": "depot repair work orders and completion certificates", "kind": "invoice", "lines": ["6200"] },
+    { "id": "SRC-RESERVE", "name": "bad debt reserve calculation and customer correspondence", "kind": "schedule", "lines": ["6400"] },
+    { "id": "SRC-SOFTWARE", "name": "software subscription contracts and renewal schedule", "kind": "contract", "lines": ["6300"] }
+  ],
   "accounts": [
     { "line": "4000", "name": "Product revenue, distribution", "prior": 5240000, "current": 5612000 },
     { "line": "4100", "name": "Service revenue, equipment maintenance", "prior": 812000, "current": 1041000 },

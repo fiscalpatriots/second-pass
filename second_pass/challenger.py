@@ -390,7 +390,9 @@ def deterministic_challenges(case, max_challenges=None):
             "amount": float(movement),
             "sentence": defect.get("sentence"),
             "tag": cases.defect_tag(defect),
-            "evidence": defect.get("evidence") or _EVIDENCE_BY_TYPE.get(defect["type"], ""),
+            "evidence_requested": (defect.get("evidence")
+                                   or _EVIDENCE_BY_TYPE.get(defect["type"], "")),
+            "evidence_refs": list(defect.get("evidence_refs", [])),
             "question": question,
             "template": variant,
             "truth": {"kind": "defect", "ref": defect["id"], "type": defect["type"]},
@@ -403,7 +405,8 @@ def deterministic_challenges(case, max_challenges=None):
             "amount": float(abs(distractor.get("amount") or 0)),
             "sentence": distractor.get("sentence"),
             "tag": distractor.get("tag") or "amount",
-            "evidence": distractor.get("evidence", ""),
+            "evidence_requested": distractor.get("evidence", ""),
+            "evidence_refs": list(distractor.get("evidence_refs", [])),
             "question": distractor["text"],
             "template": "distractor.%s" % distractor.get("shape", "unshaped"),
             "truth": {"kind": "distractor", "ref": distractor["id"],
@@ -418,7 +421,35 @@ def deterministic_challenges(case, max_challenges=None):
         challenge["id"] = "C%d" % index
         challenge["citation"] = _citation(challenge)
         challenge["source"] = "deterministic"
+        challenge["evidence"] = _evidence_line(challenge, case)
+        failures = cases.validate_challenge_bindings(challenge, case)
+        if failures:
+            raise ChallengerError(
+                "the case pack built a challenge that does not bind to its own case: %s %s"
+                % (challenge["id"], "; ".join(failures)))
     return built
+
+
+def _evidence_line(challenge, case):
+    """The one string a reviewer reads, built from the two separate fields.
+
+    `evidence_requested` says what would count. `evidence_refs` name documents
+    the case actually holds. They are stored apart because only the second is
+    resolvable, and a challenge that invents a document has to fail validation
+    rather than be shown to a reviewer who then goes looking for it.
+    """
+    parts = []
+    requested = (challenge.get("evidence_requested") or "").strip()
+    if requested:
+        parts.append(requested)
+    labels = []
+    index = cases.source_index(case)
+    for reference in challenge.get("evidence_refs") or []:
+        resolved = cases.resolve_source(case, reference)
+        labels.append(index[resolved]["name"] if resolved else str(reference))
+    if labels:
+        parts.append("This case holds: %s." % "; ".join(labels))
+    return " ".join(parts).strip()
 
 
 def _citation(challenge):
@@ -510,78 +541,105 @@ def _names_another_account(question, line, account_by_line):
 
 
 def validate_challenges(raw_challenges, case, source):
-    """Enforce the citation rule and the approval ban. Returns (kept, dropped).
+    """Enforce the binding rules and the approval ban. Returns (kept, dropped).
 
-    Three controls run here on every challenge from every provider.
+    Two controls run here on every challenge from every provider.
 
-        the account has to exist in the table
-        the amount has to be a number, and it has to be that account's own
-            movement unless the text names the other account it belongs to
+        every identifier and amount has to bind to this case, which is
+            `cases.validate_challenge_bindings()`: the account is in the table,
+            the amount is the movement of that account or of another account the
+            text names, the sentence id is in the commentary, the tag is one of
+            the eight, and every evidence reference is in the case's sources
         the text must not approve anything
 
-    The middle one is new after pilot one. A challenge that cites the other
-    side's figure against the named account is worse than no challenge, because
-    a reviewer who does the arithmetic the tool asked for finds the tool wrong
-    and stops doing arithmetic. Dropping it is recorded, so the count of drops
-    is evidence about the model rather than a silent correction.
+    The first one was rewritten on 13 September 2026. It used to accept any
+    figure at all as long as the question text mentioned some other real
+    account, so an audit pushed 999,999,999 with a sentence id of NONEXISTENT
+    and the evidence reference "Imaginary document page 999" straight through.
+    Formatting the output was standing in for checking it. Every drop is
+    recorded, so the count of drops is evidence about the provider rather than a
+    silent correction.
     """
     account_by_line = cases.account_index(case)
-    movements = account_movements(case)
     kept = []
     dropped = []
     for index, item in enumerate(raw_challenges):
         line = str(item.get("line", "")).strip()
         question = (item.get("question") or "").strip()
         amount = item.get("amount")
-        if line not in account_by_line:
-            dropped.append({"index": index, "reason": "cites an account that is not in the table", "line": line})
-            continue
-        if not isinstance(amount, (int, float)):
-            dropped.append({"index": index, "reason": "no numeric amount, so the challenge cannot be recomputed", "line": line})
-            continue
         if not question:
             dropped.append({"index": index, "reason": "empty challenge text", "line": line})
             continue
         offending = contains_approval_language(question)
         if offending:
-            dropped.append({"index": index, "reason": "approval language: '%s'" % offending, "line": line})
+            dropped.append({"index": index, "reason": "approval language: '%s'" % offending,
+                            "line": line})
             continue
-        movement = abs(movements[line])
-        if round(abs(float(amount)), 2) != round(movement, 2):
-            other = _names_another_account(question, line, account_by_line)
-            if not other:
-                dropped.append({
-                    "index": index,
-                    "reason": ("cites %s against account %s, which moved %s, and names no other "
-                               "account the figure could belong to"
-                               % (cases.format_amount(abs(float(amount))), line,
-                                  cases.format_amount(movement))),
-                    "line": line,
-                })
-                continue
-        tag = str(item.get("tag") or "").strip().lower()
-        if tag not in cases.CHALLENGE_TAGS:
-            tag = "amount"
-        evidence = (item.get("evidence") or "").strip()
-        if evidence and contains_approval_language(evidence):
-            evidence = ""
+
+        tag = str(item.get("tag") or "").strip().lower() or None
+        evidence_requested = (item.get("evidence_requested") or item.get("evidence") or "").strip()
+        if evidence_requested and contains_approval_language(evidence_requested):
+            evidence_requested = ""
+        refs = item.get("evidence_refs")
+        if refs is None:
+            # A provider that put a document name in the free-text evidence
+            # field is citing a source, so it is read as one and has to resolve.
+            refs = ([evidence_requested] if evidence_requested
+                    and cases.resolve_source(case, evidence_requested) else [])
+        refs = [str(reference).strip() for reference in refs if str(reference).strip()]
+
+        candidate = {
+            "line": line,
+            "amount": amount,
+            "sentence": item.get("sentence"),
+            "tag": tag,
+            "evidence_requested": evidence_requested,
+            "evidence_refs": refs,
+            "question": question,
+        }
+        failures = cases.validate_challenge_bindings(candidate, case)
+        # The free-text field may describe a standard of evidence, which is not
+        # resolvable and is not meant to be. What it may not do is point at a
+        # specific document the case does not carry.
+        if evidence_requested and not refs and _looks_like_a_document(evidence_requested):
+            failures.append("cites evidence '%s', which is not in this case's sources inventory"
+                            % evidence_requested)
+        if failures:
+            dropped.append({"index": index, "reason": "; ".join(failures), "line": line,
+                            "failures": failures})
+            continue
+
         challenge = {
             "line": line,
             "account": account_by_line[line]["name"],
             "amount": abs(float(amount)),
             "sentence": item.get("sentence"),
-            "tag": tag,
-            "evidence": evidence,
+            "tag": tag or "amount",
+            "evidence_requested": evidence_requested,
+            "evidence_refs": refs,
             "question": question,
             "source": source,
             "template": "model",
             "truth": {"kind": "model", "ref": None, "type": None},
         }
+        challenge["evidence"] = _evidence_line(challenge, case)
         challenge["citation"] = _citation(challenge)
         kept.append(challenge)
     for index, challenge in enumerate(kept, start=1):
         challenge["id"] = "C%d" % index
     return kept, dropped
+
+
+# Words that mean the text is pointing at a document rather than describing a
+# standard of evidence. A description of a bar stays free text; a pointer at a
+# specific artefact has to resolve against the case.
+_DOCUMENT_WORDS = re.compile(
+    r"\b(page|exhibit|attachment|appendix|tab\s*\d|file\s+named|document\s+\d|"
+    r"report\s+\d|folder|screenshot|pdf)\b", re.IGNORECASE)
+
+
+def _looks_like_a_document(text):
+    return bool(_DOCUMENT_WORDS.search(text or ""))
 
 
 def generate_challenges(case, provider="auto", max_challenges=None):
@@ -599,14 +657,27 @@ def generate_challenges(case, provider="auto", max_challenges=None):
         "model": None,
         "dropped": [],
         "fallback_reason": None,
+        # The whole prompt and the whole answer, kept verbatim. A challenge list
+        # nobody can reproduce from the prompt that produced it is an assertion.
+        "system_prompt": None,
+        "user_prompt": None,
+        "raw_response": None,
+        "case_id": case["id"],
+        "case_schema": case.get("schema"),
+        "case_file": os.path.basename(str(case.get("_path", ""))),
     }
     if chosen == "deterministic":
         challenges = deterministic_challenges(case, max_challenges)
         meta["challenge_count"] = len(challenges)
+        meta["raw_response"] = None
+        meta["raw_response_note"] = ("the deterministic provider builds from the case file, so "
+                                     "there is no provider response to keep")
         return challenges, meta
 
     system_prompt, _template = load_prompt()
     user_prompt = render_user_prompt(case, max_challenges)
+    meta["system_prompt"] = system_prompt
+    meta["user_prompt"] = user_prompt
     try:
         if chosen == "anthropic":
             meta["model"] = ANTHROPIC_MODEL
@@ -616,6 +687,7 @@ def generate_challenges(case, provider="auto", max_challenges=None):
             text = _call_openai(system_prompt, user_prompt)
         else:
             raise ChallengerError("unknown provider '%s'" % chosen)
+        meta["raw_response"] = text
         parsed = _extract_json(text)
         kept, dropped = validate_challenges(parsed.get("challenges", []), case, chosen)
         meta["dropped"] = dropped
@@ -650,6 +722,8 @@ def public_challenges(challenges):
             "sentence": challenge.get("sentence"),
             "tag": challenge.get("tag"),
             "evidence": challenge.get("evidence", ""),
+            "evidence_requested": challenge.get("evidence_requested", ""),
+            "evidence_refs": list(challenge.get("evidence_refs") or []),
             "citation": challenge["citation"],
             "question": challenge["question"],
             "source": challenge.get("source", "deterministic"),

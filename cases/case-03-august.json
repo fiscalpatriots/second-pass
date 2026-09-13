@@ -18,6 +18,25 @@
     "basis": "Accounts shown are those with activity in either month."
   },
   "margin_definition": "Product gross margin is account 4000 less account 5000, divided by account 4000. Supplier rebates in account 4300 are recorded as other income and are outside the margin calculation.",
+  "sources": [
+    { "id": "SRC-GL", "name": "general ledger detail", "kind": "ledger_detail" },
+    { "id": "SRC-TB", "name": "trial balance, current and prior month", "kind": "ledger_detail" },
+    { "id": "SRC-JE", "name": "journal entry listing for the month", "kind": "journal_entry" },
+    { "id": "SRC-PAYROLL", "name": "payroll register", "kind": "schedule" },
+    { "id": "SRC-AP", "name": "accounts payable aging and accrual schedule", "kind": "schedule" },
+    { "id": "SRC-AR", "name": "accounts receivable aging", "kind": "schedule" },
+    { "id": "SRC-VOLUME", "name": "shipment and service volume schedule", "kind": "schedule" },
+    { "id": "SRC-PRICE", "name": "price and rate card with effective dates", "kind": "schedule" },
+    { "id": "SRC-DEPR", "name": "fixed asset register and depreciation schedule", "kind": "schedule" },
+    { "id": "SRC-DEBT", "name": "loan agreement and interest amortisation schedule", "kind": "contract" },
+    { "id": "SRC-COUNT", "name": "cycle count file and write-off detail", "kind": "count_sheet" },
+    { "id": "SRC-CUTOFF", "name": "cutoff testing worksheet for the period end", "kind": "reconciliation" },
+    { "id": "SRC-REBATE", "name": "supplier rebate agreements and the rebate accrual calculation", "kind": "contract", "lines": ["4300"] },
+    { "id": "SRC-TEMP", "name": "temporary labour agency invoices and hours detail", "kind": "invoice", "lines": ["6050"] },
+    { "id": "SRC-INSURANCE", "name": "insurance policy schedule and prepaid amortisation", "kind": "contract", "lines": ["6700"] },
+    { "id": "SRC-LEGAL", "name": "legal settlement memorandum and counsel correspondence", "kind": "management_representation", "lines": ["7300"] },
+    { "id": "SRC-MARKETING", "name": "trade show contracts and marketing spend detail", "kind": "contract", "lines": ["6800"] }
+  ],
   "accounts": [
     { "line": "4000", "name": "Product revenue, distribution", "prior": 5398000, "current": 5905000 },
     { "line": "4100", "name": "Service revenue, equipment maintenance", "prior": 1096000, "current": 985000 },

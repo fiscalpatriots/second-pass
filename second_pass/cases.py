@@ -30,6 +30,29 @@ trusted to a case author.
 5. Every challenge carries a one-word category tag, and a weak challenge's tag
    has to be one that a real defect in the same case also carries. A tag that
    only ever appeared on the planted weak leads would give them away.
+
+A sixth was added on 13 September 2026, after an external audit put a challenge
+through validation carrying an amount of 999,999,999, a sentence id of
+NONEXISTENT and the evidence reference "Imaginary document page 999", and the
+tool kept it because the question text happened to name a second real account.
+Output formatting was standing in for substantive validation.
+
+6. Every identifier and every amount a challenge binds has to resolve against
+   this case. The account exists in the table; the amount is the movement of
+   the account it is cited against, or of another account the text names; the
+   sentence id exists in the commentary; and every evidence reference resolves
+   to an entry in the case's `sources` inventory. `validate_challenge_bindings`
+   is the enforcing copy and it runs on every challenge from every provider,
+   deterministic and model alike.
+
+The inventory matters for a reason that is easy to miss. A challenge may ask
+for a *type* of evidence that does not exist yet, which is the whole point of
+asking: "a volume schedule tying to this account and this month" is a bar, not a
+document. What a challenge may not do is cite a document as though the case
+carried it. So the two are separate fields. `evidence_requested` is prose about
+what would count and is never resolved against anything. `evidence_refs` are
+references to documents this case actually holds, and each one has to be in
+`sources` or the challenge is dropped.
 """
 
 import json
@@ -109,6 +132,23 @@ DEFECT_TYPE_LABELS = {
     "rounding_flips_conclusion": "Rounding that flips a conclusion",
     "driver_wrong_account": "Driver explains the wrong account",
 }
+
+
+# What a case's source inventory may hold. A source is a document the case
+# says exists and a reviewer could ask for. It is not a document this repository
+# ships, and nothing here produces one: the inventory exists so that a challenge
+# citing a document can be checked against the documents the case claims.
+SOURCE_KINDS = (
+    "ledger_detail",
+    "schedule",
+    "journal_entry",
+    "contract",
+    "invoice",
+    "reconciliation",
+    "count_sheet",
+    "system_report",
+    "management_representation",
+)
 
 
 class CaseError(Exception):
@@ -204,6 +244,24 @@ def validate_case(case, path="<memory>"):
             require(line in seen_lines,
                     "subtotal %s names line '%s', which is not in the account table" % (subtotal["key"], line))
 
+    sources = case.get("sources")
+    require(isinstance(sources, list) and sources,
+            "a case needs a 'sources' inventory: the documents a reviewer could ask for. A "
+            "challenge may only cite a document this list carries.")
+    source_ids = set()
+    for source in sources:
+        for field in ("id", "name", "kind"):
+            require(field in source, "source %s is missing '%s'" % (source.get("id", "?"), field))
+        require(source["id"] not in source_ids, "duplicate source id '%s'" % source["id"])
+        source_ids.add(source["id"])
+        require(source["kind"] in SOURCE_KINDS,
+                "source %s has kind '%s', which is not one of: %s"
+                % (source["id"], source["kind"], ", ".join(SOURCE_KINDS)))
+        for line in source.get("lines", []):
+            require(line in seen_lines,
+                    "source %s names line '%s', which is not in the account table"
+                    % (source["id"], line))
+
     key = case["answer_key"]
     require(8 <= len(key) <= 12, "the answer key needs 8 to 12 defects, found %d" % len(key))
     defect_ids = set()
@@ -249,6 +307,11 @@ def validate_case(case, path="<memory>"):
             require(round(abs(float(focus["amount"])), 2) == round(amount, 2),
                     "defect %s has focus.amount %s and amount %s; they must agree"
                     % (defect["id"], focus["amount"], defect["amount"]))
+        for reference in defect.get("evidence_refs", []):
+            require(resolve_source(case, reference) is not None,
+                    "defect %s cites evidence '%s', which is not in this case's sources inventory"
+                    % (defect["id"], reference))
+
         counterparty = defect.get("counterparty")
         if counterparty:
             require(isinstance(counterparty, dict) and counterparty.get("line"),
@@ -388,6 +451,124 @@ def is_material(case, variance, prior):
 
 def account_index(case):
     return dict((account["line"], account) for account in case["accounts"])
+
+
+def source_index(case):
+    """Source id -> the source entry."""
+    return dict((source["id"], source) for source in case.get("sources", []))
+
+
+def resolve_source(case, reference):
+    """Return the source id a reference points at, or None.
+
+    A reference resolves on the source's id, or on its name appearing in the
+    reference text. Anything else is a document this case does not carry, and a
+    challenge citing one is dropped rather than shown to a reviewer who would
+    then go looking for it.
+    """
+    if not reference:
+        return None
+    text = str(reference).strip().lower()
+    if not text:
+        return None
+    for source in case.get("sources", []):
+        if text == str(source["id"]).strip().lower():
+            return source["id"]
+    for source in case.get("sources", []):
+        name = str(source["name"]).strip().lower()
+        if name and (name in text or text in name):
+            return source["id"]
+    return None
+
+
+def account_movements(case):
+    """Line -> current less prior. The only amount a challenge may cite."""
+    return dict((account["line"], round(float(account["current"]) - float(account["prior"]), 2))
+                for account in case["accounts"])
+
+
+def sentence_ids(case):
+    return set(sentence["id"] for sentence in case["commentary"].get("sentences", []))
+
+
+def _amount_ties(amount, movement):
+    return round(abs(float(amount)), 2) == round(abs(float(movement)), 2)
+
+
+def validate_challenge_bindings(challenge, case):
+    """Every identifier and amount a challenge binds, checked against this case.
+
+    Returns a list of failure strings, empty when the challenge binds cleanly.
+    The caller decides what to do with them; `challenger.validate_challenges`
+    drops the challenge and writes the reasons into the session log.
+
+    The amount rule is the one the audit broke. It used to be enough for the
+    question text to name some other account, and then any figure at all passed,
+    including 999,999,999 against a line that moved 372,000. The amount now has
+    to be the movement of the account it is cited against, or the movement of
+    the other account the text names. A figure tied to neither is not a
+    recomputation a reviewer can run.
+    """
+    failures = []
+    accounts = account_index(case)
+    movements = account_movements(case)
+
+    line = str(challenge.get("line", "")).strip()
+    if line not in accounts:
+        failures.append("cites account '%s', which is not in the table" % line)
+
+    truth = challenge.get("truth") or {}
+    # The one challenge allowed to cite a figure that does not tie: a planted
+    # weak challenge whose whole shape is a wrong recomputation the table
+    # refutes. A model challenge cannot claim this, because a model challenge
+    # never carries a planted truth block.
+    deliberate_misquote = (truth.get("kind") == "distractor"
+                           and truth.get("shape") == "bad_recomputation")
+
+    amount = challenge.get("amount")
+    if isinstance(amount, bool) or not isinstance(amount, (int, float)):
+        failures.append("no numeric amount, so the challenge cannot be recomputed")
+    elif deliberate_misquote:
+        pass
+    elif line in accounts and not _amount_ties(amount, movements[line]):
+        named = _other_account_named(challenge.get("question"), line, accounts)
+        if not named:
+            failures.append(
+                "cites %s against account %s, which moved %s, and names no other account the "
+                "figure could belong to" % (format_amount(abs(float(amount))), line,
+                                            format_amount(abs(movements[line]))))
+        elif not _amount_ties(amount, movements[named]):
+            failures.append(
+                "cites %s against account %s, which moved %s. The text names account %s, which "
+                "moved %s, so the figure ties to neither account and there is nothing to "
+                "recompute." % (format_amount(abs(float(amount))), line,
+                                format_amount(abs(movements[line])), named,
+                                format_amount(abs(movements[named]))))
+
+    sentence = challenge.get("sentence")
+    if sentence not in (None, "") and sentence not in sentence_ids(case):
+        failures.append("cites sentence '%s', which is not in this case's commentary" % sentence)
+
+    tag = challenge.get("tag")
+    if tag not in (None, "") and tag not in CHALLENGE_TAGS:
+        failures.append("carries tag '%s', which is not one of: %s" % (tag, ", ".join(CHALLENGE_TAGS)))
+
+    for reference in challenge.get("evidence_refs") or []:
+        if resolve_source(case, reference) is None:
+            failures.append("cites evidence '%s', which is not in this case's sources inventory"
+                            % reference)
+    return failures
+
+
+def _other_account_named(question, line, accounts):
+    """The other account from the table that the challenge text names, if any."""
+    text = (question or "").lower()
+    for other_line, account in accounts.items():
+        if other_line == line:
+            continue
+        if other_line.lower() in text or account["name"].lower() in text:
+            return other_line
+    return None
 
 
 def reviewer_view(case):
