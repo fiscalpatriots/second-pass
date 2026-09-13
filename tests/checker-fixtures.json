@@ -1,0 +1,1769 @@
+[
+  {
+    "id": "T01",
+    "name": "correct variance, both figures verified",
+    "required": "Verify both figures with roles and units; do not rely on the passing result alone.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. Rent expense increased by $30,000 (30%)."
+    },
+    "expect": [
+      {
+        "desc": "the dollar figure carries the movement role and the percent the relative movement role",
+        "get": "role.S1",
+        "op": "eq",
+        "value": "$30,000=dollars/absolute movement | 30%=percent/relative movement"
+      },
+      {
+        "desc": "both figures are reported, not just an overall pass",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$30,000 is the absolute movement"
+      },
+      {
+        "desc": "the percent is checked in its own right",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "30% is the relative movement"
+      },
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "coverage counts one checked sentence",
+        "get": "stats.checked",
+        "op": "eq",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "name": "balance mistaken for the change",
+    "required": "Fail the change claim or require role confirmation. Current balance is not the increase.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. Rent expense increased by $130,000 this month."
+    },
+    "expect": [
+      {
+        "desc": "the role read from \"by\" is the movement",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "$130,000=dollars/absolute movement"
+      },
+      {
+        "desc": "it never passes",
+        "get": "status.S1",
+        "op": "oneOf",
+        "value": [
+          "failed",
+          "needs review"
+        ]
+      },
+      {
+        "desc": "it fails",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the finding names what the figure actually is",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "is the current balance"
+      },
+      {
+        "desc": "nothing is counted as checked",
+        "get": "stats.checked",
+        "op": "eq",
+        "value": 0
+      },
+      {
+        "desc": "the failure is in the reviewer queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Failure"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "name": "wrong account, numeric coincidence",
+    "required": "Show conflicting binding as unresolved; do not clear insurance or erase its coverage need.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t5000\t8000",
+      "memo": "S1. Insurance expense increased by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the sentence binds the account it names",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "6200 Insurance expense (by account name)"
+      },
+      {
+        "desc": "the coincidence with rent is surfaced, not resolved",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "also exactly a figure on 6100 Rent expense"
+      },
+      {
+        "desc": "a binding conflict reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Binding conflict"
+      },
+      {
+        "desc": "insurance is not cleared",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "rent keeps its own coverage need",
+        "get": "account.6100.sentences",
+        "op": "eq",
+        "value": 0
+      },
+      {
+        "desc": "rent is reported as silent",
+        "get": "stats.silent",
+        "op": "eq",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "id": "T04",
+    "name": "sign reversed",
+    "required": "Preserve signed meaning and identify conflict with positive 30%.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. The change in rent expense was -30%."
+    },
+    "expect": [
+      {
+        "desc": "the memo's own sign is kept",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "written with a sign of its own"
+      },
+      {
+        "desc": "the conflict with the positive movement is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "30.0%"
+      },
+      {
+        "desc": "it does not pass",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "T05",
+    "name": "parenthesised percent is not supported by the line",
+    "required": "Parse common parentheses correctly or expose an unprocessed figure.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. Rent expense increased by $30,000 (80%)."
+    },
+    "expect": [
+      {
+        "desc": "the parenthesised percent is read, not dropped",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "80%=percent/relative movement"
+      },
+      {
+        "desc": "it does not pass",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the finding names what the line actually moved",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "80%"
+      }
+    ]
+  },
+  {
+    "id": "T06",
+    "name": "percentage points against a dollar balance",
+    "required": "Distinguish rate changes in percentage points from percent changes in dollar balances.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. Rent expense increased by 30 percentage points."
+    },
+    "expect": [
+      {
+        "desc": "the unit is percentage points, not percent",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "percentage points/rate change in points"
+      },
+      {
+        "desc": "it is not passed against the relative movement",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the finding says why",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "measure a change in a rate"
+      }
+    ]
+  },
+  {
+    "id": "T07",
+    "name": "extra numeric column",
+    "required": "Require explicit columns and reveal discarded fields before processing.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\t30000",
+      "memo": "S1. Rent expense increased by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the third column is reported as discarded",
+        "get": "flags.discarded",
+        "op": "eq",
+        "value": 1
+      },
+      {
+        "desc": "the column mapping is not treated as settled",
+        "get": "flags.colsUnconfirmed",
+        "op": "eq",
+        "value": true
+      },
+      {
+        "desc": "the discarded column reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Discarded column"
+      },
+      {
+        "desc": "no sentence reads better than needs review until the mapping is confirmed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the page says so",
+        "get": "pageText",
+        "op": "includes",
+        "value": "discarded"
+      }
+    ]
+  },
+  {
+    "id": "T08",
+    "name": "unquoted thousands in a comma separated ledger",
+    "required": "Reject ambiguous input or request delimiter/column mapping. Invalid comma formatting need not be guessed.",
+    "inputs": {
+      "ledger": "6100,Rent expense,100,000,130,000",
+      "memo": "S1. Rent expense increased by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the row is refused rather than read as 100 and 0",
+        "get": "ran",
+        "op": "eq",
+        "value": false
+      },
+      {
+        "desc": "the page says what was ambiguous",
+        "get": "pageText",
+        "op": "includes",
+        "value": "refused rather than guessed at"
+      },
+      {
+        "desc": "and names the thousands separator",
+        "get": "pageText",
+        "op": "includes",
+        "value": "unquoted thousands separator"
+      }
+    ]
+  },
+  {
+    "id": "T09",
+    "name": "duplicate account number",
+    "required": "Require unique identifiers or an explicit consolidation decision.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6100\tRent expense\t130000\t160000",
+      "memo": "S1. Account 6100 rent expense increased by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the duplicate is detected",
+        "get": "flags.dups",
+        "op": "eq",
+        "value": 1
+      },
+      {
+        "desc": "the sentence cannot be tied to one line",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the finding says so",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "appears on more than one row"
+      },
+      {
+        "desc": "the ambiguity reaches the queue",
+        "get": "queue",
+        "op": "includes",
+        "value": "no consolidation decision"
+      }
+    ]
+  },
+  {
+    "id": "T10",
+    "name": "zero prior balance",
+    "required": "Make zero-base treatment an explicit selected policy; do not pretend a percentage was computed.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t0\t30000",
+      "memo": "S1. Rent expense increased by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "no percentage is invented",
+        "get": "account.6100.pct",
+        "op": "isNull",
+        "value": null
+      },
+      {
+        "desc": "the selected policy is named on the page",
+        "get": "pageText",
+        "op": "includes",
+        "value": "percent undefined on a zero prior balance"
+      },
+      {
+        "desc": "and the policy in force is stated",
+        "get": "pageText",
+        "op": "includes",
+        "value": "treated as owing commentary"
+      },
+      {
+        "desc": "the policy carries into the prompt",
+        "get": "prompt",
+        "op": "includes",
+        "value": "treated as owing commentary"
+      },
+      {
+        "desc": "the default policy has the line owing commentary",
+        "get": "account.6100.clears",
+        "op": "eq",
+        "value": true
+      }
+    ]
+  },
+  {
+    "id": "T10b",
+    "name": "zero prior balance, excluded by policy",
+    "required": "The zero-base policy is selectable, with a default and a note.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t0\t30000",
+      "memo": "S1. Rent expense increased by $30,000.",
+      "zerobase": "exclude"
+    },
+    "expect": [
+      {
+        "desc": "the selected policy excludes the line",
+        "get": "account.6100.clears",
+        "op": "eq",
+        "value": false
+      },
+      {
+        "desc": "and it is stated",
+        "get": "pageText",
+        "op": "includes",
+        "value": "excluded from the rule"
+      },
+      {
+        "desc": "no silent line is claimed",
+        "get": "stats.silent",
+        "op": "eq",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "T11",
+    "name": "unmatched sentence",
+    "required": "Include all unresolved and unprocessed claims in the review record.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. New leases explain the movement."
+    },
+    "expect": [
+      {
+        "desc": "it is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "it is in the reviewer queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unmatched sentence"
+      },
+      {
+        "desc": "and in the prompt handed to a person",
+        "get": "prompt",
+        "op": "includes",
+        "value": "New leases explain the movement"
+      },
+      {
+        "desc": "the coverage strip counts it as not checked",
+        "get": "stats.notchecked",
+        "op": "eq",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "id": "T12",
+    "name": "formula-like account name on export",
+    "required": "Export user-controlled text as text; test harmless formula strings on reopening.",
+    "inputs": {
+      "ledger": "6100\t=1+1\t100000\t130000",
+      "memo": "S1. Account 6100 increased by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the CSV neutralises the formula",
+        "get": "csv",
+        "op": "includes",
+        "value": "\"'=1+1\""
+      },
+      {
+        "desc": "and never writes it bare at the start of a cell",
+        "get": "csv",
+        "op": "notIncludes",
+        "value": ",\"=1+1\""
+      },
+      {
+        "desc": "the JSON record keeps the original",
+        "get": "json",
+        "op": "includes",
+        "value": "\"=1+1\""
+      }
+    ]
+  },
+  {
+    "id": "T12b",
+    "name": "formula-like sentence text on export",
+    "required": "Export user-controlled text as text.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. =HYPERLINK(\"x\") rent expense increased by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the sentence cell is neutralised",
+        "get": "csv",
+        "op": "includes",
+        "value": "\"'=HYPERLINK"
+      },
+      {
+        "desc": "the JSON record keeps the original",
+        "get": "json",
+        "op": "includes",
+        "value": "=HYPERLINK"
+      }
+    ]
+  },
+  {
+    "id": "T13",
+    "name": "malformed source row",
+    "required": "Incomplete ledger status persists prominently; never claim every line was checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\tINVALID\t90000",
+      "memo": "S1. Rent expense increased by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the skipped row is counted",
+        "get": "stats.rowsSkipped",
+        "op": "eq",
+        "value": 1
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Skipped source row"
+      },
+      {
+        "desc": "the page says the statement was not covered in full",
+        "get": "pageText",
+        "op": "includes",
+        "value": "not covered in full"
+      },
+      {
+        "desc": "and the prompt says it too",
+        "get": "prompt",
+        "op": "includes",
+        "value": "Ledger rows skipped and never checked: 1"
+      }
+    ]
+  },
+  {
+    "id": "T14",
+    "name": "dollar boundary is more than",
+    "required": "Preserve if policy is strictly greater than $25,000; test both sides of boundary.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t125000",
+      "memo": "S1. Rent expense increased by $25,000."
+    },
+    "expect": [
+      {
+        "desc": "exactly the floor does not meet the dollar leg",
+        "get": "account.6100.legD",
+        "op": "eq",
+        "value": false
+      },
+      {
+        "desc": "so the line owes no commentary",
+        "get": "account.6100.clears",
+        "op": "eq",
+        "value": false
+      },
+      {
+        "desc": "the rule is stated as more than",
+        "get": "pageText",
+        "op": "includes",
+        "value": "Dollar leg (more than $25,000): not met"
+      }
+    ]
+  },
+  {
+    "id": "T14b",
+    "name": "a cent over the dollar boundary",
+    "required": "Test both sides of boundary, unrounded.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t125000.01",
+      "memo": "S1. Rent expense increased by $25,000.01."
+    },
+    "expect": [
+      {
+        "desc": "a cent over the floor does meet the dollar leg",
+        "get": "account.6100.legD",
+        "op": "eq",
+        "value": true
+      }
+    ]
+  },
+  {
+    "id": "T15",
+    "name": "percent boundary is at least",
+    "required": "Preserve if policy is at least 10%; use unrounded percentage for decision.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t300000\t330000",
+      "memo": "S1. Rent expense increased by $30,000 (10%)."
+    },
+    "expect": [
+      {
+        "desc": "exactly the floor meets the percent leg",
+        "get": "account.6100.legP",
+        "op": "eq",
+        "value": true
+      },
+      {
+        "desc": "the line clears the rule",
+        "get": "account.6100.clears",
+        "op": "eq",
+        "value": true
+      },
+      {
+        "desc": "the rule is stated as at least",
+        "get": "pageText",
+        "op": "includes",
+        "value": "Percent leg (at least 10 percent): met"
+      },
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "T15b",
+    "name": "unrounded percent below the boundary",
+    "required": "Use the unrounded percentage for the decision, not the displayed one.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t300000\t329999",
+      "memo": "S1. Rent expense increased by $29,999."
+    },
+    "expect": [
+      {
+        "desc": "9.9997 percent displays as 10.0 percent and still fails the percent leg",
+        "get": "account.6100.legP",
+        "op": "eq",
+        "value": false
+      },
+      {
+        "desc": "the displayed percent rounds to the floor",
+        "get": "pageText",
+        "op": "includes",
+        "value": "10.0% of the prior balance"
+      }
+    ]
+  },
+  {
+    "id": "T16",
+    "name": "ordinary numeric text",
+    "required": "Either support ordinary numeric text or mark it unprocessed; do not clear it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. Rent expense increased by 90000."
+    },
+    "expect": [
+      {
+        "desc": "the bare number is read",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "90000=dollars/absolute movement"
+      },
+      {
+        "desc": "the run says how it read it",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "ordinary number with no currency punctuation"
+      },
+      {
+        "desc": "it is not cleared",
+        "get": "status.S1",
+        "op": "ne",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "it fails against the change",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "T17",
+    "name": "unresolved percent carried to the end",
+    "required": "Carry unresolved arithmetic status into the final record and prompt.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "S1. Rent expense increased by $30,000, or 80%."
+    },
+    "expect": [
+      {
+        "desc": "the restated percent takes the relative movement role",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "80%=percent/relative movement"
+      },
+      {
+        "desc": "the sentence never reads as checked",
+        "get": "status.S1",
+        "op": "ne",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "it is not in the survivors list",
+        "get": "survivors",
+        "op": "notIncludes",
+        "value": "S1"
+      },
+      {
+        "desc": "it is in the queue",
+        "get": "queue",
+        "op": "includes",
+        "value": "80%"
+      },
+      {
+        "desc": "and in the prompt, verbatim",
+        "get": "prompt",
+        "op": "includes",
+        "value": "80%"
+      },
+      {
+        "desc": "the prompt does not claim it holds",
+        "get": "prompt",
+        "op": "notIncludes",
+        "value": "The mechanical work is done"
+      }
+    ]
+  },
+  {
+    "id": "T18",
+    "name": "Halyard sample end to end, case halyard-v3",
+    "required": "The CHECKER.md expected outputs for the Halyard sample, generated from cases/halyard-v3.json.",
+    "sample": "halyard",
+    "expect": [
+      {
+        "desc": "the sample carries the shared case version",
+        "get": "json",
+        "op": "includes",
+        "value": "\"caseVersion\": \"halyard-v3\""
+      },
+      {
+        "desc": "fourteen ledger rows read",
+        "get": "stats.rowsUsed",
+        "op": "eq",
+        "value": 14
+      },
+      {
+        "desc": "no row skipped",
+        "get": "stats.rowsSkipped",
+        "op": "eq",
+        "value": 0
+      },
+      {
+        "desc": "twelve memo sentences, the two silent lines carrying none",
+        "get": "stats.sent",
+        "op": "eq",
+        "value": 12
+      },
+      {
+        "desc": "card 1 fails: $6,500 is not the movement",
+        "get": "status.1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "card 1 names the real change",
+        "get": "finding.1",
+        "op": "includes",
+        "value": "-$65,000"
+      },
+      {
+        "desc": "card 1's threshold claim is false and is caught",
+        "get": "finding.1",
+        "op": "includes",
+        "value": "Threshold claim: FAIL"
+      },
+      {
+        "desc": "card 2's figure has no role in the words",
+        "get": "status.2",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "card 3 fails on direction",
+        "get": "status.3",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "card 3 names the rise",
+        "get": "finding.3",
+        "op": "includes",
+        "value": "5100 Inbound freight rose"
+      },
+      {
+        "desc": "card 4 is checked within scope",
+        "get": "status.4",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "card 8 fails: $42,000 is not the $47,000 change",
+        "get": "status.8",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "card 10's threshold claim is checked and true",
+        "get": "finding.10",
+        "op": "includes",
+        "value": "Threshold claim: PASS"
+      },
+      {
+        "desc": "card 13's gross profit figures are reported as computed across two lines",
+        "get": "finding.13",
+        "op": "includes",
+        "value": "less the prior balance on 5000 Cost of product sold"
+      },
+      {
+        "desc": "and card 13 is not passed on them",
+        "get": "status.13",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "card 13's margins tie to the gross margin ratio",
+        "get": "finding.13",
+        "op": "includes",
+        "value": "Product gross margin, prior month"
+      },
+      {
+        "desc": "6000 Warehouse wages is a silent line",
+        "get": "stats.silent",
+        "op": "eq",
+        "value": 1
+      },
+      {
+        "desc": "and it is named",
+        "get": "queue",
+        "op": "includes",
+        "value": "Warehouse wages"
+      },
+      {
+        "desc": "4000 clears the dollar leg only",
+        "get": "account.4000.legP",
+        "op": "eq",
+        "value": false
+      },
+      {
+        "desc": "so no commentary is owed on it",
+        "get": "account.4000.clears",
+        "op": "eq",
+        "value": false
+      },
+      {
+        "desc": "the coverage strip is not a failure count alone",
+        "get": "pageText",
+        "op": "includes",
+        "value": "Checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "T18b",
+    "name": "Brightwater sample end to end, case brightwater-v2",
+    "required": "The CHECKER.md expected outputs for the Brightwater sample, generated from cases/brightwater-v2.json.",
+    "sample": "brightwater",
+    "expect": [
+      {
+        "desc": "the sample carries the shared case version",
+        "get": "json",
+        "op": "includes",
+        "value": "\"caseVersion\": \"brightwater-v2\""
+      },
+      {
+        "desc": "five ledger rows, five sentences",
+        "get": "stats.rowsUsed",
+        "op": "eq",
+        "value": 5
+      },
+      {
+        "desc": "five sentences",
+        "get": "stats.sent",
+        "op": "eq",
+        "value": 5
+      },
+      {
+        "desc": "card 1 fails on direction",
+        "get": "status.1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "card 2 is checked within scope",
+        "get": "status.2",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "card 3, the timing trap, needs review on an unstated role",
+        "get": "status.3",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "card 5 fails: $44,900 is not the $54,900 change",
+        "get": "status.5",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "nothing is silent",
+        "get": "stats.silent",
+        "op": "eq",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "T19",
+    "name": "Kestrel QuickBooks sample end to end",
+    "required": "The CHECKER.md expected outputs for the Kestrel sample.",
+    "sample": "kestrel",
+    "expect": [
+      {
+        "desc": "six account rows",
+        "get": "stats.rowsUsed",
+        "op": "eq",
+        "value": 6
+      },
+      {
+        "desc": "no account row skipped",
+        "get": "stats.rowsSkipped",
+        "op": "eq",
+        "value": 0
+      },
+      {
+        "desc": "the four numeric columns are named, so the mapping is confirmed",
+        "get": "flags.colsUnconfirmed",
+        "op": "eq",
+        "value": false
+      },
+      {
+        "desc": "Jul is read as current and Jun as prior",
+        "get": "account.4000.prior",
+        "op": "eq",
+        "value": 161500
+      },
+      {
+        "desc": "line 3 fails on direction",
+        "get": "status.3",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "line 5 fails on the change it claims",
+        "get": "status.5",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "line 5 names the real change",
+        "get": "finding.5",
+        "op": "includes",
+        "value": "$35,300"
+      },
+      {
+        "desc": "line 4 passes the flat test",
+        "get": "finding.4",
+        "op": "includes",
+        "value": "Direction: PASS"
+      },
+      {
+        "desc": "4000 is silent",
+        "get": "stats.silent",
+        "op": "eq",
+        "value": 1
+      },
+      {
+        "desc": "the three section totals tie",
+        "get": "pageText",
+        "op": "includes",
+        "value": "TIES"
+      },
+      {
+        "desc": "Gross Profit is kept out",
+        "get": "pageText",
+        "op": "includes",
+        "value": "KEPT OUT"
+      },
+      {
+        "desc": "line 1 reads $57.5k as the movement",
+        "get": "role.1",
+        "op": "includes",
+        "value": "$57.5k=dollars/absolute movement"
+      }
+    ]
+  },
+  {
+    "id": "T20",
+    "name": "N01 negation, did not increase",
+    "required": "Negation is read: needs review, never checked within scope.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense did not increase by $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the negated sentence is not cleared",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the negation is named on the figure",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "stands in a clause the words negate"
+      },
+      {
+        "desc": "the direction claim is not settled",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "NEGATED, NOT SETTLED"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Negated claim"
+      }
+    ]
+  },
+  {
+    "id": "T21",
+    "name": "N02 an unparsed percentage in words",
+    "required": "A figure the grammar cannot read leaves the sentence not checked and goes to the queue.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a change of ninety percent."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the words-written figure is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "a figure written in words"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "T22",
+    "name": "N03 euro amount",
+    "required": "A currency the checker does not read must not inherit a dollar clearance.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by €30,000."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the currency is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "a currency the checker does not read"
+      },
+      {
+        "desc": "nothing was compared as dollars",
+        "get": "role.S1",
+        "op": "eq",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "T23",
+    "name": "N04 sterling amount",
+    "required": "Same rule for any non-dollar currency.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by £30,000."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the currency is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "a currency the checker does not read"
+      }
+    ]
+  },
+  {
+    "id": "T24",
+    "name": "N05 a three digit number in a claim position",
+    "required": "A number too short for the figure reader is not dropped in silence.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by 800."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the span is reported",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "a number standing where the words put a claim"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "T25",
+    "name": "N06 a year shaped number used as a figure",
+    "required": "A four digit number that reads as a year is still a claim when the words make it one.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by 1999."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "1999 is reported rather than discarded",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Unparsed 1999"
+      }
+    ]
+  },
+  {
+    "id": "T26",
+    "name": "N07 a dropped negative sign",
+    "required": "The sign is carried through extraction and a sign that disagrees with the ledger fails.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by -30000."
+    },
+    "expect": [
+      {
+        "desc": "the sign conflict fails",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the sign is kept on the figure",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "-30000=dollars"
+      },
+      {
+        "desc": "the disagreement is stated",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "written with a sign of its own"
+      }
+    ]
+  },
+  {
+    "id": "T27",
+    "name": "N08 control, two accounts each with its own amount",
+    "required": "Correct clause binding still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000 and Insurance expense rose $45,000."
+    },
+    "expect": [
+      {
+        "desc": "both clauses check",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the rent amount is bound to rent",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$30,000 is the absolute movement on 6100 Rent expense"
+      },
+      {
+        "desc": "the insurance amount is bound to insurance",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$45,000 is the absolute movement on 6200 Insurance expense"
+      }
+    ]
+  },
+  {
+    "id": "T28",
+    "name": "N09 amounts swapped between two named accounts",
+    "required": "An amount bound to the wrong account must not clear.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $45,000 and Insurance expense rose $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the sentence does not clear",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the rent clause is tested against rent",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "the absolute movement on 6100 Rent expense is $30,000"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Failure"
+      }
+    ]
+  },
+  {
+    "id": "T29",
+    "name": "N10 control, a percent that disagrees",
+    "required": "A wrong percent still fails.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 (90%)."
+    },
+    "expect": [
+      {
+        "desc": "it fails",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the true movement is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "30.0%"
+      }
+    ]
+  },
+  {
+    "id": "T30",
+    "name": "N11 control, a percent that agrees",
+    "required": "A right percent still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, 30%."
+    },
+    "expect": [
+      {
+        "desc": "it clears",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "T31",
+    "name": "N12 an account number spent as a figure",
+    "required": "A number the memo spends as an amount is a claim, not a reference, so it binds nothing.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000 and increased by 6200."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the span is reported",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Unparsed 6200"
+      },
+      {
+        "desc": "insurance is not taken off the silent list",
+        "get": "stats.silent",
+        "op": "eq",
+        "value": 1
+      },
+      {
+        "desc": "the silent line is named",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Silent line"
+      }
+    ]
+  },
+  {
+    "id": "T32",
+    "name": "N13 control, a second clause naming its own account and balance",
+    "required": "Clause binding reads the second clause on its own terms.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000; Insurance expense remained at $95,000."
+    },
+    "expect": [
+      {
+        "desc": "it clears",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the balance is bound to insurance",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$95,000 is the current balance on 6200 Insurance expense"
+      }
+    ]
+  },
+  {
+    "id": "T33",
+    "name": "N14 control, a direction that disagrees in the second clause",
+    "required": "A wrong direction inside a clause still fails.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000, but Insurance expense fell $45,000."
+    },
+    "expect": [
+      {
+        "desc": "it fails",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the direction is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "the memo says \"fell\""
+      }
+    ]
+  },
+  {
+    "id": "T34",
+    "name": "N15 control, a signed percent that disagrees",
+    "required": "A sign written into a percent is compared as written.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, and the change was -30 percent."
+    },
+    "expect": [
+      {
+        "desc": "it fails",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the sign conflict is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "written with a sign of its own"
+      }
+    ]
+  },
+  {
+    "id": "T35",
+    "name": "N16 a negation in a later clause",
+    "required": "A negation anywhere in the sentence voids the direction claim it attaches to.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000; the increase did not occur."
+    },
+    "expect": [
+      {
+        "desc": "the sentence does not clear",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the direction is left open",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "NEGATED, NOT SETTLED"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Negated claim"
+      }
+    ]
+  },
+  {
+    "id": "T36",
+    "name": "N17 a multiplier the grammar does not carry",
+    "required": "0.30 times is not a figure the checker reads.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 0.30 times the prior balance."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unit is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "a unit the checker does not read"
+      }
+    ]
+  },
+  {
+    "id": "T37",
+    "name": "N18 an explicit currency code",
+    "required": "USD 90000 is an unsupported format, not a dollar figure.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by USD 90000."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the currency is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "a currency the checker does not read"
+      }
+    ]
+  },
+  {
+    "id": "T38",
+    "name": "N19 a scale word after a bare number",
+    "required": "30 thousand is not read as 30,000.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by 30 thousand."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "T39",
+    "name": "N20 basis points",
+    "required": "A basis point is a unit the grammar does not carry.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a 30 basis point increase."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unit is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "a unit the checker does not read"
+      }
+    ]
+  },
+  {
+    "id": "T40",
+    "name": "N21 control, two sentences each with one account",
+    "required": "A sentence boundary binds each figure on its own.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000 (30%). Insurance expense rose $45,000."
+    },
+    "expect": [
+      {
+        "desc": "the first clears",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the second clears",
+        "get": "status.S2",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "T41",
+    "name": "N22 a percent whose role the words do not give",
+    "required": "An unknown role stops a checked conclusion before any value comparison.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense changed 30%."
+    },
+    "expect": [
+      {
+        "desc": "it is held for review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the role is reported unknown",
+        "get": "role.S1",
+        "op": "eq",
+        "value": "30%=percent/unknown"
+      },
+      {
+        "desc": "equalling is not being",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Equalling a figure is not the same as being that figure"
+      },
+      {
+        "desc": "the role dropdown is offered",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Confirm the role beside this row"
+      }
+    ]
+  },
+  {
+    "id": "T42",
+    "name": "N23 control, a supplied ratio",
+    "required": "A percent the words call a ratio is tested against the ratio pane.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, at 30%.",
+      "ratios": "Other ratio = 6100 / 6100 * 0.30"
+    },
+    "expect": [
+      {
+        "desc": "it is held for review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "T43",
+    "name": "N24 control, a bare account word with its own balance",
+    "required": "A distinctive word in a clause is enough to bind that clause.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000 and insurance remained at $95,000."
+    },
+    "expect": [
+      {
+        "desc": "it clears",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "T44",
+    "name": "units mismatch, percentage points against a dollar line",
+    "required": "Points measure a change in a rate; a dollar balance has no rate to move.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a rise of 30 percentage points."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is held for review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the dollar figure is still checked in its own right",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$30,000 is the absolute movement on 6100 Rent expense"
+      },
+      {
+        "desc": "the points figure is not compared with a dollar balance",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "which measure a change in a rate"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unresolved figure"
+      }
+    ]
+  },
+  {
+    "id": "T45",
+    "name": "a figure standing in a different sentence from its account",
+    "required": "A binding never carries across a sentence boundary.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose sharply in June.\nThe figure was $30,000."
+    },
+    "expect": [
+      {
+        "desc": "the sentence naming the account carries nothing to check",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the sentence carrying the figure is not cleared",
+        "get": "status.S2",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the figure is not bound by the coincidence",
+        "get": "finding.S2",
+        "op": "includes",
+        "value": "The checker does not settle that by the coincidence"
+      },
+      {
+        "desc": "both reach the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unmatched sentence"
+      }
+    ]
+  },
+  {
+    "id": "T46",
+    "name": "a percent of a subtotal the checker was never given",
+    "required": "A share of a total is not the movement on the line, and the words do not say which it is.",
+    "inputs": {
+      "ledger": "4000\tProduct revenue\t5240000\t5612000\n4100\tService revenue\t1000000\t1100000",
+      "memo": "Product revenue rose $372,000, and the line is 12.0% of total revenue."
+    },
+    "expect": [
+      {
+        "desc": "it is held for review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the role is reported unknown",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "12.0%=percent/unknown"
+      },
+      {
+        "desc": "the role dropdown is offered",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Confirm the role beside this row"
+      },
+      {
+        "desc": "the dollar movement is still checked",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$372,000 is the absolute movement on 4000 Product revenue"
+      }
+    ]
+  },
+  {
+    "id": "T47",
+    "name": "a currency written in thousands against a ledger in whole dollars",
+    "required": "A scale word the grammar does not carry leaves the amount unread.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30.0 thousand on the annual increase."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the scale word is named",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "a scale word the checker does not carry"
+      },
+      {
+        "desc": "nothing was compared",
+        "get": "role.S1",
+        "op": "eq",
+        "value": ""
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "T48",
+    "name": "a memo line quoting last year",
+    "required": "A stale comparative fails; the year beside it is not read as a claim.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, against $18,000 in June 2025."
+    },
+    "expect": [
+      {
+        "desc": "the stale figure fails",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "it is reported against the bound line",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$18,000: the words around it do not say what it is and it equals nothing on the bound line"
+      },
+      {
+        "desc": "the year is not treated as a figure",
+        "get": "queueKinds",
+        "op": "notIncludes",
+        "value": "Unparsed figure"
+      },
+      {
+        "desc": "2025 is not extracted",
+        "get": "role.S1",
+        "op": "notIncludes",
+        "value": "2025"
+      }
+    ]
+  }
+]
