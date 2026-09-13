@@ -34,7 +34,11 @@ and after. **SIMULATION.md** holds the method, the model behind each instruction
 level, and every stated limit in one place.
 
 **The human pilot is the next step and it has not run.** The protocol is in
-**PILOT.md**, and nothing in this repository stands in for it.
+**PILOT.md**: two scored cases per reviewer, counterbalanced, about five
+reviewers, no date until a room is confirmed. Nothing in this repository stands
+in for it, and every figure above came from a simulated reviewer. Reviewers work
+under a codename, which is pseudonymity rather than anonymity, and PILOT.md says
+so in the words the facilitator reads out.
 
 ## What you need
 
@@ -237,6 +241,12 @@ you exactly which field is wrong.
   "materiality": { "amount": 25000, "percent": 10, "basis": "anything else about the schedule" },
   "margin_definition": "how any ratio in the commentary is computed",
 
+  "sources": [
+    { "id": "SRC-GL", "name": "general ledger detail", "kind": "ledger_detail" },
+    { "id": "SRC-CONTRACT", "name": "groundskeeping contract and rate schedule",
+      "kind": "contract", "lines": ["9200"] }
+  ],
+
   "accounts": [
     { "line": "9200", "name": "Groundskeeping contract", "prior": 152000, "current": 213300 }
   ],
@@ -268,6 +278,7 @@ you exactly which field is wrong.
       "counterparty": { "line": "9250", "note": "one clause the challenge adds after naming it" },
       "focus": { "amount": 38200, "what": "the figure the memo puts in play, in words" },
       "evidence": "what would count, if the default for this defect kind is wrong here",
+      "evidence_refs": ["SRC-CONTRACT"],
       "match": {
         "aliases": ["9200", "groundskeeping contract"],
         "keywords": ["rose", "increase", "wrong direction"]
@@ -290,8 +301,8 @@ you exactly which field is wrong.
 }
 ```
 
-`tag`, `counterparty`, `focus`, `evidence` and `subtotals` are optional.
-`shape` and `tag` are required on a distractor.
+`tag`, `counterparty`, `focus`, `evidence`, `evidence_refs` and `subtotals` are
+optional. `sources` is required. `shape` and `tag` are required on a distractor.
 
 Rules the loader enforces, so that a broken case cannot quietly produce a wrong
 score:
@@ -319,6 +330,21 @@ score:
   tested; every other shape must cite the real movement.
 - A distractor's `tag` must be one a defect in the same case also carries, so no
   tag ever identifies the planted weak leads.
+- **A case must declare a `sources` inventory**: the documents a reviewer could
+  ask for, each with an `id`, a `name` and a `kind`. Nothing here ships a
+  document. The list exists so that a challenge citing one can be checked, and
+  so that a challenge inventing one is dropped before a reviewer goes looking
+  for it. Any `lines` a source names must exist in the table.
+- **A request for evidence is not a claim that a document exists.** `evidence`
+  is prose about what would count, a bar rather than a pointer, and it is never
+  resolved against anything. `evidence_refs` point at documents the case
+  actually holds, and every one of them has to be in `sources`.
+- Every identifier and amount a challenge binds is checked against the case
+  before a reviewer sees it: the account is in the table, the amount is that
+  account's movement or the movement of another account the text names, the
+  sentence id is in the commentary, the tag is one of the eight, and every
+  evidence reference is in `sources`. This runs on the deterministic pack and on
+  model output alike.
 - `company.fictional` must be `true`. If you are running your own real memos,
   read GOVERNANCE.md first, and understand that you are removing a guard rail
   the tool put there on purpose.

@@ -1,13 +1,32 @@
 # Pilot protocol
 
-One hour on Zoom, about five reviewers, before 12 September 2026. The reviewers
-are fraud examiners from the student chapter, gathered through its president.
-Everyone runs the tool themselves. The facilitator runs the clock and says as
-little as possible.
+One hour on Zoom, about five reviewers. The reviewers are fraud examiners from
+the student chapter, gathered through its president. Everyone runs the tool
+themselves. The facilitator runs the clock and says as little as possible.
 
-The hour produces four numbers: catch rate unaided, catch rate aided, the gap
+**This has not run.** It was first written for a date before 12 September 2026,
+that date passed without a room, and the protocol carries no date until one is
+confirmed with the chapter president. Every number this repository holds came
+from a simulated reviewer.
+
+**Two scored cases per reviewer**, counterbalanced, plus an unscored walkthrough
+on case three. That is the design and it is the design SIMULATION.md describes,
+which it did not before 13 September 2026: the two documents disagreed, and the
+hour below is what the tool is built to run. It costs something, and the cost is
+stated rather than hidden. A reviewer meeting a second case has already met most
+of the twelve failure modes once, so the second case is not a clean first
+encounter and the write-up has to say which case came first for each reviewer.
+
+The hour produces four numbers: catch rate unaided, catch rate final, the gap
 between stated confidence and actual accuracy, and time per phase. Nothing else
-is collected, and nobody's name appears anywhere.
+is collected, and nobody's name is recorded.
+
+**A codename is pseudonymity, not anonymity.** A reviewer is R1 to R99 and no
+name is stored anywhere. In a live room the facilitator can still see who is
+sitting at which laptop, and a reviewer can recognise their own answers, so the
+promise that can honestly be made is that no name is recorded and only aggregate
+figures are reported. It is not a promise that nobody could ever work out whose
+row is whose, and nothing in this protocol may say that it is.
 
 ## Before the day
 
@@ -32,8 +51,8 @@ is collected, and nobody's name appears anywhere.
 > about five people for one hour on Zoom. You review two short memos that a
 > machine drafted, write down what you would challenge, and then compare that
 > against what the tool challenges. It is voluntary, it is not graded, it has
-> nothing to do with any course, and no names are recorded. The results are
-> reported as anonymous aggregate numbers.
+> nothing to do with any course, and no names are recorded. You work under a
+> codename like R1, and the results are reported as aggregate numbers only.
 
 ## The consent line, read out at the start
 
@@ -45,10 +64,12 @@ rather not take part.
 > connected to the chapter's standing. The data in the cases is invented and no
 > real company is involved. The tool records what you write and how long you
 > take, under a label like R1 or R2. It does not record your name, your email or
-> anything that identifies you, and I cannot tell afterwards which row was
-> yours. I will report aggregate numbers only, so no name appears anywhere in
-> what I write up. If you would rather watch than take part, that is completely
-> fine, say so now or just leave the tool closed.
+> anything that identifies you. I will not try to work out whose row is whose,
+> but I am in the room, so I am not going to tell you it would be impossible: a
+> codename is a codename, not anonymity. I will report aggregate numbers only,
+> so no name appears anywhere in what I write up. If you would rather watch than
+> take part, that is completely fine, say so now or just leave the tool
+> closed.
 
 ## The hour
 

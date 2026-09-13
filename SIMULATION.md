@@ -262,8 +262,12 @@ mismatched amount is in June and July, and rounding flips conclusion is in June 
 August. Ten to twelve defects per case over three cases needs 32 slots out of a
 taxonomy of twelve, so the overlap is arithmetic rather than carelessness, but it
 means a reviewer working three cases back to back meets most failure modes three
-times and the third case is not a clean first encounter. A facilitator wanting one
-runs a single case per reviewer, which is how the human pilot is written.
+times and the third case is not a clean first encounter. PILOT.md runs two scored
+cases per reviewer, counterbalanced, so only the first of the two is a clean first
+encounter and the write-up has to say which case each reviewer opened first. A
+facilitator who wants a clean encounter on every case runs one case per reviewer
+and accepts fewer observations for it. This paragraph claimed until 13 September
+2026 that the human pilot ran a single case, which PILOT.md has never said.
 
 **The lift at the senior level is small because seniors start near the ceiling.**
 The experienced level came in at 89.1 percent unaided, which leaves 10.9 points of

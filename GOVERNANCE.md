@@ -23,8 +23,13 @@ How each half is enforced.
 | A sealed commitment cannot be reopened | `commit_findings()` accepts one call per session | Second commit refused, first list stands |
 | The tool never approves | `challenger.contains_approval_language()`, twelve patterns, applied to every challenge and every evidence bar from every source | The challenge is dropped before a reviewer sees it, and the drop is written to the session log with the offending phrase |
 | The tool never hands over the answer | Challenge templates name the problem and ask the reviewer to explain it | A reviewer who cannot explain it scores zero on that item, and does not get credit for the defect |
-| A cited amount is the named account's own movement | `challenger.deterministic_challenges()` reads it from the table; `validate_challenges()` enforces it on model output; `cases.validate_case()` enforces it on the pack | A model challenge that cites an untied figure and names no other account is dropped, with the reason in the log. A case file that does it will not load |
-| Accepting without a reason is not review | Scoring requires a verdict plus a reason of at least eight words | The challenge counts as unanswered, and the defect counts as missed |
+| A cited amount is the named account's own movement | `challenger.deterministic_challenges()` reads it from the table; `cases.validate_challenge_bindings()` enforces it on every challenge from every provider; `cases.validate_case()` enforces it on the pack | A challenge whose figure ties to neither the account it names nor the other account its text names is dropped, with the reason in the log. A case file that does it will not load |
+| Every identifier a challenge binds resolves against the case | `cases.validate_challenge_bindings()`: the account is in the table, the sentence id is in the commentary, the tag is one of the eight, and every evidence reference is in the case's `sources` inventory | The challenge is dropped before a reviewer sees it, and each broken binding is named separately in the log |
+| A request for evidence is not a claim that a document exists | `evidence_requested` is free prose and is never resolved; `evidence_refs` are checked against `sources` | A challenge that points at a document the case does not hold is dropped |
+| Naming an account is not finding a defect | `matching.match_finding()` returns a status: supported, unsupported, or accepts the position | Only a supported finding counts as a catch. The other two go to the adjudication queue with the reviewer's words intact |
+| Accepting without a reason is not review | Scoring requires a verdict plus a reason of at least eight words, and that measure is called completion | The challenge counts as unanswered, and the defect counts as missed |
+| A word count never stands in for reasoning | `scoring.RUBRIC_DIMENSIONS`, three dimensions of 0 to 2, entered by a named person | The reasoning score is blank until a person signs it, and a defect credited from the disposition alone is counted in `defect_credit_pending_rubric` |
+| The final outcome is the final position | `scoring.score_session()` withdraws a defect the reviewer raised unaided and then rejected under challenge | The final catch rate falls, the lift can go negative, and the original decision stays in `caught_unaided_ids` |
 | A weak challenge is not identifiable except by reading it | `cases.validate_case()` refuses a repeated distractor shape in one case, and refuses a distractor tag no defect in that case carries | The case file will not load |
 
 The last row is the one that matters most. A tool that credited a reviewer for
@@ -121,9 +126,15 @@ reviewer's accounting.
 as present or absent. No key value, prefix or length is written to a log, a
 console line or an error message.
 
-**Names are never recorded.** A reviewer is R1 to R99, enforced in code at the
-point a session is created. Free text labels are refused, including at the API,
-because a field that accepts a name eventually holds one.
+**Names are never recorded, and that is pseudonymity rather than anonymity.** A
+reviewer is R1 to R99, enforced in code at the point a session is created. Free
+text labels are refused, including at the API, because a field that accepts a
+name eventually holds one. What that produces is a codename. In a live room the
+facilitator can see who is at which laptop, and a reviewer can recognise their
+own answers, so the honest promise is that no name is stored and only aggregate
+figures are reported. Until 13 September 2026 PILOT.md promised anonymous
+results and this section did not correct it. It does now, and the consent script
+the facilitator reads out says the same thing in the room.
 
 **Session files land where they were meant to land.** A simulated session writes
 six files, and a `--dir` that resolves outside `sim/runs` is refused before any
@@ -154,6 +165,35 @@ own. The two sets are never averaged, because a refined instrument and the
 instrument that produced the case for refining it are not the same measurement,
 and a pooled figure across them would hide the only thing the second pass has to
 show.
+
+## 3b. Change log
+
+Every entry names the date, what changed, why, and what it does to a number that
+was already published. A repaired metric under an unchanged name is how the
+wrong number gets quoted, so a rename is listed as a rename.
+
+### 13 September 2026, external audit repairs
+
+An external audit dated 12 September 2026 ran two offline probes against commit
+`b4581c8` and found four scoring defects, a thin session export, and a set of
+documents that contradicted each other. All seven repairs below are in this
+commit, and the probes are now regression tests in
+`tests/test_audit_repairs.py` with the intended behaviour as the assertion.
+
+| What changed | Where | Why | Effect on a number |
+|---|---|---|---|
+| A finding that names an account and its movement and then accepts the commentary no longer counts as a detected defect | `second_pass/matching.py`, `second_pass/scoring.py` | The audit wrote "Account 6000 has movement 72500. I accept the commentary as written." and scored a catch, because the case author had listed the amount among the defect keywords. Matching was standing in for correctness | Catch rates can only fall. Findings that identify a line without asserting anything go to a new adjudication queue instead |
+| `teachback_completeness` renamed `teachback_completion`; `teachback_accuracy` renamed `disposition_accuracy`; a separate human reasoning rubric added | `second_pass/scoring.py` | Eleven unrelated words scored full marks on a measure everyone read as reasoning quality. The word count only ever measured completion | The figures are unchanged and the names are not. The old names are gone rather than aliased. The reasoning score is new and is blank until a person scores it |
+| The final catch is computed from final positions, with the original and the changed decisions kept apart | `second_pass/scoring.py`, `second_pass/results.py` | The aided catch was a union, so a defect a reviewer raised and then withdrew under challenge stayed counted and the assistance could never show as harm | A withdrawal now lowers the final rate and the lift can go negative. Logs written before today cannot report a withdrawal, and the report says so rather than printing a zero |
+| Every identifier and amount binding in a challenge is validated | `second_pass/cases.py` (`validate_challenge_bindings`), `second_pass/challenger.py` | An amount of 999,999,999, a sentence id of NONEXISTENT and the evidence reference "Imaginary document page 999" all survived because the question text named a second real account | More model challenges are dropped, and each broken binding is named separately in the log |
+| Requested evidence types are kept apart from actual sources, and every case declares a `sources` inventory | `second_pass/cases.py`, `cases/*.json` | A challenge may ask for a kind of evidence that does not exist yet. It may not cite a document the case does not hold | No scored figure moves. The three case files gained a `sources` block and nothing else |
+| The session export is schema v2: it keeps the participant's exact copy including tag and evidence, the whole prompt, the case version, the provider's raw answer, and the minimum attempt record | `second_pass/session.py` | A log that omits what the participant saw cannot be recomputed by anyone else | No scored figure moves. Missing questions are present and null and are named in `missing`, never filled with a default |
+| Documents reconciled: the human pilot has not run and no module implies otherwise; PILOT.md and SIMULATION.md agree on two scored cases; the passed pilot date is removed; a codename is called pseudonymity | `README.md`, `PILOT.md`, `SIMULATION.md`, `second_pass/scoring.py`, `second_pass/session.py`, this file | The scoring module described a measurement on real people that has never happened, and the pilot promised anonymous results a facilitator in the room cannot deliver | No figure moves. The claims around them do |
+
+Left to a person, not decided here: whether the pilot should score two cases or
+one. Both documents now describe the two-case hour that PILOT.md has always
+scheduled, and the cost of it, that the second case is not a clean first
+encounter, is written down beside it rather than resolved by an edit.
 
 ## 4. What this tool does not do
 
