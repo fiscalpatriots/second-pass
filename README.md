@@ -1,19 +1,317 @@
 # Second Pass
 
-A teach-back review trainer for month-end flux commentary.
+Second Pass checks month-end flux commentary before a person reads it, and it
+trains the person who has to sign it.
 
 The first review a new associate performs is now a review of something a machine
 wrote. It arrives fluent, formatted and confident, and it is the easiest thing in
-the world to approve. Second Pass sits on that handoff. It shows a reviewer the
-account movements and the draft commentary, makes them write down what they would
-challenge, and only then produces its own challenge list, in which every item
-cites the account line and the dollar amount so it can be recomputed. The reviewer
-has to accept or reject each challenge in their own words. The tool then measures
-the distance between what they thought they caught and what they caught.
+the world to approve. Two things sit on that handoff here. The **checker** takes
+a ledger and a drafted memo and does the mechanical work: it recomputes every
+line, ties every figure in the memo to the line it is written about, and returns
+a status for each sentence and a short queue of questions only a person can
+answer. The **trainer** puts a reviewer through the same memo, makes them commit
+their own findings first, and then measures the distance between what they
+thought they caught and what they caught.
 
-It never rewrites the memo, never approves it, and never issues a conclusion.
+Neither one rewrites a memo, approves a memo, or issues a conclusion. A reviewer
+signs.
 
-## Results
+The checker also runs in a browser, at
+[checker.html](https://fiscalpatriots.github.io/beat-the-machine/checker.html),
+one HTML file with no libraries. That page and this package are the same
+contract, held to the same fifty-three fixtures. Anyone can run the checks on any
+ledger and any memo, in either place, and get the same answer.
+
+## The contract, in one paragraph
+
+Every figure in the memo is read with the span of text it came from, its value
+and its unit, and dollars, percent and percentage points are held apart. Each
+sentence is bound to a ledger line by the account number written in it, by the
+account name written in it, or by an exact figure where the sentence also carries
+a word from that account's name that no other named account shares; a figure that
+ties to a line the sentence never names is a coincidence and is printed as an
+unresolved conflict rather than bound. What the sentence says each figure *is*, a
+prior balance, a current balance, an absolute movement, a relative movement or a
+ratio, is read from the words beside it and never from the fact that it matches
+something, and a figure whose role the words do not give is never counted as
+checked whatever it happens to equal. Every comparison is unrounded, to half a
+cent on a dollar and five hundredths of a point on a percent. A negation voids
+the claim in the clause it attaches to rather than being read as its opposite.
+A sentence ends on exactly one of four statuses, **checked within scope**, **needs
+review**, **not checked** or **failed**, and no later step may move one upward.
+The full contract, with every boundary and every exclusion, is in
+[CHECKER.md](https://github.com/fiscalpatriots/beat-the-machine/blob/main/CHECKER.md).
+
+**"Checked within scope" does not mean the sentence is true.** It means each
+figure carried a role the words gave it and the unrounded comparison with the
+pasted ledger agreed. Whether the driver is real and whether the period is right
+are not mechanical questions, and the checker puts both of them to a person.
+
+## Install and run
+
+Python 3.7 or later. No pip install, no virtual environment, no packages, no
+account and no network.
+
+```
+git clone https://github.com/fiscalpatriots/second-pass.git
+cd second-pass
+python -m second_pass check --sample halyard
+python -m second_pass check my-ledger.tsv my-memo.txt
+python -m pytest tests -q
+```
+
+## The command line
+
+```
+python -m second_pass check LEDGER MEMO [options]
+python -m second_pass check --sample halyard|brightwater|kestrel|ridgeline
+```
+
+| Option | What it does |
+| --- | --- |
+| `--dollar 25000` | the dollar floor. The rule is **more than** the floor |
+| `--percent 10` | the percent floor. The rule is **at least** the floor |
+| `--rule both` or `either` | both legs must clear, or one is enough |
+| `--zero-prior owe` or `exclude` | a line with no prior balance owes commentary on any movement, or is out of the rule |
+| `--ratios FILE` | ratio definitions, one per line, `Name = (4000 - 5000) / 4000` |
+| `--format table` `csv` `json` `prompt` | the table, the CSV export, the machine-readable record, or the reviewer prompt |
+| `--period` `--memo-version` `--company` `--reviewer` | free text that rides into every export, so a filed log says which close it came from |
+| `--fail-on-findings` | exit 1 when a sentence failed or a line is silent, for a build step |
+
+### A bundled case
+
+```
+$ python -m second_pass check --sample halyard
+```
+
+```
+12 sentences read · 4 checked within scope · 5 needs review · 0 not checked · 3 failed ·
+14 ledger rows used · 0 rows skipped · 1 silent line · 13 in the reviewer queue.
+```
+
+### Your own ledger and your own memo
+
+Two files. The ledger takes an account number, a name, a prior balance and a
+current balance, separated by tabs, commas or two or more spaces. It also reads a
+QuickBooks Online Profit and Loss Comparison and a Xero Income Statement as they
+come out, sections, totals and all.
+
+```
+$ python -m second_pass check ledger.tsv memo.txt --ratios ratios.txt --period "June 2026"
+```
+
+```
+2 sentences read · 2 checked within scope · 0 needs review · 0 not checked · 0 failed ·
+3 ledger rows used · 0 rows skipped · 1 silent line · 1 in the reviewer queue.
+```
+
+### The findings, sentence by sentence
+
+The table under the coverage line carries one row per check, with the finding
+under it and one imperative beside it.
+
+```
+FAIL  5210   1. Dental supplies and lab f Direction              FAIL
+      the memo says "eased" but 5210 Dental supplies and lab fees rose $52,700 (38.1%).
+      -> Send it back to the preparer.
+```
+
+```
+FAIL  6200   5. 6200 Software licences an Figure $25,300         DOLLARS, ROLE ABSOLUTE MOVEMENT
+      memo says $25,300 as the absolute movement; the absolute movement on 6200 Software licences
+      and hosting is $35,300. Nearest ledger figure: prior balance on 6200 Software licences and
+      hosting is $22,600.
+      -> Send it back to the preparer.
+```
+
+### The queue, which is what a person actually works
+
+```
+$ python -m second_pass check --sample ridgeline
+```
+
+```
+ 3. [Silent line] 6700 — Insurance
+      change $52,000, 118.2%, clears the rule and no sentence in the memo explains it
+      Question: What drove 6700 Insurance this month, and what supports it?
+      Owner: Controller.   Yes / No / Not on file: ______
+```
+
+### The exports
+
+`--format csv` writes one row per finding, in the column order the browser
+writes, and any cell beginning with `=`, `+`, `-` or `@` is written with a
+leading apostrophe so a spreadsheet reads an account named `=1+1` as text.
+
+```
+$ python -m second_pass check --sample ridgeline --format csv | head -2
+```
+
+```
+"run id","run timestamp","close period","reviewed memo version","source version","evidence id",…
+"run-1-ugbylm","2026-09-13T10:56:46.890Z","July 2026","Ridgeline test memo","src-ugbylm-485",…
+```
+
+`--format json` writes the same run with every cell exactly as it was typed,
+plus the roles, the units, the text spans, the policy in force and the queue.
+
+```
+$ python -m second_pass check --sample ridgeline --format json | head -4
+```
+
+```json
+{
+  "runId": "run-1-ugbylm",
+  "runAt": "2026-09-13T10:56:47.175Z",
+  "sourceVersion": "src-ugbylm-485",
+```
+
+`--format prompt` writes the reviewer prompt for the run: the rule as set with
+both boundary words spelled out, the coverage counts, the sources actually
+supplied and nothing else, every unresolved item verbatim, and then the
+sentences that were checked within scope with the two judgment questions.
+
+## One suite, two implementations
+
+The browser and this package are held to the same file. `tests/checker-fixtures.json`
+is the suite that guards `checker.html`, copied here byte for byte.
+
+```
+node tests/run-checker-tests.cjs                          # in the beat-the-machine repository
+python -m pytest tests/test_checker_contract.py -q        # here
+```
+
+Fifty-three fixtures. Seventeen are the probes from the external audit of 13
+September 2026, twenty-four are the probes from the live release review of the
+same day, three are the end-to-end sample runs, and five were written against the
+repaired contract afterwards. Each one carries the required behaviour as its own
+assertion, so a change in either place that moves a status fails the suite.
+
+The two were also compared field by field, not only on the clauses the fixtures
+assert: statuses, roles, findings, every recomputed line, the flags, the queue,
+the CSV, the JSON record, the reviewer prompt and the table export. They agree
+byte for byte, run identifier and source version included.
+[CONTRACT-DIVERGENCE.md](CONTRACT-DIVERGENCE.md) records the method, the result,
+and the page behaviours that have no command-line meaning so their absence is not
+read as a divergence. Where the two could ever disagree, the browser's contract
+wins.
+
+The four bundled cases in `cases/shared/` are lifted verbatim from the page, and
+`cases/shared/definitions/` holds the upstream case files two of them are
+generated from, so the checker, the page and the game read the same ledger and
+the same memo version rather than three drifting copies.
+
+## Running it on every memo
+
+The checker is deterministic, offline and fast, so it belongs in front of the
+reviewer rather than beside them. A firm scripts it the way it scripts any other
+gate.
+
+```bash
+for close in closes/*/; do
+  python -m second_pass check "$close/ledger.tsv" "$close/memo.txt" \
+      --period "$(basename "$close")" \
+      --company "Western region" \
+      --memo-version "AI draft, first pass" \
+      --format csv > "$close/second-pass.csv"
+done
+```
+
+`--fail-on-findings` exits 1 when a sentence failed or a line clears the rule with
+no commentary, which is enough to stop a pipeline:
+
+```bash
+python -m second_pass check ledger.tsv memo.txt --fail-on-findings || echo "back to the preparer"
+```
+
+Three things worth saying to whoever owns that pipeline. The CSV is the evidence
+the review protocol asks for, one row per finding with the run identifier and the
+source version on every row. The JSON record is what to keep if anything later
+has to be recomputed, because the CSV's spreadsheet neutralisation alters a cell
+and the JSON does not. And a run that comes back clean is not a memo that is fit
+to release, because the queue is where the judgment sits and the queue is never
+empty of the two questions a person owes.
+
+Editing any input invalidates the run. The source version is a hash of the ledger,
+the memo, the ratios, both floors, the rule, the zero prior balance policy and the
+close period, so two runs carrying the same source version were computed from the
+same inputs and two that differ were not.
+
+## The trainer
+
+The other half of the repository puts a person through the memo before the tool
+speaks. It shows the account movements and the draft commentary, makes the
+reviewer write down what they would challenge, seals it, and only then produces a
+challenge list in which every item cites the account line and the dollar amount so
+it can be recomputed. The reviewer accepts or rejects each one in their own words.
+Some of the challenges do not hold, and rejecting a weak one with a reason scores
+exactly as highly as accepting a good one.
+
+```
+python -m second_pass preflight                  # which AI layer will run here, and why
+python -m second_pass cases                      # the defect pack
+python -m second_pass show --case case-01-june   # print a case
+python -m second_pass serve --port 8765          # the web interface, localhost only
+python -m second_pass run --case case-01-june    # the same session in a terminal
+python -m second_pass results --dir sessions     # aggregate a pilot
+```
+
+**The mechanical challenges come out of the checker.** Four kinds are settled by
+the contract without a person and without an answer key: a figure that does not
+agree with the line it is written about, a direction word that disagrees with the
+sign of the movement, a claim about the commentary rule that the rule refutes, and
+a line that clears the rule with no sentence about it. Those are read out of a run
+of `second_pass.checker` over the case's own ledger and its own commentary. On all
+three cases it rediscovers every planted wrong sign and every silent line with the
+answer key never consulted. Whether a driver is real and whether the period is
+right are not mechanical, and those challenges still come from the authored key.
+The session log names the run that produced the list, with its contract version,
+its run identifier, its source version and the policy in force, so the mechanical
+half can be reproduced without rerunning anything.
+
+A case with no answer key now produces a challenge list of its own, which is what
+lets the trainer run on a memo nobody wrote a key for.
+
+A reviewer can also be a language-model agent. The simulation driver puts one
+through the same state machine, one command per step, writing the reviewer-safe
+view and the challenge list to files instead of to a screen. **SIMULATION.md** holds
+the method, the persona files, the counterbalanced case order and the exact JSON
+shapes, and each command prints the full shape of the file it is waiting for.
+
+```
+python -m second_pass sim start --case case-01-june --reviewer R1 \
+    --dir sim/runs/R1-case-01-june --persona novice   # writes view.md
+python -m second_pass sim commit --dir sim/runs/R1-case-01-june   # writes challenges.md
+python -m second_pass sim finish --dir sim/runs/R1-case-01-june   # scores and logs
+```
+
+Write `--dir` with forward slashes. Backslashes are escape characters in bash, so
+`sim\runs\R1` arrives as `simrunsR1` and creates a folder of that name wherever
+you happen to be standing. A `--dir` that would land outside `sim/runs` is refused
+before anything is written, and `--allow-any-dir` is the way to say you meant it.
+
+### Running the trainer without a key
+
+This is the normal case and nothing is degraded. With no key present, the
+challenge list is built by the deterministic challenger: the mechanical half from
+the checker run, the judgment half from the case file's own answer key, with the
+same citation rule and the same refusal to state the answer, plus the weak
+challenges the case author planted so the reviewer still has to reject something.
+The session log records `provider_used: deterministic`.
+
+With `ANTHROPIC_API_KEY` set, the tool calls the Anthropic Messages API, and with
+`OPENAI_API_KEY` set and no Anthropic key it calls OpenAI. Either way it sends the
+prompt in `prompts/challenger.v2.md` and then checks every challenge that comes
+back: the account has to exist in the table, the amount has to be that account's
+own movement or another account the text names, the sentence identifier has to be
+in the commentary, every evidence reference has to be a document the case declares,
+and the text must not contain approval language. Anything that fails is dropped
+with the reason recorded, and if nothing survives the run falls back to the
+deterministic challenger and the log says why. Key presence is read with
+`os.environ` and reported as present or absent; the value is never printed and
+never logged.
+
+### The pilot results
 
 Two pilots have run, both on 5 September 2026, and **both were run by simulated
 reviewers rather than by people**: six language-model agents at three instruction
@@ -26,209 +324,54 @@ withheld. No figure below is a human catch rate or a human confidence gap.
 | Pilot two, build v2 | 18 | 59.9% (115 of 192) | 95.8% (184 of 192) | 35.9 points | 49 of 54 |
 
 Pilot one's numbers are frozen in **PILOT-1-RESULTS.md** and every finding it
-produced, with the change made for it, is in **PILOT-1-FINDINGS.md**. Pilot two
-ran on the rebuilt pack those changes produced, and sits in
-**PILOT-2-RESULTS.md** and **PILOT-2-FINDINGS.md**. The two passes ran different
-material, so read the pair as two instruments rather than as a controlled before
-and after. **SIMULATION.md** holds the method, the model behind each instruction
-level, and every stated limit in one place.
+produced, with the change made for it, is in **PILOT-1-FINDINGS.md**. Pilot two ran
+on the rebuilt pack those changes produced and sits in **PILOT-2-RESULTS.md** and
+**PILOT-2-FINDINGS.md**. The two passes ran different material, so read the pair as
+two instruments rather than as a controlled before and after.
 
 **The human pilot is the next step and it has not run.** The protocol is in
-**PILOT.md**: two scored cases per reviewer, counterbalanced, about five
-reviewers, no date until a room is confirmed. Nothing in this repository stands
-in for it, and every figure above came from a simulated reviewer. Reviewers work
-under a codename, which is pseudonymity rather than anonymity, and PILOT.md says
-so in the words the facilitator reads out.
+**PILOT.md**: two scored cases per reviewer, counterbalanced, about five reviewers,
+no date until a room is confirmed. Nothing in this repository stands in for it.
+Reviewers work under a codename, which is pseudonymity rather than anonymity.
 
-## What you need
-
-Python 3.7 or later. Nothing else. No pip install, no virtual environment, no
-packages, no account and no network. An API key makes the challenge list come
-from a model instead of from the case file, and the tool works the same either
-way.
-
-## The commands
-
-Run these from this folder.
-
-```
-python -m second_pass check                      # what will run here, and why
-python -m second_pass cases                      # the defect pack
-python -m second_pass show --case case-01-june   # print a case
-python -m second_pass show --case case-01-june --key    # add the answer key
-python -m second_pass serve --port 8765          # the web interface
-python -m second_pass run --case case-01-june    # the same session in a terminal
-python -m second_pass results --dir sessions     # aggregate a pilot
-python tests/test_smoke.py                       # three cases against the key
-python tests/test_withholding.py                 # the withholding rule holds
-python tests/test_sim.py                         # the simulated reviewer driver
-```
-
-A reviewer can also be a language-model agent. The simulation driver puts one
-through the same state machine, one command per step, writing the reviewer-safe
-view and the challenge list to files instead of to a screen.
-
-```
-python -m second_pass sim start --case case-01-june --reviewer R1 \
-    --dir sim/runs/R1-case-01-june --persona novice   # writes view.md
-python -m second_pass sim commit --dir sim/runs/R1-case-01-june   # writes challenges.md
-python -m second_pass sim finish --dir sim/runs/R1-case-01-june   # scores and logs
-python -m second_pass results --dir sessions --only simulated     # or --only human
-```
-
-The reviewer writes `findings.json` between start and commit, and
-`teachback.json` between commit and finish. SIMULATION.md holds the method, the
-persona files, the counterbalanced case order and the exact JSON shapes, and
-each command prints the full shape of the file it is waiting for.
-
-**Two things about the shell, both learned the hard way in pilot one.**
-
-Write `--dir` with forward slashes: `sim/runs/R1-case-01-june`. Backslashes are
-escape characters in bash, so `sim\runs\R1-case-01-june` arrives at the tool as
-`simrunsR1-case-01-june` and creates a folder of that name wherever you happen
-to be standing. Forward slashes work in every shell on Windows, macOS and Linux.
-A `--dir` that would land outside `sim/runs` is now refused before anything is
-written, and `--allow-any-dir` is the way to say you meant it.
-
-The working directory does not persist between separate shell invocations, so
-every one of the three commands carries its own `--dir`, and all three carry the
-same one.
-
-For the pilot, one command is enough:
-
-```
-python -m second_pass serve --port 8765
-```
-
-That opens a browser at `http://127.0.0.1:8765/`. It binds to localhost only, so
-it is reachable from that machine and nowhere else. Share the screen, or have
-each reviewer run the same command on their own laptop.
-
-Useful options, accepted before or after the subcommand:
-
-```
---provider deterministic     ignore any key and use the built-in challenger
---cases-dir path             a different defect pack
---sessions-dir path          where session logs are written
---reviewer R3                fix the reviewer label instead of auto-assigning
---no-browser                 do not open a browser window
-```
-
-## Running without a key
-
-This is the normal case, and nothing is degraded.
-
-`check` reports key presence and tells you which layer will run. With no key
-present, the challenge list is built by the deterministic challenger from the
-case file's own answer key, using the same twelve challenge templates, the same
-citation rule and the same refusal to state the answer. It also includes the
-weak challenges the case author planted, so the reviewer still has to reject
-something. The session log records `provider_used: deterministic`.
-
-With `ANTHROPIC_API_KEY` set, the tool calls the Anthropic Messages API. With
-`OPENAI_API_KEY` set and no Anthropic key, it calls OpenAI. Either way it sends
-the prompt in `prompts/challenger.v2.md`, then checks every challenge that comes
-back: the account line has to exist in the table, the amount has to be a number,
-and the text must not contain approval language. Anything that fails is dropped
-with the reason recorded. If nothing survives, the run falls back to the
-deterministic challenger and the log says why.
-
-Key presence is read with `os.environ` and reported as present or absent. The
-value is never printed and never logged.
-
-A simulated session uses exactly the same challenger. `sim commit` calls the same
-`reveal_challenges()` gate the web route calls, so with no key present the
-challenge list a model reviewer works is the deterministic one built from the
-case's own answer key, weak challenges included, and with a key present it is the
-one the provider returned after the same validation. Nothing about the simulation
-path chooses a different AI layer, and the session log records which layer ran in
-the same field either way.
-
-## What is in the box
-
-```
-second_pass/            the package
-  session.py            the state machine that enforces commit-before-reveal
-  challenger.py         the AI layer, three providers, and the approval ban
-  cases.py              case loading, validation, and the reviewer-safe view
-  matching.py           mapping a reviewer's words onto the answer key
-  scoring.py            one reviewer's numbers
-  results.py            a pilot's numbers
-  server.py             the local web interface
-  sim.py                the simulated reviewer driver
-  cli.py                the command line
-  web/index.html        the single page
-prompts/                the versioned prompts, and their changelog
-cases/                  three cases, 32 defects, 9 weak challenges
-sim/personas/           three instruction levels for a simulated reviewer
-sessions/               session logs land here
-tests/                  the smoke test, the withholding test, the sim test
-GOVERNANCE.md           the non-delegation rule, data tiers, traceability
-PILOT.md                how to run the hour
-SIMULATION.md           the simulated pilot, its method and its limits
-PILOT-1-RESULTS.md      pilot one's numbers, frozen
-PILOT-1-FINDINGS.md     every finding from pilot one and the fix applied to it
-PILOT-2-RESULTS.md      pilot two's numbers, frozen
-PILOT-2-FINDINGS.md     every finding from pilot two, fixed or stated as a limit
-BUILD-LOG.txt           test output from the build and from both refine steps
-```
-
-The defect pack:
-
-| Case | Period | Accounts | Sentences | Defects | Weak challenges |
-|---|---|---|---|---|---|
-| case-01-june | June 2026 against May | 14 | 12 | 11 | 3 |
-| case-02-july | July 2026 against June | 16 | 12 | 11 | 3 |
-| case-03-august | August 2026 against July | 17 | 12 | 10 | 3 |
-
-All twelve defect kinds appear across the pack and no two cases carry the same
-set of them, so a reviewer working three cases in a row cannot pattern match by
-kind. The percent-into-dollar defect is planted in one case only. The nine weak
-challenges come in four shapes and no case plants a shape twice.
-
-The three cases are consecutive months of the same invented company, so a firm
-can run one cohort across a quarter. Every figure, name and sentence is
-invented. Halyard Provisioning Group does not exist.
-
-## The measurements
+### The measurements
 
 | Name | What it is |
 |---|---|
 | `catch_rate_unaided` | Defects the reviewer found on their own, over defects planted |
-| `catch_rate_aided` | What they held after working the challenge list |
-| `lift` | The difference, in points. Read it with the ceiling note below |
-| `precision_unaided` | Findings that matched a planted defect, over all findings written. **Measured against the answer key**, and labelled that way everywhere it prints |
-| `findings_outside_key` | Findings the answer key does not carry, counted on their own and listed verbatim in the log for a facilitator. They never reduce a catch rate |
+| `catch_rate_aided` | What they held after working the challenge list, computed from final positions, so a withdrawal lowers it |
+| `lift` | The difference, in points. Read it with the ceiling note |
+| `precision_unaided` | Findings that matched a planted defect, over all findings written. Measured against the answer key, and labelled that way everywhere it prints |
+| `findings_outside_key` | Findings the answer key does not carry, counted on their own and listed verbatim for a facilitator. They never reduce a catch rate |
 | `confidence_gap_unaided` | What they said they would find, minus what they found. The headline number |
 | `confidence_gap_aided` | The same measurement after the tool ran |
 | `soundness_rating` | How sound they judged the memo, 1 to 5, before reading closely |
 | `seconds_phase_1`, `seconds_phase_2` | Time. Recorded, reported, not led with |
-| `teachback_completeness` | Challenges answered with a verdict and a real reason |
-| `teachback_accuracy` | Challenges judged correctly, including weak ones refused |
+| `teachback_completion` | Challenges answered with a verdict and a reason long enough to count. It measures completion and says nothing about quality |
+| `disposition_accuracy` | Of the challenges judged, the share whose verdict was right, weak ones refused included |
+| `reasoning_score` | Three dimensions scored 0 to 2 by a named person. Blank until someone scores it |
 | `distractors_rejected` | Weak challenges the reviewer would not accept |
 | `catch_ceiling_unaided` | True where unaided catch was 90 percent or better, so only a few points of lift were available |
 
-Every scorecard and every report prints a one-line definition of lift, the
-confidence gap, teach-back accuracy and precision beside the numbers, because a
-figure a reader has to look up is a figure they will guess at instead.
-
-`results` prints per-reviewer rows as R1 to Rn, a block by instruction level
-where personas are recorded, the mean of reviewer rates, and the pooled figure
-with its denominator. Quote the pooled figure with the denominator beside it,
-and quote the level rows with it when the levels differ, because a pooled figure
-between two very different populations is a number nobody produced.
+Every scorecard prints a one-line definition of lift, the confidence gap,
+disposition accuracy and precision beside the numbers, because a figure a reader
+has to look up is a figure they will guess at instead.
 
 **Precision is against the key, and that is a limit rather than a verdict.** A
 reviewer who raises a real problem the case author did not plant loses precision
 and nothing else. That finding is counted separately, kept verbatim in the log,
-and put in front of a facilitator to adjudicate. The tool does not get to call
-it wrong.
+and put in front of a facilitator to adjudicate. The tool does not get to call it
+wrong.
 
-## Swapping in your own memos and defect pack
+## Your own memos and your own defect pack
 
-This is the part a firm actually needs. A case is one JSON file in `cases/`.
-Drop yours in, run `python -m second_pass cases`, and it either loads or tells
-you exactly which field is wrong.
+A case is one JSON file in `cases/`. Drop yours in, run `python -m second_pass
+cases`, and it either loads or tells you exactly which field is wrong. The
+checker needs nothing but the `accounts` block, the `commentary` block and
+`materiality`, so a case whose `answer_key` is empty still loads and still
+produces a mechanical challenge list. An empty key means the case is not scored;
+a key that exists is a scored pack and still has to carry between eight and
+twelve defects.
 
 ```json
 {
@@ -251,169 +394,88 @@ you exactly which field is wrong.
     { "line": "9200", "name": "Groundskeeping contract", "prior": 152000, "current": 213300 }
   ],
 
-  "subtotals": [
-    {
-      "key": "operating_expense",
-      "label": "Operating expense",
-      "lines": ["9200", "9250", "9280"],
-      "note": "what it is and what it excludes"
-    }
-  ],
-
   "commentary": {
-    "author": "who drafted it",
-    "sentences": [ { "id": "S1", "text": "one sentence" } ]
+    "sentences": [
+      { "id": "S1", "text": "Groundskeeping rose $61,300 on the new rate schedule." }
+    ]
   },
 
-  "answer_key": [
-    {
-      "id": "D1",
-      "type": "wrong_sign",
-      "tag": "direction",
-      "sentence": "S3",
-      "line": "9200",
-      "amount": 61300,
-      "claim": "what the memo says",
-      "correct": "what is actually true, in full, for the debrief",
-      "counterparty": { "line": "9250", "note": "one clause the challenge adds after naming it" },
-      "focus": { "amount": 38200, "what": "the figure the memo puts in play, in words" },
-      "evidence": "what would count, if the default for this defect kind is wrong here",
-      "evidence_refs": ["SRC-CONTRACT"],
-      "match": {
-        "aliases": ["9200", "groundskeeping contract"],
-        "keywords": ["rose", "increase", "wrong direction"]
-      }
-    }
-  ],
-
-  "distractors": [
-    {
-      "id": "X1",
-      "shape": "below_threshold_document",
-      "tag": "threshold",
-      "sentence": null,
-      "line": "9280",
-      "amount": 14900,
-      "text": "a challenge that looks reasonable and does not hold",
-      "why_wrong": "why a good reviewer rejects it"
-    }
-  ]
+  "answer_key": [ { "id": "D1", "type": "unsupported_driver", "line": "9200", "sentence": "S1",
+                    "claim": "...", "correct": "...", "match": { "aliases": [], "keywords": [] } } ],
+  "distractors": [ { "id": "W1", "line": "9200", "shape": "below_threshold_document",
+                     "text": "...", "why_wrong": "..." } ]
 }
 ```
 
-`tag`, `counterparty`, `focus`, `evidence`, `evidence_refs` and `subtotals` are
-optional. `sources` is required. `shape` and `tag` are required on a distractor.
+Twelve defect kinds are recognised, and the four the checker settles on its own
+are `mismatched_amount`, `wrong_sign`, `immaterial_over_explained` and
+`missing_driver_material`. The rest are judgment calls the key still carries. The
+loader validates every identifier, every amount and every evidence reference
+against the case itself, so a challenge that cites a document the case does not
+hold is refused before a reviewer ever sees it.
 
-Rules the loader enforces, so that a broken case cannot quietly produce a wrong
-score:
+## Governance
 
-- 10 to 20 accounts, each with a unique `line`, numeric `prior` and `current`.
-  **Variance and percent are computed, never stored.** A stored variance column
-  can disagree with the balances beside it, and then the tool is teaching a
-  defect nobody planted.
-- 8 to 14 commentary sentences with unique ids.
-- 8 to 12 defects. Each `type` must be one of the twelve below, and each type
-  may appear only once per case, so a reviewer cannot pattern match.
-- Every defect and distractor must cite a `line` that exists in the table, and
-  any `sentence` it cites must exist in the commentary.
-- **A defect's `amount` must be the movement of the account it names**, or it
-  must carry a `focus` saying what that figure is instead. The challenge cites
-  the movement either way, and the text names the focus figure out loud. This is
-  the rule that keeps a challenge recomputable: a reviewer who checks the cited
-  amount against the account has to find it there.
-- A `counterparty` names another line in the table, never the defect's own line.
-  The challenge then names that account, its own movement and its direction.
-- Every subtotal's `lines` must exist in the table.
-- A distractor needs a `shape` from the four below, and **no case may plant the
-  same shape twice.** A `bad_recomputation` distractor must cite an amount that
-  does not tie to its account, because the wrong arithmetic is the thing being
-  tested; every other shape must cite the real movement.
-- A distractor's `tag` must be one a defect in the same case also carries, so no
-  tag ever identifies the planted weak leads.
-- **A case must declare a `sources` inventory**: the documents a reviewer could
-  ask for, each with an `id`, a `name` and a `kind`. Nothing here ships a
-  document. The list exists so that a challenge citing one can be checked, and
-  so that a challenge inventing one is dropped before a reviewer goes looking
-  for it. Any `lines` a source names must exist in the table.
-- **A request for evidence is not a claim that a document exists.** `evidence`
-  is prose about what would count, a bar rather than a pointer, and it is never
-  resolved against anything. `evidence_refs` point at documents the case
-  actually holds, and every one of them has to be in `sources`.
-- Every identifier and amount a challenge binds is checked against the case
-  before a reviewer sees it: the account is in the table, the amount is that
-  account's movement or the movement of another account the text names, the
-  sentence id is in the commentary, the tag is one of the eight, and every
-  evidence reference is in `sources`. This runs on the deterministic pack and on
-  model output alike.
-- `company.fictional` must be `true`. If you are running your own real memos,
-  read GOVERNANCE.md first, and understand that you are removing a guard rail
-  the tool put there on purpose.
+The non-delegation rule, the data tiers, the traceability requirements and the
+change log are in [GOVERNANCE.md](GOVERNANCE.md). Every entry in that change log
+names the date, what changed, why, and what it does to a number that was already
+published, because a repaired metric under an unchanged name is how the wrong
+number gets quoted.
 
-The twelve defect kinds:
+The review protocol a person works from, the evidence log it fills in and the
+facilitator's guide for running it with a room are in the
+[beat-the-machine](https://github.com/fiscalpatriots/beat-the-machine) repository,
+beside the browser checker and the training game:
+[PROTOCOL.md](https://github.com/fiscalpatriots/beat-the-machine/blob/main/PROTOCOL.md),
+[EVIDENCE-LOG-TEMPLATE.csv](https://github.com/fiscalpatriots/beat-the-machine/blob/main/EVIDENCE-LOG-TEMPLATE.csv)
+and
+[GOVERNANCE-NOTE.md](https://github.com/fiscalpatriots/beat-the-machine/blob/main/GOVERNANCE-NOTE.md).
+The CSV this package writes is the evidence that protocol asks for.
 
-`wrong_sign`, `wrong_period`, `unsupported_driver`, `mismatched_amount`,
-`missing_driver_material`, `cutoff`, `reclass_as_growth`, `percent_as_absolute`,
-`contradiction`, `immaterial_over_explained`, `rounding_flips_conclusion`,
-`driver_wrong_account`.
+## Versioning
 
-The eight challenge tags, which a reviewer sees on every challenge:
+The package version is in `second_pass/__init__.py` and prints with
+`python -m second_pass --version`. Three other version strings matter more than
+it does, and all three ride in every export:
 
-`amount`, `direction`, `period`, `driver`, `contradiction`, `threshold`,
-`classification`, `transfer`.
+| String | Where it lives | What it pins |
+| --- | --- | --- |
+| `CONTRACT_VERSION` | `second_pass/checker.py` | which published contract this implementation is of |
+| source version, `src-…` | computed per run | the exact inputs a run was computed from |
+| case version | the case file, and `cases/shared/*.json` | which version of a case a filed log came from |
 
-The four weak challenge shapes:
+The session log carries `schema: second-pass/session/v2`, and a schema change is
+a rename in the change log rather than a quiet repair. Prompts are versioned in
+`prompts/` with their own changelog.
 
-| Shape | What it is |
-|---|---|
-| `below_threshold_document` | asks for a document on a movement that fails one leg of the two-part threshold |
-| `bad_recomputation` | does its own arithmetic and gets it wrong, so the table refutes it |
-| `restates_correct_explanation` | asks back a question the memo already answers and the table supports |
-| `wrong_period_named` | names a period the schedule does not carry, or a prior figure the table refutes |
+## What it does not do
 
-### Writing the match block
+It reviews nothing, and it never says a memo is fit to release.
 
-Scoring reads free text, so each defect tells the matcher how to recognise a
-reviewer who found it. A finding matches when it carries **one alias and one
-keyword**, or one alias and the amount. Naming an account and nothing else does
-not count.
+The checker carries no judgment on drivers and none on timing, because whether a
+depot ramp is real is a question about contracts and shipping dates rather than
+about balances. It does not detect a contradiction: two sentences that cannot both
+be true can both be checked within scope, and it says only that they landed on the
+same account and must be read together. It does not work out what a negation
+asserts; it detects one and refuses the clause. It reads one currency, written in
+whole units with a dollar sign, so `€30,000`, `USD 90000`, `$30.0 thousand` and
+`30 basis points` are recorded as unparsed and the sentence is left unchecked. It
+does no fuzzy matching, so "depot" does not match "depots", and a sentence that
+names nothing the ledger names comes back unmatched on purpose. It rebuilds a
+`Total …` row standing under a section of lines and leaves Gross Profit, Net
+Operating Income, Net Income and Net Profit alone.
 
-- `aliases`: the account code, the account name, and any phrase a reviewer would
-  use for the line. Add the memo's wrong figure here too, because a reviewer who
-  writes "the 61,300 does not tie" has found it.
-- `keywords`: the words that mean they saw what was wrong. Stems are fine, so
-  `declin` covers declines, declined and declining. Keep them specific to that
-  defect, and put the strongest one first, because the tests use it.
+The trainer covers month-end flux commentary and nothing else. It does not touch
+audit workpapers, tax positions or statutory reporting. It connects to no general
+ledger, no close system and no document store, and it will not without a different
+design and a different governance answer. The defect taxonomy is twelve named
+failure modes, chosen because they survive a fluent draft rather than because a
+survey said so. Scoring reads free text with published rules and will occasionally
+disagree with a human reader, which is why the match trail is in the log and why a
+facilitator can overrule it. The pilot numbers are small sample numbers and should
+always be quoted with their denominator.
 
-Matching is substring based with a word boundary on the left only. That is why
-`up` does not match inside `unsupported` and why `declin` still matches
-`declined`. Every match, and every miss, is written to the session log with the
-alias and keyword that fired, so a facilitator can check the scoring rather than
-trust it.
+---
 
-### Writing good distractors
-
-Plant three challenges that are wrong, in three different shapes. A challenge
-list a reviewer can accept wholesale teaches obedience, and a set of weak
-challenges that all look alike teaches a different reflex just as bad: pilot one
-planted six of them and every one was a below-threshold line with a document
-request attached, so after one case the reviewers were refusing on shape rather
-than on arithmetic. The catch rate on weak challenges went up and the reading
-that produced it went away.
-
-The best distractors are the ones a careful reviewer nearly accepts, and they
-have to differ from each other. A movement that clears the percentage leg and
-fails the dollar one. A challenge whose own subtraction is wrong by a decimal
-place. A question the memo has already answered in a sentence the table
-supports. A comparison against a month the schedule does not carry.
-
-## Limits, stated plainly
-
-It covers month-end variance commentary and nothing else. It does not touch
-audit workpapers, tax positions or statutory reporting. It does not connect to a
-general ledger and it never will without a different design and a different
-governance answer. The defect taxonomy is twelve named failure modes, chosen
-because they are the ones that survive a fluent draft, not because a survey said
-so. Scoring reads free text with published rules and it will occasionally
-disagree with a human reader, which is why the match trail is in the log and why
-a facilitator can overrule it. The pilot numbers are small sample numbers, and
-they should always be quoted with their denominator.
+Built by Khaled Alkurd. Every figure, name and sentence in the case pack is
+invented. Halyard Provisioning Group does not exist.

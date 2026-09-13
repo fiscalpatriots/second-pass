@@ -263,7 +263,14 @@ def validate_case(case, path="<memory>"):
                     % (source["id"], line))
 
     key = case["answer_key"]
-    require(8 <= len(key) <= 12, "the answer key needs 8 to 12 defects, found %d" % len(key))
+    # An empty key is allowed and means one thing: this case is not scored. The
+    # checker still reads its ledger and its commentary and still produces the
+    # mechanical challenges, which is what lets a firm run its own close through
+    # the trainer without writing a key for it first. A key that exists is a
+    # scored pack and still has to carry between eight and twelve defects.
+    require(not key or 8 <= len(key) <= 12,
+            "an answer key needs 8 to 12 defects, or none at all for an unscored case, found %d"
+            % len(key))
     defect_ids = set()
     types_used = set()
     tags_used = set()

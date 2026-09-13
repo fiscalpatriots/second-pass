@@ -105,6 +105,33 @@ class TheMechanicalChallengesComeFromTheRun(unittest.TestCase):
                                      % (case_id, challenge["id"]))
                     self.assertEqual(challenge["truth"].get("settled_by"), "answer key")
 
+    def test_an_unscored_case_loads_and_a_short_key_is_still_refused(self):
+        """An empty key means the case is not scored. A key that exists is a
+        scored pack and still has to carry between eight and twelve defects."""
+        import json
+        import os
+        import tempfile
+        case = cases.load_case(CASE_IDS[0])
+        folder = tempfile.mkdtemp(prefix="secondpass-unscored-")
+
+        unscored = dict(case)
+        unscored["id"] = "case-90-unscored"
+        unscored["answer_key"] = []
+        unscored["distractors"] = []
+        with open(os.path.join(folder, "case-90-unscored.json"), "w", encoding="utf-8") as handle:
+            json.dump(unscored, handle)
+        loaded = cases.load_case("case-90-unscored", folder)
+        built = challenger.deterministic_challenges(loaded)
+        self.assertTrue(built, "an unscored case produced no mechanical challenges")
+
+        short = dict(case)
+        short["id"] = "case-91-short"
+        short["answer_key"] = case["answer_key"][:2]
+        with open(os.path.join(folder, "case-91-short.json"), "w", encoding="utf-8") as handle:
+            json.dump(short, handle)
+        with self.assertRaises(cases.CaseError):
+            cases.load_case("case-91-short", folder)
+
     def test_a_case_with_no_answer_key_still_produces_a_list(self):
         """The point of the wiring: the trainer runs on any case."""
         case = cases.load_case(CASE_IDS[0])
