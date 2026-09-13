@@ -157,11 +157,11 @@ def test_fixture_holds_in_python(fixture):
 
 
 def test_the_suite_is_the_browser_suite():
-    """Fifty-three fixtures, T01 to T48 with the lettered companions."""
-    assert len(FIXTURES) == 53
+    """Fifty-nine fixtures, T01 to T54 with the lettered companions."""
+    assert len(FIXTURES) == 59
     assert FIXTURE_IDS[0] == "T01"
-    assert FIXTURE_IDS[-1] == "T48"
-    assert len(set(FIXTURE_IDS)) == 53
+    assert FIXTURE_IDS[-1] == "T54"
+    assert len(set(FIXTURE_IDS)) == 59
 
 
 # The coverage strips printed in CHECKER.md for the four samples. These are the

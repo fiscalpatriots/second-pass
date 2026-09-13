@@ -1015,29 +1015,41 @@
   },
   {
     "id": "T21",
-    "name": "N02 an unparsed percentage in words",
-    "required": "A figure the grammar cannot read leaves the sentence not checked and goes to the queue.",
+    "name": "N02 a percentage written in words is read, and fails",
+    "required": "A quantity in words the grammar can resolve is parsed to a figure and compared like any other; a false one fails rather than passing unread.",
     "inputs": {
       "ledger": "6100\tRent expense\t100000\t130000",
       "memo": "Rent expense rose $30,000, a change of ninety percent."
     },
     "expect": [
       {
-        "desc": "the sentence is not checked",
+        "desc": "the false percentage fails",
         "get": "status.S1",
         "op": "eq",
-        "value": "not checked"
+        "value": "failed"
       },
       {
-        "desc": "the words-written figure is named",
+        "desc": "the words were parsed to a percent",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "ninety percent=percent/relative movement"
+      },
+      {
+        "desc": "the failure names the ledger's own percentage",
         "get": "finding.S1",
         "op": "includes",
-        "value": "a figure written in words"
+        "value": "ninety percent is written as the relative movement"
       },
       {
-        "desc": "it reaches the queue",
+        "desc": "it reaches the queue as a failure",
         "get": "queueKinds",
         "op": "includes",
+        "value": "Failure"
+      },
+      {
+        "desc": "nothing is left unparsed",
+        "get": "queueKinds",
+        "op": "notIncludes",
         "value": "Unparsed figure"
       }
     ]
@@ -1763,6 +1775,204 @@
         "get": "role.S1",
         "op": "notIncludes",
         "value": "2025"
+      }
+    ]
+  },
+  {
+    "id": "T49",
+    "name": "a spelled-out quantity with no unit, standing where a claim stands",
+    "required": "A quantity in words with no unit word cannot be compared. The sentence is not checked and the span reaches the queue.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a rise of thirty thousand."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the span is named with its missing unit",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "“thirty thousand” is a figure written in words with no unit"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      },
+      {
+        "desc": "it was not read as a dollar figure",
+        "get": "role.S1",
+        "op": "notIncludes",
+        "value": "thirty thousand="
+      }
+    ]
+  },
+  {
+    "id": "T50",
+    "name": "a fraction written in words",
+    "required": "A fraction in words is not a cardinal the grammar resolves. The sentence is not checked and the span reaches the queue.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, one third of the prior balance."
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the whole fraction is the span, not just the first word",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "“one third” is a quantity in words the checker cannot resolve"
+      },
+      {
+        "desc": "it reaches the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "T51",
+    "name": "a spelled-out quantity with a unit word, true",
+    "required": "Units through millions with a unit word beside them are parsed to a figure and compared like any other.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose thirty thousand dollars."
+    },
+    "expect": [
+      {
+        "desc": "the sentence clears",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the words were read as dollars",
+        "get": "role.S1",
+        "op": "eq",
+        "value": "thirty thousand dollars=dollars/absolute movement"
+      },
+      {
+        "desc": "the parsed value is stated",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$30,000 unrounded"
+      },
+      {
+        "desc": "the queue is empty",
+        "get": "queueKinds",
+        "op": "eq",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "T52",
+    "name": "a spelled-out quantity with a unit word, false",
+    "required": "The same reading fails a false quantity instead of clearing it unread.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose forty thousand dollars."
+    },
+    "expect": [
+      {
+        "desc": "the sentence fails",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the memo's own words are quoted back",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "memo says forty thousand dollars as the absolute movement"
+      },
+      {
+        "desc": "the ledger's figure is given",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "the absolute movement on 6100 Rent expense is $30,000"
+      },
+      {
+        "desc": "it reaches the queue as a failure",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Failure"
+      }
+    ]
+  },
+  {
+    "id": "T53",
+    "name": "a hyphenated compound through the hundreds and thousands",
+    "required": "\"one hundred twenty-five thousand\" resolves to 125,000, hyphen and all.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t225000",
+      "memo": "Rent expense rose one hundred twenty-five thousand dollars."
+    },
+    "expect": [
+      {
+        "desc": "the sentence clears",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the compound was read as one figure",
+        "get": "role.S1",
+        "op": "eq",
+        "value": "one hundred twenty-five thousand dollars=dollars/absolute movement"
+      },
+      {
+        "desc": "the parsed value is stated",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "$125,000 unrounded"
+      },
+      {
+        "desc": "the queue is empty",
+        "get": "queueKinds",
+        "op": "eq",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "T54",
+    "name": "a count written in words is not a figure about the account",
+    "required": "\"the thirty-one new plans\" is a count standing where no claim stands. It is left alone, the same way a bare run of digits is, and it does not make a good sentence unresolved.",
+    "inputs": {
+      "ledger": "4220\tOrthodontic plan revenue\t95900\t138300",
+      "memo": "Orthodontic plan revenue rose $42,400 as the thirty-one new orthodontic plans began billing."
+    },
+    "expect": [
+      {
+        "desc": "the sentence still clears",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the count was not extracted as a figure",
+        "get": "role.S1",
+        "op": "eq",
+        "value": "$42,400=dollars/absolute movement"
+      },
+      {
+        "desc": "nothing reaches the queue",
+        "get": "queueKinds",
+        "op": "eq",
+        "value": ""
       }
     ]
   }

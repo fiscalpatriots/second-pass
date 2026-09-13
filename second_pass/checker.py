@@ -615,14 +615,118 @@ UNIT_AFTER = re.compile(
     re.I)
 
 
-def number_words(text):
-    out = []
+FRACTION_AFTER = re.compile(
+    r"^[\s-]*(?:half|halves|third|thirds|quarter|quarters|fifth|fifths|sixth|sixths|seventh|"
+    r"sevenths|eighth|eighths|ninth|ninths|tenth|tenths|twelfth|twelfths|hundredth|hundredths|"
+    r"thousandth|thousandths)\b", re.I)
+WORD_UNIT = re.compile(
+    r"^[\s,-]*(?:(percentage\s+points?|pp)|(percent|per\s?cent|pct|%)|(dollars?))\b", re.I)
+NW_SMALL = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+            "six": 6, "seven": 7, "eight": 8, "nine": 9}
+NW_TEEN = {"ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
+           "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19}
+NW_TENS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
+           "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90}
+
+
+def nw_lead(w):
+    for table in (NW_SMALL, NW_TEEN, NW_TENS):
+        if w in table:
+            return table[w]
+    return None
+
+
+def nw_group(tk, i):
+    """One group below a thousand: "one hundred twenty-five", "nineteen", "thirty"."""
+    v = 0
+    any_ = False
+    if i + 1 < len(tk) and tk[i + 1] == "hundred" and nw_lead(tk[i]) is not None:
+        v = nw_lead(tk[i]) * 100
+        any_ = True
+        i += 2
+    if i < len(tk) and tk[i] in NW_TENS:
+        v += NW_TENS[tk[i]]
+        any_ = True
+        i += 1
+        if i < len(tk) and tk[i] in NW_SMALL:
+            v += NW_SMALL[tk[i]]
+            i += 1
+    elif i < len(tk) and (tk[i] in NW_SMALL or tk[i] in NW_TEEN):
+        v += NW_SMALL[tk[i]] if tk[i] in NW_SMALL else NW_TEEN[tk[i]]
+        any_ = True
+        i += 1
+    return (v, i) if any_ else None
+
+
+def words_to_number(run):
+    """The value of the whole run, or None where the parser cannot resolve it.
+    "billion" is deliberately out of range: the grammar reads units through
+    millions, and anything above that goes to the reviewer rather than being
+    guessed at."""
+    tk = [w for w in re.split(r"[\s-]+", str(run).lower()) if w]
+    i = 0
+    total = 0
+    last = float("inf")
+    got = False
+    while i < len(tk):
+        g = nw_group(tk, i)
+        if not g:
+            return None
+        v, i = g
+        sc = 1
+        if i < len(tk) and tk[i] in ("thousand", "million"):
+            sc = 1000 if tk[i] == "thousand" else 1000000
+            i += 1
+        if sc >= last:
+            return None
+        if sc == 1 and i < len(tk):
+            return None
+        last = sc
+        total += v * sc
+        got = True
+    return total if got else None
+
+
+def word_numbers(text, taken):
+    """Every run of number words, split into the ones that become figures and the
+    ones that have to reach the reviewer.  ``always`` marks a span that goes to
+    the queue wherever it stands; the rest go only where the words put a claim."""
+    figs = []
+    pending = []
     for m in NUMWORD_RE.finditer(text):
-        j = m.end()
-        if UNIT_AFTER.match(text[j:j + 26]) or re.search(r"\d\s*\Z", text[max(0, m.start() - 14):m.start()]):
-            out.append({"raw": m.group(0), "at": m.start(), "end": j,
-                        "why": "a figure written in words"})
-    return out
+        i, j = m.start(), m.end()
+        if any(i < t[1] and j > t[0] for t in taken):
+            continue
+        after = text[j:j + 30]
+        if re.search(r"\d\s*\Z", text[max(0, i - 14):i]):
+            pending.append({"raw": m.group(0), "at": i, "end": j,
+                            "why": "a figure written in words", "always": True})
+            continue
+        fm = FRACTION_AFTER.match(after)
+        if fm:
+            pending.append({"raw": text[i:j + len(fm.group(0))], "at": i, "end": j + len(fm.group(0)),
+                            "why": "a quantity in words the checker cannot resolve", "always": True})
+            continue
+        v = words_to_number(m.group(0))
+        if v is None:
+            pending.append({"raw": m.group(0), "at": i, "end": j,
+                            "why": "a quantity in words the checker cannot resolve", "always": True})
+            continue
+        u = WORD_UNIT.match(after)
+        if u:
+            unit = ("percentage points" if u.group(1)
+                    else ("percent" if u.group(2) else "dollars"))
+            figs.append({"raw": text[i:j + len(u.group(0))].strip(), "v": float(v), "at": i,
+                         "end": j + len(u.group(0)), "unit": unit, "signed": False,
+                         "plain": False, "words": True})
+            continue
+        if UNIT_AFTER.match(after):
+            pending.append({"raw": m.group(0), "at": i, "end": j,
+                            "why": "a quantity in words the checker cannot resolve", "always": True})
+            continue
+        pending.append({"raw": m.group(0), "at": i, "end": j,
+                        "why": "a figure written in words with no unit", "always": False})
+    return figs, pending
 
 
 def stray_numbers(text, taken):
@@ -713,6 +817,15 @@ def figures(text, skip_nums=None):
                     "signed": m.group(0).startswith("-"), "plain": True})
         taken.append([m.start(), m.end()])
 
+    # a quantity in words that the parser resolved and the words gave a unit is
+    # an ordinary figure from here on.
+    word_figs, word_pending = word_numbers(text, taken)
+    for f in word_figs:
+        if overlaps(f["at"], f["end"]):
+            continue
+        out.append(f)
+        taken.append([f["at"], f["end"]])
+
     out.sort(key=lambda f: f["at"])
 
     rejected = []
@@ -748,10 +861,13 @@ def figures(text, skip_nums=None):
         f["roleFrom"] = r.get("from") or ""
 
     spans = [[f["at"], f["end"]] for f in keep] + [[r["at"], r["end"]] for r in rejected]
-    for w in number_words(text):
+    for w in word_pending:
         if any(w["at"] < sp[1] and w["end"] > sp[0] for sp in spans):
             continue
-        rejected.append(w)
+        if not w["always"] and role_of(
+                text, {"at": w["at"], "end": w["end"], "unit": "dollars"}, 0, [])["role"] == "unknown":
+            continue
+        rejected.append({"raw": w["raw"], "at": w["at"], "end": w["end"], "why": w["why"]})
         spans.append([w["at"], w["end"]])
     rejected.extend(stray_numbers(text, spans))
     rejected.sort(key=lambda r: r["at"])

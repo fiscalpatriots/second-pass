@@ -10,7 +10,7 @@ module is an implementation of it.
 
 ## How they were compared, 13 September 2026
 
-Both were run over all fifty-three fixtures in `tests/checker-fixtures.json`,
+Both were run over all fifty-nine fixtures in `tests/checker-fixtures.json`,
 and the full probe was compared field by field, not just the assertions the
 fixtures carry. The probe is the one the browser's own runner builds:
 
@@ -46,6 +46,30 @@ Two things differ by construction and are not contract:
    come from the findings rather than from the layout.
 2. **The run timestamp.** Two runs at different moments carry different stamps.
    The comparison normalises it.
+
+## Where the two fixture files differ, 13 September 2026
+
+Two ids, and neither is a contract divergence:
+
+| Id | Why |
+| --- | --- |
+| `T18` | the end-to-end Halyard sample. beat-the-machine asserts against `halyard-v4`; `cases/shared/halyard.json` here is still `halyard-v3`, so the fixture here asserts against v3. Same assertions, older memo |
+| `T18b` | the same, Brightwater. There, `brightwater-v4`; here, `brightwater-v2` |
+
+The shared sample files here are hand-kept, while beat-the-machine regenerates
+its inline copies with `build-checker-cases.cjs`. Bringing them to v4 is a case
+change, not a checker change, and it is not made here on a QA pass. Every other
+fixture, `T01` to `T54`, is byte for byte the same file in both repositories.
+
+## Quantities written in words, added 13 September 2026
+
+`T21` and the six new fixtures `T49` to `T54` carry rule 1c of `CHECKER.md`:
+units through millions are parsed to a figure where the parser resolves the run
+and the words give it a unit, and everything else in words either reaches the
+reviewer's queue or, where it is a count standing beside no claim, is left
+alone. Both implementations were changed in the same commit and both suites run
+clean: `node tests/run-checker-tests.cjs` 59/59, `python -m pytest tests/ -q`
+138 passed.
 
 ## Things the Python side does not carry
 

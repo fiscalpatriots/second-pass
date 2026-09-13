@@ -19,7 +19,7 @@ signs.
 The checker also runs in a browser, at
 [checker.html](https://fiscalpatriots.github.io/beat-the-machine/checker.html),
 one HTML file with no libraries. That page and this package are the same
-contract, held to the same fifty-three fixtures. Anyone can run the checks on any
+contract, held to the same fifty-nine fixtures. Anyone can run the checks on any
 ledger and any memo, in either place, and get the same answer.
 
 ## The contract, in one paragraph
