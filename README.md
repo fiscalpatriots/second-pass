@@ -174,18 +174,24 @@ sentences that were checked within scope with the two judgment questions.
 ## One suite, two implementations
 
 The browser and this package are held to the same file. `tests/checker-fixtures.json`
-is the suite that guards `checker.html`, copied here byte for byte.
+is the suite that guards `checker.html`, copied here fixture for fixture; the two
+end-to-end samples, `T18` and `T18b`, assert against the case versions each
+repository actually carries, which is recorded in
+[CONTRACT-DIVERGENCE.md](CONTRACT-DIVERGENCE.md).
 
 ```
 node tests/run-checker-tests.cjs                          # in the beat-the-machine repository
 python -m pytest tests/test_checker_contract.py -q        # here
 ```
 
-Fifty-three fixtures. Seventeen are the probes from the external audit of 13
-September 2026, twenty-four are the probes from the live release review of the
-same day, three are the end-to-end sample runs, and five were written against the
-repaired contract afterwards. Each one carries the required behaviour as its own
-assertion, so a change in either place that moves a status fails the suite.
+Fifty-nine fixtures, and 138 tests over them here. The identifiers run `T01` to
+`T54` and five of them carry a lettered second case, which is where the count of
+fifty-three came from: it counted identifiers rather than fixtures. Seventeen are
+the probes from the external audit of 13 September 2026, twenty-four are the
+probes from the live release review of the same day, three are the end-to-end
+sample runs, and the rest were written against the repaired contract afterwards.
+Each one carries the required behaviour as its own assertion, so a change in
+either place that moves a status fails the suite.
 
 The two were also compared field by field, not only on the clauses the fixtures
 assert: statuses, roles, findings, every recomputed line, the flags, the queue,
