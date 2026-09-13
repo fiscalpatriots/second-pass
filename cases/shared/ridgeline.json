@@ -1,0 +1,18 @@
+{
+  "key": "ridgeline",
+  "caseVersion": "",
+  "company": "Ridgeline Partners, LLC",
+  "period": "July 2026",
+  "memoVersion": "Ridgeline test memo",
+  "ledger": "1000,Cash and equivalents,412000,388500\n4300,Consulting revenue,240000,301000\n5200,Subcontractor costs,150000,118000\n6600,Travel and entertainment,12000,19400\n6700,Insurance,44000,96000",
+  "memo": "T1. Consulting revenue rose $61,000 on two new retainers that began in July.\nT2. Subcontractor costs increased $32,000 as work moved off the bench.\nT3. Travel and entertainment rose $9,400 on the regional sales trip.",
+  "ratios": "",
+  "thresholds": {
+    "dollar": "25000",
+    "percent": "10",
+    "rule": "both",
+    "zeroPrior": "owing"
+  },
+  "source": "written into checker.html by hand",
+  "provenance": "lifted verbatim from checker.html at beat-the-machine, 13 September 2026"
+}

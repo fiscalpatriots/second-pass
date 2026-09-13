@@ -1,0 +1,226 @@
+{
+  "version": "halyard-v3",
+  "date": "2026-09-13",
+  "company": "Halyard Provisioning Group, Inc.",
+  "period": "June close, prepared from the general ledger",
+  "caption": "The fourteen accounts the memo was written against.",
+  "threshold": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+  "policyScope": "The threshold sets what the monthly management report has to explain. It does not make a known error, or anything else that looks wrong, exempt from attention.",
+  "evidenceNote": "Every sentence under On file is a verified case assumption. A fact that is not listed was not supplied, which is not the same as saying the company has no such document.",
+  "ledger": [
+    ["4000", "Product revenue, distribution", 5240000, 5612000, 1],
+    ["4100", "Service revenue, equipment maintenance", 812000, 1041000, 1],
+    ["4200", "Freight billed to customers", 186000, 121000, 1],
+    ["5000", "Cost of product sold", 3930000, 4278000, 0],
+    ["5100", "Inbound freight", 214000, 287800, 1],
+    ["6000", "Warehouse wages", 630000, 702500, 1],
+    ["6100", "Fleet fuel", 96400, 91200, 0],
+    ["6200", "Repairs and maintenance, depots", 41000, 118600, 1],
+    ["6300", "Software subscriptions", 28500, 30100, 0],
+    ["6400", "Bad debt expense", 15000, 62000, 1],
+    ["6500", "Professional fees", 55000, 47500, 0],
+    ["7000", "Depreciation", 128000, 128000, 0],
+    ["7100", "Interest expense", 61200, 92400, 1],
+    ["7400", "Inventory shrink adjustment", 6400, 8900, 0]
+  ],
+  "groups": [
+    {"title": "Revenue", "accts": ["4000", "4100", "4200"], "total": "Total revenue"},
+    {"title": "Cost of sales", "accts": ["5000", "5100"], "total": "Total cost of sales"},
+    {"title": "Operating expenses", "accts": ["6000", "6100", "6200", "6300", "6400", "6500", "7000", "7400"], "total": "Total operating expenses"},
+    {"title": "Financing", "accts": ["7100"], "total": "Total financing"}
+  ],
+  "cards": [
+    {
+      "n": 1, "icon": "coins", "acct": "4200", "name": "Freight billed to customers",
+      "prior": 186000, "current": 121000,
+      "memo": "Freight billed to customers fell from $186,000 to $121,000, a decrease of $6,500 and 3.5 percent, so neither leg of the threshold is met and no commentary is owed on this line.",
+      "file": [
+        "Inbound freight, account 5100, rose 34.5 percent in the same month.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "flag", "type": "arithmetic",
+      "why": "The fall is $65,000 and 34.9 percent, so both legs clear and this line owes an explanation the memo never gives. The rise in inbound freight is context, not proof of what happened to the billing, so the ask here is a billing bridge for account 4200 rather than a cause you supply yourself.",
+      "tell": "The subtraction is right there on the ledger. $186,000 less $121,000 is $65,000, not $6,500.",
+      "post": {"flag": "Reject", "stand": "Accept"}
+    },
+    {
+      "n": 2, "icon": "wrench", "acct": "6200", "name": "Repairs and maintenance, depots",
+      "prior": 41000, "current": 118600,
+      "memo": "Depot repairs and maintenance of $118,600 reflects the roof and dock leveler program, which finished on June 30. The remaining work on that same roof and dock leveler program is scheduled to finish in August, and that spend is not yet in these numbers.",
+      "file": ["Halyard closes on the fifth business day of the following month."],
+      "key": "flag", "type": "timing",
+      "why": "One program cannot be finished on June 30 and still have work running into August, so the memo contradicts itself and a reviewer cannot tell which version is true. Completion on its own does not settle the accounting either: the question is what June work was performed, how much of it is recorded, and whether any performed June work is still unrecorded. If roof and dock leveler work does continue, ask as well whether it is a routine repair or an improvement that belongs in fixed assets.",
+      "tell": "Two sentences in the same memo describe one program as finished and as unfinished, and neither one tells you what June work was actually performed.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 3, "icon": "truck", "acct": "5100", "name": "Inbound freight",
+      "prior": 214000, "current": 287800,
+      "memo": "Inbound freight declined to $287,800 as carrier fuel surcharges eased.",
+      "file": ["Fleet fuel, account 6100, fell 5.4 percent over the same month."],
+      "key": "flag", "type": "wrong direction",
+      "why": "Inbound freight rose $73,800, up 34.5 percent, so the sentence has the movement backwards and the reason for an increase that size is still missing. Easing surcharges are not disproved by the total: a lower rate per shipment can sit inside a higher total cost when volume moves.",
+      "tell": "The memo used the word declined next to a June balance that is higher than May's.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 4, "icon": "calendar", "acct": "4100", "name": "Service revenue, equipment maintenance",
+      "prior": 812000, "current": 1041000,
+      "memo": "Service revenue rose $229,000 as the twelve equipment maintenance contracts signed in the spring began service in June, and each month's fee is earned in the month it covers.",
+      "file": [
+        "Twelve equipment maintenance contracts signed in March and April began service on 1 June. The service-date schedule for all twelve is on file.",
+        "The earned revenue bridge is on file: $812,000 of continuing contracts, unchanged in June, plus $229,000 of June service on the twelve new contracts, equals $1,041,000.",
+        "The maintenance contracts bill monthly in arrears, so the June invoice covers June service, and nothing on these contracts is billed ahead of the service period."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "The bridge on file reconciles the whole $229,000 to June service on twelve contracts that started on 1 June, and billing in arrears puts each fee in the month it was earned, so nothing sitting in June belongs to a later period.",
+      "over": "The trap on this account is a plan billed a year ahead, and the service dates on file show the opposite.",
+      "tell": "Billing dates alone would not settle this line. The service dates and the earned revenue bridge are what let it stand.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 5, "icon": "brief", "acct": "6500", "name": "Professional fees",
+      "prior": 55000, "current": 47500,
+      "memo": "Professional fees fell $7,500 because May carried a one-time $7,500 invoice from outside counsel for the depot lease renewal review, and the movement fails the dollar leg of the threshold.",
+      "file": [
+        "May professional fees include a $7,500 invoice from outside counsel for the depot lease renewal review. The work was performed in May and expensed in May.",
+        "June carries no equivalent item.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "The invoice on file covers May services, was expensed in May, and has no June counterpart, so $55,000 less $7,500 is $47,500 and the whole movement is accounted for. It fails the dollar leg as well, so no commentary was owed here at all and the memo explained it anyway and got it right.",
+      "over": "Thirteen percent looks like it clears, and the dollar leg is the one that decides this line.",
+      "tell": "Both legs have to clear before a line owes anything, and $7,500 never reaches $25,000.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 6, "icon": "box", "acct": "7400", "name": "Inventory shrink adjustment",
+      "prior": 6400, "current": 8900,
+      "memo": "",
+      "file": [
+        "A line owes commentary only when it clears both $25,000 and 10 percent.",
+        "The threshold sets what the monthly management report has to explain. It does not make anything exempt from attention."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "Thirty nine percent looks alarming until you test the dollar leg, and $2,500 does not reach $25,000, so this reporting policy asks for nothing on the line. The policy decides what the management report must explain; it does not put a known error or a suspicious item beyond attention.",
+      "over": "The percentage pulled you in, and a big percentage of a small balance is still a small number.",
+      "tell": "A big percentage of a small balance is still a small number.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 7, "icon": "glass", "acct": "4000", "name": "Product revenue, distribution",
+      "prior": 5240000, "current": 5612000,
+      "memo": "Product revenue of $5,612,000 grew on the Tri-State depot ramp, which management expects to continue through the third quarter.",
+      "file": [
+        "The memo cites no volume, no customer count and no split by depot.",
+        "Halyard runs four regional depots and the ledger is not broken out by depot.",
+        "No depot revenue bridge and no documented forecast were supplied."
+      ],
+      "key": "flag", "type": "unsupported driver",
+      "why": "A named depot and a forecast quarter read like detail, and nothing supplied ties either of them to the $372,000. Neither is established from the evidence on file, which is not the same as saying either is false. A depot revenue bridge or a documented forecast would settle it.",
+      "over": "",
+      "tell": "Ask what document would prove the sentence. When nothing on file does, the sentence is not established, whatever else may turn out to be true.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 8, "icon": "alert", "acct": "6400", "name": "Bad debt expense",
+      "prior": 15000, "current": 62000,
+      "memo": "Bad debt expense increased $42,000 following the reserve taken against the Coastal Grocers receivable.",
+      "file": [
+        "No other sentence in the memo touches this account.",
+        "No reserve rollforward for June was supplied, and no document establishes the amount of the Coastal Grocers reserve."
+      ],
+      "key": "flag", "type": "arithmetic",
+      "why": "The account moved $47,000 and the memo says $42,000, so the figure does not tie to the ledger. Nothing supplied establishes $42,000 as the Coastal Grocers piece either, so the $5,000 difference cannot be assigned to anything. The ask is a reserve rollforward for June, not a guess at the remainder.",
+      "tell": "The memo handed you a number, so check it against the ledger before you read the reason attached to it.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 9, "icon": "fuel", "acct": "6100", "name": "Fleet fuel",
+      "prior": 96400, "current": 91200,
+      "memo": "Fleet fuel fell $5,200, and the movement fails both legs of the threshold, so the line owes no commentary at all.",
+      "file": [
+        "Every June fuel invoice from the fleet servicer was received and recorded before the books closed.",
+        "The fleet servicer confirmed that all June fuel consumption is billed on those invoices, so June consumption and June invoices are the same population.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "It fails both legs, so the policy asks for nothing, and the case facts state that all June consumption was billed and recorded, which is what closes the accrual question. Invoices received on their own would not have done it.",
+      "over": "You went looking for a cost that arrived late, and the case facts close that door. Every invoice received is not the same claim as every cost incurred was billed, and here the file states both.",
+      "tell": "Read the file before you decide a cost is missing, and check whether it covers completeness or only receipt.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 10, "icon": "chip", "acct": "6300", "name": "Software subscriptions",
+      "prior": 28500, "current": 30100,
+      "memo": "Software subscriptions rose $1,600, which clears neither leg of the threshold, so this line carries no driver.",
+      "file": ["A line owes commentary only when it clears both $25,000 and 10 percent."],
+      "key": "stand", "type": "clean line",
+      "why": "It fails both legs, so no explanation is required under this commentary policy, and the memo says so rather than inventing a reason, which is the right answer on a line this size.",
+      "over": "A short sentence is not a weak one, and no explanation was required on this movement.",
+      "tell": "A line under the threshold owes nothing, and saying so is a correct answer.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 11, "icon": "people", "acct": "6000", "name": "Warehouse wages",
+      "prior": 630000, "current": 702500,
+      "memo": "",
+      "file": [
+        "A line owes commentary only when it clears both $25,000 and 10 percent.",
+        "Halyard employs roughly 240 people across four depots. The count is approximate and the ledger gives no headcount by month.",
+        "No payroll bridge, rate change or hours summary was supplied."
+      ],
+      "key": "flag", "type": "no explanation",
+      "why": "$72,500 is 11.5 percent and clears both legs with room to spare, and the memo is silent on this line, so the movement reaches the reviewer with no sentence attached to it at all. The approximate headcount does not establish a cause, so the ask is a payroll bridge showing rates, hours and staffing.",
+      "tell": "Read the ledger for what the memo left out, not only for what it got wrong.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 12, "icon": "flag", "acct": "4000", "name": "Product revenue, distribution",
+      "prior": 5240000, "current": 5612000,
+      "memo": "Distribution revenue of $5,612,000 grew 7.1 percent over May on continued customer demand across all four depots.",
+      "file": [
+        "Freight billed to customers, account 4200, fell $65,000 over the same month.",
+        "Inbound freight, account 5100, rose $73,800, so freight is still being incurred.",
+        "From June 1, Halyard moved its two largest customers to delivered pricing: freight is included in the product price and no longer billed on account 4200 (pricing memo of May 20 on file).",
+        "No billing bridge for account 4200 by customer was supplied, so the gross movement behind the $65,000 net fall is not known.",
+        "No sentence in the memo connects the two revenue lines to each other."
+      ],
+      "key": "flag", "type": "unsupported attribution",
+      "why": "From 1 June the freight for the two largest customers sits inside the product price rather than on account 4200, and the memo never mentions the change, so calling the growth continued customer demand is not established. How much of the $372,000 is that reclassification is not established either: $65,000 is only the net fall on 4200, and $80,000 could have moved into bundled pricing while other freight billings rose $15,000. The ask is a billing bridge for 4200 by customer.",
+      "tell": "When one revenue line falls while a related one rises, ask whether anything moved between them, and ask for the bridge rather than reading the net fall as the amount that moved.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 13, "icon": "scales", "acct": "5000", "name": "Cost of product sold",
+      "prior": 3930000, "current": 4278000,
+      "memo": "Cost of product sold rose $348,000 against a $372,000 rise in product revenue. Product gross profit rose from $1,310,000 to $1,334,000, while product gross margin fell from 25.0 percent in May to 23.8 percent in June. The category report points to a shift toward lower margin produce and dairy lines as the likely cause, and a category sales and cost bridge has been requested to confirm it.",
+      "file": [
+        "Product gross margin is account 4000 less account 5000, divided by account 4000.",
+        "Account 4000 ran $5,240,000 in May and $5,612,000 in June. Account 5000 ran $3,930,000 and $4,278,000.",
+        "June sales by category: produce and dairy rose from 31 to 36 percent of product revenue, and those two categories carry the lowest margins (category report on file).",
+        "The category report carries revenue shares only. No category cost is in it, and no category sales and cost bridge has been supplied."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "Recompute it and the figures tie: margin falls from 25.0 percent to 23.8, a fall of 1.2 percentage points, while gross profit dollars still rise $24,000, and the memo reports both rather than blending them. The mix sentence is offered as a likely cause with a bridge requested, which is as far as the category report on file can carry it, so there is nothing here to reject.",
+      "over": "A margin that falls while gross profit dollars rise is not a contradiction, and this memo states both. The mix claim is written as a hypothesis with the bridge requested, not asserted as fact.",
+      "tell": "Recompute the ratio, and keep gross profit dollars separate from the margin percentage, before you decide the memo buried something.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 14, "icon": "bank", "acct": "7100", "name": "Interest expense",
+      "prior": 61200, "current": 92400,
+      "memo": "Interest expense rose $31,200 on the depot equipment additions that also sit in depreciation.",
+      "file": [
+        "Depreciation, account 7000, was $128,000 in May and $128,000 in June.",
+        "No fixed asset additions were recorded in May or June.",
+        "The revolver balance rose from $3.1 million to $5.6 million on June 3.",
+        "No draw dates, daily balances, rates or fee schedule were supplied, and the memo does not mention the revolver."
+      ],
+      "key": "flag", "type": "unsupported driver",
+      "why": "Nothing was added to fixed assets and depreciation did not move, so the equipment story is not established by anything supplied. The revolver rose $2.5 million on 3 June and the memo never mentions it, which makes the draw the candidate to investigate rather than the proved cause: dates, balances, rates and fees would be needed to quantify how much of the $31,200 it explains.",
+      "tell": "The memo pointed at another account, so go and look at that account before you accept the sentence.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    }
+  ]
+}

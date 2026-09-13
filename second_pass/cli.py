@@ -1,6 +1,8 @@
 """The command-line runner.
 
-    python -m second_pass check                       what the AI layer will do here
+    python -m second_pass check LEDGER MEMO            run the Second Pass contract
+    python -m second_pass check --sample halyard       one of the four bundled cases
+    python -m second_pass preflight                    what the AI layer will do here
     python -m second_pass cases                       list the defect pack
     python -m second_pass show --case case-01-june     print a case, no scoring
     python -m second_pass run --case case-01-june      run one review session
@@ -16,10 +18,11 @@ land in the same place.
 
 import argparse
 import os
+import re
 import sys
 import textwrap
 
-from . import (__version__, NON_DELEGATION_RULE, cases, challenger, results,
+from . import (__version__, NON_DELEGATION_RULE, cases, challenger, checker, results,
                session as session_mod, sim as sim_mod)
 
 
@@ -123,7 +126,106 @@ def _collect_findings(label):
     return findings
 
 
+SAMPLE_KEYS = ["halyard", "brightwater", "kestrel", "ridgeline"]
+
+
+def shared_cases_dir():
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        "cases", "shared")
+
+
+def load_sample(key):
+    """One of the four bundled cases, the same inputs the browser loads."""
+    path = os.path.join(shared_cases_dir(), key + ".json")
+    if not os.path.exists(path):
+        raise cases.CaseError("No bundled case named %s. There are four: %s."
+                              % (key, ", ".join(SAMPLE_KEYS)))
+    import json as _json
+    with open(path, encoding="utf-8") as handle:
+        return _json.load(handle)
+
+
+def _read_text(path, what):
+    if not os.path.exists(path):
+        raise cases.CaseError("No %s file at %s." % (what, path))
+    with open(path, encoding="utf-8") as handle:
+        return handle.read()
+
+
 def cmd_check(args):
+    """Run the Second Pass contract over a ledger and a memo."""
+    if args.sample:
+        s = load_sample(args.sample)
+        ledger, memo, ratios = s["ledger"], s["memo"], s["ratios"]
+        th = s["thresholds"]
+        dollar, percent = th["dollar"], th["percent"]
+        rule, zero = th["rule"], th["zeroPrior"]
+        period = args.period or s["period"]
+        memo_version = args.memo_version or s["memoVersion"]
+        company = args.company or s["company"]
+        case_version = s["caseVersion"]
+    else:
+        if not args.ledger or not args.memo:
+            raise cases.CaseError(
+                "check takes a ledger file and a memo file, or --sample with one of: %s."
+                % ", ".join(SAMPLE_KEYS))
+        ledger = _read_text(args.ledger, "ledger")
+        memo = _read_text(args.memo, "memo")
+        ratios = _read_text(args.ratios, "ratios") if args.ratios else ""
+        dollar, percent = args.dollar, args.percent
+        rule = args.rule
+        zero = "exclude" if args.zero_prior == "exclude" else "owing"
+        period, memo_version = args.period or "", args.memo_version or ""
+        company, case_version = args.company or "", ""
+
+    try:
+        result = checker.run_check(
+            ledger, memo, ratios=ratios, dollar_floor=dollar, percent_floor=percent,
+            rule=rule, zero_prior=zero, period=period, memo_version=memo_version,
+            company=company, reviewer=args.reviewer or "", case_version=case_version)
+    except checker.CheckerInputError as error:
+        print("")
+        print(_wrap(str(error)))
+        return 2
+
+    if args.format == "csv":
+        sys.stdout.write(result.csv())
+        sys.stdout.write("\n")
+        return _exit_code(result, args)
+    if args.format == "json":
+        print(result.json_record())
+        return _exit_code(result, args)
+    if args.format == "prompt":
+        print(result.reviewer_prompt())
+        return _exit_code(result, args)
+
+    for line in result.header_lines():
+        print(_wrap(line))
+    print("")
+    print(_wrap(result.coverage_line()))
+    print(_wrap("Coverage, not a verdict. \"Checked within scope\" means each figure carried a role "
+                "the words gave it and the unrounded comparison with the ledger agreed. It does not "
+                "mean the sentence is true."))
+    for note in result.notes:
+        print("")
+        print(_wrap(re.sub(r"<[^>]+>", "", note)))
+    print(result.table())
+    print("")
+    print("4. The reviewer's queue, what a person still has to answer")
+    print("-" * 58)
+    print(result.queue_list())
+    return _exit_code(result, args)
+
+
+def _exit_code(result, args):
+    """A non-zero exit when a finding failed, so a firm can gate a close on it."""
+    if not getattr(args, "fail_on_findings", False):
+        return 0
+    st = result.stats
+    return 1 if (st["failed"] or st["silent"]) else 0
+
+
+def cmd_preflight(args):
     status = challenger.key_status()
     chosen = challenger.select_provider(args.provider)
     print("Second Pass %s" % __version__)
@@ -390,7 +492,32 @@ def build_parser():
 
     subparsers = parser.add_subparsers(dest="command")
 
-    subparsers.add_parser("check", parents=[common],
+    check = subparsers.add_parser(
+        "check", parents=[common],
+        help="run the Second Pass contract over a ledger and a memo")
+    check.add_argument("ledger", nargs="?", default=None, help="the ledger file, pasted as it comes")
+    check.add_argument("memo", nargs="?", default=None, help="the drafted commentary")
+    check.add_argument("--sample", default=None, choices=SAMPLE_KEYS,
+                       help="run one of the four bundled cases instead of two files")
+    check.add_argument("--dollar", default="25000", help="the dollar floor (default 25000)")
+    check.add_argument("--percent", default="10", help="the percent floor (default 10)")
+    check.add_argument("--rule", default="both", choices=["both", "either"],
+                       help="both legs, or either leg (default both)")
+    check.add_argument("--zero-prior", dest="zero_prior", default="owe",
+                       choices=["owe", "exclude"],
+                       help="a zero prior balance owes commentary on any movement, or is excluded "
+                            "from the rule (default owe)")
+    check.add_argument("--ratios", default=None, help="a file of ratio definitions, one per line")
+    check.add_argument("--format", default="table", choices=["table", "csv", "json", "prompt"],
+                       help="table (default), the CSV export, the JSON record, or Prompt 2")
+    check.add_argument("--period", default=None, help="the close period, as it should be filed")
+    check.add_argument("--memo-version", dest="memo_version", default=None)
+    check.add_argument("--company", default=None)
+    check.add_argument("--reviewer", default=None)
+    check.add_argument("--fail-on-findings", dest="fail_on_findings", action="store_true",
+                       help="exit 1 when a sentence failed or a line is silent, for a build step")
+
+    subparsers.add_parser("preflight", parents=[common],
                           help="report key presence, the AI layer and the loaded cases")
     subparsers.add_parser("cases", parents=[common], help="list the defect pack")
 
@@ -448,6 +575,13 @@ def build_parser():
 
 
 def main(argv=None):
+    # The findings carry the page's own punctuation. A console that cannot take
+    # it should print a run, not raise on the first middot.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     parser = build_parser()
     args = parser.parse_args(argv)
     if not args.command:
@@ -455,6 +589,7 @@ def main(argv=None):
         return 0
     handlers = {
         "check": cmd_check,
+        "preflight": cmd_preflight,
         "cases": cmd_cases,
         "show": cmd_show,
         "run": cmd_run,

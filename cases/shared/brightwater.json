@@ -1,0 +1,18 @@
+{
+  "key": "brightwater",
+  "caseVersion": "brightwater-v2",
+  "company": "Brightwater Dental Partners, PLLC",
+  "period": "June 2026",
+  "memoVersion": "brightwater-v2 memo, 13 September 2026",
+  "ledger": "Account\tMay 2026\tJune 2026\n4010\tPatient service revenue, net\t$742,000\t$803,500\n4220\tOrthodontic plan revenue\t$96,000\t$138,400\n5210\tDental supplies and lab fees\t$138,500\t$191,200\n6110\tHygienist wages\t$214,000\t$268,900\n6610\tMarketing and patient outreach\t$18,400\t$24,100",
+  "memo": "1. Dental supplies and lab fees eased to $191,200 in June as the group moved its crown and bridge work to a lower priced lab.\n2. Patient service revenue rose $61,500, which is 8.3 percent of May, so the movement fails the percentage leg of the threshold and this line carries no driver.\n3. Orthodontic plan revenue of $138,400 includes the eleven treatment plans families paid in full during June, and the whole payment on each plan was taken to revenue in June.\n4. Marketing and patient outreach rose $5,700, or 31.0 percent, on the new patient mailer that went out in the first week of June, and the movement fails the dollar leg of the threshold.\n5. Hygienist wages increased $44,900 after the second hygiene chair opened at the Ashburn office on June 1.",
+  "ratios": "",
+  "thresholds": {
+    "dollar": "25000",
+    "percent": "10",
+    "rule": "both",
+    "zeroPrior": "owing"
+  },
+  "source": "definitions/brightwater-v2.json",
+  "provenance": "lifted verbatim from checker.html at beat-the-machine, 13 September 2026"
+}

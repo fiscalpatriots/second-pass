@@ -1,0 +1,18 @@
+{
+  "key": "kestrel",
+  "caseVersion": "",
+  "company": "Kestrel IT Services, LLC",
+  "period": "July 2026",
+  "memoVersion": "AI draft, first pass",
+  "ledger": "Kestrel IT Services, LLC\nProfit and Loss Comparison\nJuly 2026 compared with June 2026\n\n\tJul 2026\tJun 2026\t$ Change\t% Change\nIncome\n   4000 Recurring managed services\t198,400.00\t161,500.00\t36,900.00\t22.85 %\n   4100 Project and implementation revenue\t96,400.00\t38,900.00\t57,500.00\t147.81 %\nTotal Income\t294,800.00\t200,400.00\t94,400.00\t47.11 %\nCost of Goods Sold\n   5000 Subcontracted engineering\t88,300.00\t41,800.00\t46,500.00\t111.24 %\nTotal Cost of Goods Sold\t88,300.00\t41,800.00\t46,500.00\t111.24 %\nGross Profit\t206,500.00\t158,600.00\t47,900.00\t30.20 %\nExpenses\n   6000 Salaries and wages\t88,500.00\t88,500.00\t0.00\t0.00 %\n   6200 Software licences and hosting\t57,900.00\t22,600.00\t35,300.00\t156.19 %\n   6400 Client acquisition costs\t14,200.00\t4,900.00\t9,300.00\t189.80 %\nTotal Expenses\t160,600.00\t116,000.00\t44,600.00\t38.45 %\nNet Operating Income\t45,900.00\t42,600.00\t3,300.00\t7.75 %\nNet Income\t45,900.00\t42,600.00\t3,300.00\t7.75 %",
+  "memo": "1. 4100 Project and implementation revenue rose $57.5k to $96,400, up 147.8 percent, on the Riverbend cutover that ran the whole month (source: project billing schedule).\n2. Project and implementation revenue carries the final Riverbend milestone, which was billed on 31 July and accepted the same day (source: signed acceptance certificate).\n3. 5000 Subcontracted engineering fell $46,500 to $88,300 as the cutover was staffed through two partner firms (source: partner invoices on file).\n4. 6000 Salaries and wages held flat at $88,500, with no headcount movement in the month (source: payroll register).\n5. 6200 Software licences and hosting rose $25,300 to $57,900 on the annual renewal of the monitoring platform, billed in July (source: vendor invoice).\n6. 6400 Client acquisition costs rose $9,300, or 189.8 percent, which fails the dollar leg of the threshold, so this line carries no driver.",
+  "ratios": "",
+  "thresholds": {
+    "dollar": "25000",
+    "percent": "10",
+    "rule": "both",
+    "zeroPrior": "owing"
+  },
+  "source": "written into checker.html by hand",
+  "provenance": "lifted verbatim from checker.html at beat-the-machine, 13 September 2026"
+}

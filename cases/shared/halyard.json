@@ -1,0 +1,18 @@
+{
+  "key": "halyard",
+  "caseVersion": "halyard-v3",
+  "company": "Halyard Provisioning Group, Inc.",
+  "period": "June 2026",
+  "memoVersion": "halyard-v3 memo, 13 September 2026",
+  "ledger": "Line\tAccount\tPrior (May 2026)\tCurrent (June 2026)\n4000\tProduct revenue, distribution\t$5,240,000\t$5,612,000\n4100\tService revenue, equipment maintenance\t$812,000\t$1,041,000\n4200\tFreight billed to customers\t$186,000\t$121,000\n5000\tCost of product sold\t$3,930,000\t$4,278,000\n5100\tInbound freight\t$214,000\t$287,800\n6000\tWarehouse wages\t$630,000\t$702,500\n6100\tFleet fuel\t$96,400\t$91,200\n6200\tRepairs and maintenance, depots\t$41,000\t$118,600\n6300\tSoftware subscriptions\t$28,500\t$30,100\n6400\tBad debt expense\t$15,000\t$62,000\n6500\tProfessional fees\t$55,000\t$47,500\n7000\tDepreciation\t$128,000\t$128,000\n7100\tInterest expense\t$61,200\t$92,400\n7400\tInventory shrink adjustment\t$6,400\t$8,900",
+  "memo": "1. Freight billed to customers fell from $186,000 to $121,000, a decrease of $6,500 and 3.5 percent, so neither leg of the threshold is met and no commentary is owed on this line.\n2. Depot repairs and maintenance of $118,600 reflects the roof and dock leveler program, which finished on June 30. The remaining work on that same roof and dock leveler program is scheduled to finish in August, and that spend is not yet in these numbers.\n3. Inbound freight declined to $287,800 as carrier fuel surcharges eased.\n4. Service revenue rose $229,000 as the twelve equipment maintenance contracts signed in the spring began service in June, and each month's fee is earned in the month it covers.\n5. Professional fees fell $7,500 because May carried a one-time $7,500 invoice from outside counsel for the depot lease renewal review, and the movement fails the dollar leg of the threshold.\n7. Product revenue of $5,612,000 grew on the Tri-State depot ramp, which management expects to continue through the third quarter.\n8. Bad debt expense increased $42,000 following the reserve taken against the Coastal Grocers receivable.\n9. Fleet fuel fell $5,200, and the movement fails both legs of the threshold, so the line owes no commentary at all.\n10. Software subscriptions rose $1,600, which clears neither leg of the threshold, so this line carries no driver.\n12. Distribution revenue of $5,612,000 grew 7.1 percent over May on continued customer demand across all four depots.\n13. Cost of product sold rose $348,000 against a $372,000 rise in product revenue. Product gross profit rose from $1,310,000 to $1,334,000, while product gross margin fell from 25.0 percent in May to 23.8 percent in June. The category report points to a shift toward lower margin produce and dairy lines as the likely cause, and a category sales and cost bridge has been requested to confirm it.\n14. Interest expense rose $31,200 on the depot equipment additions that also sit in depreciation.",
+  "ratios": "Product gross margin = (4000 - 5000) / 4000",
+  "thresholds": {
+    "dollar": "25000",
+    "percent": "10",
+    "rule": "both",
+    "zeroPrior": "owing"
+  },
+  "source": "definitions/halyard-v3.json",
+  "provenance": "lifted verbatim from checker.html at beat-the-machine, 13 September 2026"
+}

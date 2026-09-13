@@ -1,0 +1,96 @@
+{
+  "version": "brightwater-v2",
+  "date": "2026-09-13",
+  "company": "Brightwater Dental Partners, PLLC",
+  "period": "June close, prepared from the practice general ledger",
+  "caption": "The five accounts the second memo was written against.",
+  "threshold": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+  "policyScope": "The threshold sets what the monthly management report has to explain. It does not make a known error, or anything else that looks wrong, exempt from attention.",
+  "evidenceNote": "Every sentence under On file is a verified case assumption. A fact that is not listed was not supplied, which is not the same as saying the practice has no such document.",
+  "ledger": [
+    ["4010", "Patient service revenue, net", 742000, 803500, 1],
+    ["4220", "Orthodontic plan revenue", 96000, 138400, 1],
+    ["5210", "Dental supplies and lab fees", 138500, 191200, 1],
+    ["6110", "Hygienist wages", 214000, 268900, 1],
+    ["6610", "Marketing and patient outreach", 18400, 24100, 1]
+  ],
+  "groups": [
+    {"title": "Revenue", "accts": ["4010", "4220"], "total": "Total revenue"},
+    {"title": "Clinical cost of care", "accts": ["5210"], "total": "Total clinical cost of care"},
+    {"title": "Operating expenses", "accts": ["6110", "6610"], "total": "Total operating expenses"}
+  ],
+  "cards": [
+    {
+      "n": 1, "icon": "truck", "acct": "5210", "name": "Dental supplies and lab fees",
+      "prior": 138500, "current": 191200,
+      "memo": "Dental supplies and lab fees eased to $191,200 in June as the group moved its crown and bridge work to a lower priced lab.",
+      "file": [
+        "The two associate dentists who started in May began seeing a full schedule of patients in June.",
+        "The lab bills Brightwater in the month a case is sent out, and every June case has been billed.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "flag", "type": "wrong direction",
+      "why": "Supplies and lab fees rose $52,700, up 38.1 percent, so the sentence has the movement backwards and the reason for an increase that size is still missing. The cheaper lab is not disproved by the total: lower prices per case can sit inside higher total spending when case volume rises.",
+      "tell": "The memo used the word eased next to a June balance that is higher than May's.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 2, "icon": "coins", "acct": "4010", "name": "Patient service revenue, net",
+      "prior": 742000, "current": 803500,
+      "memo": "Patient service revenue rose $61,500, which is 8.3 percent of May, so the movement fails the percentage leg of the threshold and this line carries no driver.",
+      "file": [
+        "$61,500 is the largest dollar movement on this statement.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "Recompute it and the memo is right on both figures, because $61,500 against a May balance of $742,000 is 8.3 percent, so the percentage leg is not met and no explanation is required under this policy.",
+      "over": "The dollar figure is the biggest one on the page, and the largest movement still owes nothing until the percentage leg clears as well.",
+      "tell": "Both legs have to clear before a line owes anything, and 8.3 percent never reaches 10.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 3, "icon": "calendar", "acct": "4220", "name": "Orthodontic plan revenue",
+      "prior": 96000, "current": 138400,
+      "memo": "Orthodontic plan revenue of $138,400 includes the eleven treatment plans families paid in full during June, and the whole payment on each plan was taken to revenue in June.",
+      "file": [
+        "Orthodontic plans run eighteen months and the practice earns the fee as treatment is delivered.",
+        "The eleven plans paid in full during June carry a combined fee of $38,500, and treatment on all eleven starts in July.",
+        "No separately earned setup, records or initial assessment service was delivered on those eleven plans in June.",
+        "Brightwater closes on the fourth business day of the following month."
+      ],
+      "key": "flag", "type": "timing",
+      "why": "The file earns these fees as treatment is delivered, treatment on all eleven plans starts in July, and no separately earned June service exists on them, so $38,500 collected in advance sits in June revenue instead of deferred revenue. Take it out and June is $99,900, up $3,900 or 4.1 percent. How the fee is then earned across the eighteen months is a separate question the plan length alone does not settle.",
+      "tell": "Cash in the door in June is not revenue in June when the work it pays for happens later.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 4, "icon": "brief", "acct": "6610", "name": "Marketing and patient outreach",
+      "prior": 18400, "current": 24100,
+      "memo": "Marketing and patient outreach rose $5,700, or 31.0 percent, on the new patient mailer that went out in the first week of June, and the movement fails the dollar leg of the threshold.",
+      "file": [
+        "The June mailer was printed and delivered in the first week of June. The $5,700 vendor invoice is recorded in June.",
+        "May carried $18,400 of recurring outreach spend, and the same recurring items continue unchanged in June.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "The mailer was delivered in June and its $5,700 invoice is recorded in June, and $18,400 of unchanged recurring spend plus that $5,700 reconciles the whole of June's $24,100. $5,700 never reaches $25,000, so nothing was owed on this line and the memo explained it anyway and got it right.",
+      "over": "Thirty one percent reads alarming until you test the dollar leg. The expense sits in June because the mailer was delivered in June, not merely because the invoice is dated then.",
+      "tell": "Test the dollar leg before the percentage talks you into a flag, and check delivery rather than invoice date.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 5, "icon": "people", "acct": "6110", "name": "Hygienist wages",
+      "prior": 214000, "current": 268900,
+      "memo": "Hygienist wages increased $44,900 after the second hygiene chair opened at the Ashburn office on June 1.",
+      "file": [
+        "The second hygiene chair added one full time hygienist from June 1, and the payroll register is on file.",
+        "No payroll bridge was supplied, so nothing establishes what the second chair cost in June.",
+        "No other sentence in the memo touches this account."
+      ],
+      "key": "flag", "type": "arithmetic",
+      "why": "The account moved $54,900 and the memo says $44,900, so the figure does not tie to the ledger. Nothing supplied establishes $44,900 as the cost of the second chair either, so the $10,000 difference cannot be assigned to anything. The ask is a payroll bridge, not a reason invented for the remainder.",
+      "tell": "The memo handed you a number, so check it against the ledger before you read the reason attached to it.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    }
+  ]
+}

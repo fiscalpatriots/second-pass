@@ -1,0 +1,102 @@
+{
+  "version": "brightwater-v3",
+  "date": "2026-09-13",
+  "mode": "assessment",
+  "company": "Brightwater Dental Partners, PLLC",
+  "period": "June close, prepared from the practice general ledger",
+  "caption": "The five accounts the second memo was written against.",
+  "threshold": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+  "policyScope": "The threshold sets what the monthly management report has to explain. It does not make a known error, or anything else that looks wrong, exempt from attention.",
+  "evidenceNote": "Every sentence under On file is a verified case assumption. A fact that is not listed was not supplied, which is not the same as saying the practice has no such document.",
+  "assessmentNote": "Every figure in this memo ties to the ledger and every direction word is right, so arithmetic, direction and the threshold reading are settled before you start. What is left on each line is whether the cause the memo names is carried by something on file.",
+  "ledger": [
+    ["4010", "Patient service revenue, net", 742000, 803500, 1],
+    ["4220", "Orthodontic plan revenue", 96000, 138400, 1],
+    ["5210", "Dental supplies and lab fees", 138500, 191200, 1],
+    ["6110", "Hygienist wages", 214000, 268900, 1],
+    ["6610", "Marketing and patient outreach", 18400, 24100, 1]
+  ],
+  "groups": [
+    {"title": "Revenue", "accts": ["4010", "4220"], "total": "Total revenue"},
+    {"title": "Clinical cost of care", "accts": ["5210"], "total": "Total clinical cost of care"},
+    {"title": "Operating expenses", "accts": ["6110", "6610"], "total": "Total operating expenses"}
+  ],
+  "cards": [
+    {
+      "n": 1, "icon": "box", "acct": "5210", "name": "Dental supplies and lab fees",
+      "prior": 138500, "current": 191200,
+      "memo": "Dental supplies and lab fees rose $52,700, or 38.1 percent, on the implant cases the new surgical suite took on in June.",
+      "file": [
+        "The surgical suite at the Ashburn office opened on 1 June.",
+        "No case mix report, no lab invoice summary and no implant case count was supplied for May or for June.",
+        "Nothing on file states how many cases the surgical suite took in June or what those cases cost.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "flag", "type": "unsupported driver",
+      "why": "The figures tie and the direction is right, so the arithmetic is not what fails here. Nothing supplied connects the surgical suite to the $52,700: there is no case mix report, no lab invoice summary and no implant count, so the driver is not established from the evidence on file, which is a smaller claim than saying it is false. A lab invoice summary by case type for May and June would settle it.",
+      "tell": "The figure ties, so read the reason instead and ask which document would prove it.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 2, "icon": "people", "acct": "6110", "name": "Hygienist wages",
+      "prior": 214000, "current": 268900,
+      "memo": "Hygienist wages rose $54,900, or 25.7 percent, on the second hygiene chair that opened at the Ashburn office on 1 June.",
+      "file": [
+        "The second hygiene chair opened at the Ashburn office on 1 June, and the staffing plan for it is on file.",
+        "The June payroll register is on file. Two hygienists hired for the second chair were paid $54,900 in June between them.",
+        "No other hygienist rate, hour or headcount changed between May and June, so the two new hygienists are the whole of the movement.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "The figures tie, the direction is right, and the payroll register on file puts the whole $54,900 on the two hygienists hired for the second chair with no other hygienist pay moving, so the cause is carried by a document rather than asserted. The line clears both legs of the threshold and the commentary it owes is the commentary it received.",
+      "over": "The largest movement on the statement is not automatically the weakest sentence, and the payroll register carries this one from end to end.",
+      "tell": "Ask which document would prove the sentence, and here the payroll register does.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 3, "icon": "scales", "acct": "4220", "name": "Orthodontic plan revenue",
+      "prior": 96000, "current": 138400,
+      "memo": "",
+      "file": [
+        "No sentence anywhere in the memo mentions account 4220.",
+        "No plan count, contract schedule or deferred revenue rollforward was supplied for June.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "flag", "type": "no explanation",
+      "why": "$42,400 is 44.2 percent of May and clears both legs of the threshold with room to spare, and the memo says nothing about this account at all, so the largest percentage movement on the statement reaches the reviewer with no sentence attached to it. The ask is the plan schedule and a deferred revenue rollforward for June rather than a cause you supply yourself.",
+      "tell": "Read the ledger for what the memo left out, not only for what it got wrong.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 4, "icon": "coins", "acct": "4010", "name": "Patient service revenue, net",
+      "prior": 742000, "current": 803500,
+      "memo": "Patient service revenue rose $61,500, or 8.3 percent, as the two associate dentists who started in May reached a full patient schedule in June. The movement fails the percentage leg of the threshold.",
+      "file": [
+        "The two associate dentists started in May.",
+        "No production report by provider, patient visit count or fee schedule was supplied for May or for June, so nothing states how much of the movement the two associates account for.",
+        "This line fails the percentage leg of the threshold, so no commentary was required on it. The memo explains it anyway, and that explanation is what is under review.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "flag", "type": "unsupported driver",
+      "why": "$61,500 is 8.3 percent of May and the threshold reading is right, so the figures are not what fails here. Nothing supplied ties the two associates to the $61,500, because there is no production report by provider and no visit count, so the driver is not established from the evidence on file. A production report by provider for both months would settle it, and a line owing no commentary does not make an unsupported sentence hold once the memo writes it.",
+      "tell": "A sentence nobody required still has to be supported once the memo puts it on the page.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    },
+    {
+      "n": 5, "icon": "brief", "acct": "6610", "name": "Marketing and patient outreach",
+      "prior": 18400, "current": 24100,
+      "memo": "Marketing and patient outreach rose $5,700, or 31.0 percent, on the new patient mailer delivered in the first week of June. The movement fails the dollar leg of the threshold.",
+      "file": [
+        "The mailer was printed and delivered in the first week of June, and the $5,700 vendor invoice for it is recorded in June.",
+        "May carried $18,400 of recurring outreach spend and the same recurring items continue unchanged in June, so $18,400 plus the $5,700 mailer is the whole of June's $24,100.",
+        "This line fails the dollar leg of the threshold, so no commentary was required on it. The memo explains it anyway, and that explanation is what is under review.",
+        "A line owes commentary only when it clears both $25,000 and 10 percent."
+      ],
+      "key": "stand", "type": "clean line",
+      "why": "The figures tie, the direction is right, and the vendor invoice and the unchanged recurring spend on file reconcile the whole of June's $24,100, so the mailer is a supported cause rather than an asserted one. The threshold reading is right as well, because $5,700 never reaches $25,000.",
+      "over": "Thirty one percent reads alarming until you test the dollar leg, and the invoice and the recurring spend on file account for every dollar of this movement.",
+      "tell": "A cause carried by a document on file holds, whatever the percentage looks like.",
+      "post": {"flag": "Accept", "stand": "Reject"}
+    }
+  ]
+}
