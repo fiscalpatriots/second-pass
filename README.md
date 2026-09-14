@@ -7,9 +7,9 @@ The first review a new associate performs is now a review of something a machine
 wrote. It arrives fluent, formatted and confident, and it is the easiest thing in
 the world to approve. Two things sit on that handoff here. The **checker** takes
 a ledger and a drafted memo and does the mechanical work: it recomputes every
-line, ties every figure in the memo to the line it is written about, and returns
-a status for each sentence and a short queue of questions only a person can
-answer. The **trainer** puts a reviewer through the same memo, makes them commit
+ledger line, ties each figure it can read to the line the sentence names, and
+returns a status for each sentence and a short queue of questions only a person
+can answer. Whatever it cannot read goes into that queue rather than being passed. The **trainer** puts a reviewer through the same memo, makes them commit
 their own findings first, and then measures the distance between what they
 thought they caught and what they caught.
 
@@ -18,14 +18,20 @@ signs.
 
 The checker also runs in a browser, at
 [checker.html](https://fiscalpatriots.github.io/beat-the-machine/checker.html),
-one HTML file with no libraries. That page and this package are the same
-contract, held to the same fifty-nine fixtures. Anyone can run the checks on any
-ledger and any memo, in either place, and get the same answer.
+one HTML file with no libraries. That page and this package implement one
+contract and run the same 212 fixtures, and on those 212 inputs they agree on
+every field compared in [CONTRACT-DIVERGENCE.md](CONTRACT-DIVERGENCE.md). The
+checks read a ledger in one of the layouts `CHECKER.md` accepts, and a sentence
+carrying anything the grammar cannot read comes back not checked rather than
+cleared.
 
 ## The contract, in one paragraph
 
-Every figure in the memo is read with the span of text it came from, its value
-and its unit, and dollars, percent and percentage points are held apart. Each
+Every figure the grammar reads is read with the span of text it came from, its
+value and its unit, and dollars, percent and percentage points are held apart.
+Any other quantitative language, a multiplier, a fraction, a scale word or a
+digit outside 0 to 9, is recorded as an unparsed span and leaves the sentence
+not checked. Each
 sentence is bound to a ledger line by the account number written in it, by the
 account name written in it, or by an exact figure where the sentence also carries
 a word from that account's name that no other named account shares; a figure that
@@ -42,9 +48,10 @@ review**, **not checked** or **failed**, and no later step may move one upward.
 The full contract, with every boundary and every exclusion, is in
 [CHECKER.md](https://github.com/fiscalpatriots/beat-the-machine/blob/main/CHECKER.md).
 
-**"Checked within scope" does not mean the sentence is true.** It means each
-figure carried a role the words gave it and the unrounded comparison with the
-pasted ledger agreed. Whether the driver is real and whether the period is right
+**"Checked within scope" does not mean the sentence is true.** It means every
+quantitative expression in the sentence was accounted for, and each figure
+carried a role the words gave it and the unrounded comparison with the pasted
+ledger agreed. Whether the driver is real and whether the period is right
 are not mechanical questions, and the checker puts both of them to a person.
 
 ## Install and run
@@ -174,32 +181,38 @@ sentences that were checked within scope with the two judgment questions.
 ## One suite, two implementations
 
 The browser and this package are held to the same file. `tests/checker-fixtures.json`
-is the suite that guards `checker.html`, copied here fixture for fixture; the two
-end-to-end samples, `T18` and `T18b`, assert against the case versions each
-repository actually carries, which is recorded in
-[CONTRACT-DIVERGENCE.md](CONTRACT-DIVERGENCE.md).
+is the suite that guards `checker.html`, and the copy here is the same file once
+line endings are normalized, which a test here checks. The end-to-end samples
+`T18` (halyard-v4) and `T18b` (brightwater-v5) run on the same case versions in
+both repositories, as [CONTRACT-DIVERGENCE.md](CONTRACT-DIVERGENCE.md) records.
 
 ```
 node tests/run-checker-tests.cjs                          # in the beat-the-machine repository
-python -m pytest tests/test_checker_contract.py -q        # here
+python -m pytest tests/test_parity_shared_inputs.py -q    # here, both on one input set
 ```
 
-Fifty-nine fixtures, and 138 tests over them here. The identifiers run `T01` to
-`T54` and five of them carry a lettered second case, which is where the count of
-fifty-three came from: it counted identifiers rather than fixtures. Seventeen are
-the probes from the external audit of 13 September 2026, twenty-four are the
-probes from the live release review of the same day, three are the end-to-end
-sample runs, and the rest were written against the repaired contract afterwards.
-Each one carries the required behaviour as its own assertion, so a change in
-either place that moves a status fails the suite.
+212 fixtures. Fifty-nine of them run `T01` to `T54`, five with a lettered second
+case: seventeen probes from the external audit of 13 September 2026, twenty-four
+from the live release review of the same day, the end-to-end sample runs, and
+probes written against the repaired contract afterwards. `P01` to `P40` are the
+forty probes from the third independent review of 13 September 2026, and the
+other 113 are mutations of the six classes that review showed were open:
+multipliers, no-change claims, fractions and number words, digits outside 0 to 9,
+numbers that are not figures, and the Prompt 1 line shape. Each one carries the
+required behavior as its own assertion, so a change in either place that moves a
+status fails the suite. `python -m pytest tests/ -q` runs 504 tests in this
+repository, the parity test among them.
 
 The two were also compared field by field, not only on the clauses the fixtures
-assert: statuses, roles, findings, every recomputed line, the flags, the queue,
-the CSV, the JSON record, the reviewer prompt and the table export. They agree
-byte for byte, run identifier and source version included.
+assert: `tests/test_parity_shared_inputs.py` runs all 212 inputs through the page
+under Node and through this package, and compares the statuses, roles, coverage
+counts, the queue, the findings, the reviewer list, the CSV, the table export, the
+JSON record and the reviewer prompt, with timestamps masked and the JSON compared
+as objects. They agree on every compared field for those 212 inputs, which is not
+a proof that they agree on an input nobody has added yet.
 [CONTRACT-DIVERGENCE.md](CONTRACT-DIVERGENCE.md) records the method, the result,
-and the page behaviours that have no command-line meaning so their absence is not
-read as a divergence. Where the two could ever disagree, the browser's contract
+what the comparison found and fixed on the way, and the page behaviors that have
+no command-line meaning so their absence is not read as a divergence. Where the two could ever disagree, the browser's contract
 wins.
 
 The four bundled cases in `cases/shared/` are lifted verbatim from the page, and

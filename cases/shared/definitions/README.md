@@ -32,8 +32,10 @@ No card in either case has an amount booked in an account it does not belong in,
 reason. That is the point of counting the reason separately: the same run scored 14 of 14 and 5
 of 5 on the call in the 13 September review.
 
-The reason score is a compatibility check on the stated basis and not a rubric score. It never
-moves the rank or the badges, which read the call score only. A participant who taps
+The reason score is a compatibility check on the stated basis and not a rubric score: it measures
+agreement with the accepted reason categories on each card. Its 50 points go into the total the
+rank is read off, so it does move the rank; the badges read the calls alone and never the reason.
+The rank is a game device on one case, not a credential and not a learning outcome. A participant who taps
 `no source on file` on every flag and the hold chip on every stand would score well on reason
 without having reasoned, so the three-dimension reasoning rubric stays with a person outside the
 page, and reviewer disagreements are retained rather than settled by the key.
