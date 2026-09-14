@@ -1,10 +1,11 @@
 """The browser's regression suite, run against the Python checker.
 
 ``tests/checker-fixtures.json`` is the suite that guards ``checker.html`` at
-beat-the-machine, copied here byte for byte.  The browser runs it with
-``node tests/run-checker-tests.cjs``; this file runs the same fifty-three
-fixtures through ``second_pass.checker`` and asserts the same required
-behaviour, clause for clause.
+beat-the-machine, and the file here is the same file.  The browser runs it with
+``node tests/run-checker-tests.cjs``; this file runs the same two hundred and
+twelve fixtures through ``second_pass.checker`` and asserts the same required
+behavior, clause for clause.  ``test_parity_shared_inputs.py`` then runs every
+one of them through both implementations and compares the outputs.
 
 One suite, two implementations.  A change to either that moves a status fails
 here.  Where the two could ever disagree, the browser's contract in ``CHECKER.md``
@@ -157,11 +158,14 @@ def test_fixture_holds_in_python(fixture):
 
 
 def test_the_suite_is_the_browser_suite():
-    """Fifty-nine fixtures, T01 to T54 with the lettered companions."""
-    assert len(FIXTURES) == 59
+    """Two hundred and twelve fixtures: T01 to T54 with the lettered companions, the
+    forty probes of the third review, P01 to P40, and the mutation classes."""
+    assert len(FIXTURES) == 212
     assert FIXTURE_IDS[0] == "T01"
-    assert FIXTURE_IDS[-1] == "T54"
-    assert len(set(FIXTURE_IDS)) == 59
+    assert "T54" in FIXTURE_IDS and "P01" in FIXTURE_IDS and "P40" in FIXTURE_IDS
+    for prefix in ("MUL", "STILL", "FRAC", "DIGIT", "COUNT", "ROLE"):
+        assert any(i.startswith(prefix) for i in FIXTURE_IDS), prefix
+    assert len(set(FIXTURE_IDS)) == 212
 
 
 # The coverage strips printed in CHECKER.md for the four samples. These are the
@@ -169,9 +173,9 @@ def test_the_suite_is_the_browser_suite():
 # rather than through a fixture.
 SAMPLE_COVERAGE = {
     "halyard": dict(sent=12, checked=4, review=5, notchecked=0, failed=3,
-                    rowsUsed=14, rowsSkipped=0, silent=1, queue=13),
-    "brightwater": dict(sent=5, checked=2, review=1, notchecked=0, failed=2,
-                        rowsUsed=5, rowsSkipped=0, silent=0, queue=3),
+                    rowsUsed=14, rowsSkipped=0, silent=1, queue=14),
+    "brightwater": dict(sent=5, checked=5, review=0, notchecked=0, failed=0,
+                        rowsUsed=5, rowsSkipped=0, silent=0, queue=0),
     "kestrel": dict(sent=6, checked=3, review=0, notchecked=1, failed=2,
                     rowsUsed=6, rowsSkipped=0, silent=1, queue=6),
     "ridgeline": dict(sent=3, checked=1, review=0, notchecked=0, failed=2,

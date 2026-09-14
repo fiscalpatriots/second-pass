@@ -1,0 +1,347 @@
+{
+  "version": "brightwater-v5",
+  "date": "2026-09-13",
+  "mode": "assessment",
+  "company": "Brightwater Dental Partners, PLLC",
+  "period": "June close, prepared from the practice general ledger",
+  "caption": "The five accounts the second memo was written against.",
+  "threshold": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+  "policyScope": "The threshold sets what the monthly management report has to explain. It does not make a known error, or anything else that looks wrong, exempt from attention.",
+  "evidenceNote": "Every entry under On file is a verified case assumption. Each one either quotes a line from a dated document in the file or says plainly that no such document was supplied. A fact that is not listed was not supplied, which is not the same as saying the practice has no such document. Read the date on a document before you let it carry a sentence.",
+  "assessmentNote": "Every figure in this memo ties to the ledger, every direction word is right and every threshold reading is right, so arithmetic, direction and the threshold are settled before you start. Every one of the five lines carries a sentence naming a cause, and the only question on each is whether something on file carries that cause.",
+  "ledger": [
+    [
+      "4010",
+      "Patient service revenue, net",
+      742000,
+      803500,
+      1
+    ],
+    [
+      "4220",
+      "Orthodontic plan revenue",
+      96000,
+      138400,
+      1
+    ],
+    [
+      "5210",
+      "Dental supplies and lab fees",
+      138500,
+      191200,
+      1
+    ],
+    [
+      "6110",
+      "Hygienist wages",
+      214000,
+      268900,
+      1
+    ],
+    [
+      "6610",
+      "Marketing and patient outreach",
+      18400,
+      24100,
+      1
+    ]
+  ],
+  "groups": [
+    {
+      "title": "Revenue",
+      "accts": [
+        "4010",
+        "4220"
+      ],
+      "total": "Total revenue"
+    },
+    {
+      "title": "Clinical cost of care",
+      "accts": [
+        "5210"
+      ],
+      "total": "Total clinical cost of care"
+    },
+    {
+      "title": "Operating expenses",
+      "accts": [
+        "6110",
+        "6610"
+      ],
+      "total": "Total operating expenses"
+    }
+  ],
+  "cards": [
+    {
+      "n": 1,
+      "icon": "box",
+      "acct": "5210",
+      "name": "Dental supplies and lab fees",
+      "prior": 138500,
+      "current": 191200,
+      "memo": "Dental supplies and lab fees rose $52,700, or 38.1 percent, on the implant cases the new surgical suite took on in June.",
+      "file": [
+        {
+          "fact": "The surgical suite at the Ashburn office opened on 1 June.",
+          "doc": "Ashburn build-out completion certificate",
+          "date": "1 June 2026",
+          "quote": "Surgical suite, two operatories, accepted for clinical use on 1 June 2026."
+        },
+        {
+          "fact": "No case mix report, no lab invoice summary and no implant case count was supplied for May or for June.",
+          "missing": "Requested from the practice on 6 July 2026. Nothing received, so nothing is on file."
+        },
+        {
+          "fact": "Nothing on file states how many cases the surgical suite took in June or what those cases cost.",
+          "missing": "No document in the file speaks to the June case volume or its cost."
+        },
+        {
+          "fact": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+          "doc": "Brightwater monthly reporting policy, section 4",
+          "date": "1 January 2026",
+          "quote": "Commentary is owed on a line only where the movement clears both $25,000 and 10 percent of the prior balance."
+        }
+      ],
+      "key": "flag",
+      "type": "unsupported driver",
+      "why": "The figures tie and the direction is right, so the arithmetic is not what fails here. Nothing supplied connects the surgical suite to the $52,700: there is no case mix report, no lab invoice summary and no implant count, so the driver is not established from the evidence on file, which is a smaller claim than saying it is false. A lab invoice summary by case type for May and June would settle it.",
+      "truth": "The figures tie and the direction is right, and nothing supplied connects the surgical suite to the $52,700.",
+      "ask": "Ask the practice for a lab invoice summary by case type for May and for June.",
+      "tell": "The figure ties, so read the reason instead and ask which document would prove it.",
+      "post": {
+        "flag": "Accept",
+        "stand": "Reject"
+      },
+      "basisKey": [
+        "no source on file"
+      ]
+    },
+    {
+      "n": 2,
+      "icon": "people",
+      "acct": "6110",
+      "name": "Hygienist wages",
+      "prior": 214000,
+      "current": 268900,
+      "memo": "Hygienist wages rose $54,900, or 25.7 percent, on the second hygiene chair that opened at the Ashburn office on 1 June.",
+      "file": [
+        {
+          "fact": "The second hygiene chair opened at the Ashburn office on 1 June, and the staffing plan for it is on file.",
+          "doc": "Hygiene staffing plan, Ashburn",
+          "date": "12 May 2026",
+          "quote": "Second hygiene chair in service 1 June 2026, staffed by two hygienists hired for it."
+        },
+        {
+          "fact": "The June payroll register is on file. Two hygienists hired for the second chair were paid $54,900 in June between them.",
+          "doc": "Payroll register, June 2026",
+          "date": "30 June 2026",
+          "quote": "Hygienist gross pay June 2026 $268,900, of which A. Rivas $27,600 and D. Okafor $27,300, both hired 1 June for the second chair."
+        },
+        {
+          "fact": "No other hygienist rate, hour or headcount changed between May and June, so the two new hygienists are the whole of the movement.",
+          "doc": "Payroll register, May 2026, with the June rate change report",
+          "date": "30 June 2026",
+          "quote": "Hygienist gross pay May 2026 $214,000, six hygienists. Rate changes effective in June 2026: none."
+        },
+        {
+          "fact": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+          "doc": "Brightwater monthly reporting policy, section 4",
+          "date": "1 January 2026",
+          "quote": "Commentary is owed on a line only where the movement clears both $25,000 and 10 percent of the prior balance."
+        }
+      ],
+      "key": "stand",
+      "type": "clean line",
+      "why": "The figures tie, the direction is right, and the payroll register on file puts the whole $54,900 on the two hygienists hired for the second chair with no other hygienist pay moving, so the cause is carried by a document rather than asserted. The line clears both legs of the threshold and the commentary it owes is the commentary it received.",
+      "over": "The largest movement on the statement is not automatically the weakest sentence, and the payroll register carries this one from end to end.",
+      "tell": "Ask which document would prove the sentence, and here the payroll register does.",
+      "post": {
+        "flag": "Accept",
+        "stand": "Reject"
+      },
+      "basisKey": [
+        "the figure and reason hold"
+      ]
+    },
+    {
+      "n": 3,
+      "icon": "scales",
+      "acct": "4220",
+      "name": "Orthodontic plan revenue",
+      "prior": 96000,
+      "current": 138400,
+      "memo": "Orthodontic plan revenue rose $42,400, or 44.2 percent, as the thirty-one new orthodontic plans that started in June began billing.",
+      "file": [
+        {
+          "fact": "The orthodontic plan schedule on file is dated 31 May and lists the plans running before June. It lists no plan that started in June.",
+          "doc": "Orthodontic plan schedule",
+          "date": "31 May 2026",
+          "quote": "Active plans at 31 May 2026: 96. Monthly plan billing at 31 May 2026: $96,000. Plans starting after 31 May 2026: not covered by this schedule."
+        },
+        {
+          "fact": "No June plan schedule, no plan count for June and no deferred revenue rollforward for June was supplied.",
+          "missing": "Requested from the practice on 6 July 2026. Nothing received, so nothing is on file."
+        },
+        {
+          "fact": "Nothing on file states how many plans started in June or what those plans bill.",
+          "missing": "The 31 May schedule is the only plan document in the file, and it stops before the movement."
+        },
+        {
+          "fact": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+          "doc": "Brightwater monthly reporting policy, section 4",
+          "date": "1 January 2026",
+          "quote": "Commentary is owed on a line only where the movement clears both $25,000 and 10 percent of the prior balance."
+        }
+      ],
+      "key": "flag",
+      "type": "unsupported driver",
+      "why": "$42,400 is 44.2 percent of May and the figures tie, so the arithmetic is not what fails here. The only plan schedule on file is dated 31 May and covers the plans running before June, so it cannot carry thirty-one plans that started in June, and nothing else supplied states a June plan count. A document on file is not the same as a document covering the period the sentence is about. A June plan schedule, or a deferred revenue rollforward for June, would settle it.",
+      "truth": "The only plan schedule on file is dated 31 May and covers the plans running before June, so it cannot carry thirty-one plans that started in June.",
+      "ask": "Ask the practice for a June plan schedule or a June deferred revenue rollforward.",
+      "tell": "Check the date on the document before you accept it. A schedule that stops at 31 May cannot establish what started in June.",
+      "post": {
+        "flag": "Accept",
+        "stand": "Reject"
+      },
+      "basisKey": [
+        "wrong period",
+        "no source on file"
+      ]
+    },
+    {
+      "n": 4,
+      "icon": "coins",
+      "acct": "4010",
+      "name": "Patient service revenue, net",
+      "prior": 742000,
+      "current": 803500,
+      "memo": "Patient service revenue rose $61,500, or 8.3 percent, as the two associate dentists who started in May reached a full patient schedule in June. The movement fails the percentage leg of the threshold.",
+      "file": [
+        {
+          "fact": "The two associate dentists started in May.",
+          "doc": "Associate employment agreements, two",
+          "date": "1 May 2026",
+          "quote": "Dr. N. Adeyemi and Dr. P. Calloway, associate dentists, start date 1 May 2026."
+        },
+        {
+          "fact": "No production report by provider, patient visit count or fee schedule was supplied for May or for June, so nothing states how much of the movement the two associates account for.",
+          "missing": "Requested from the practice on 6 July 2026. Nothing received, so nothing is on file."
+        },
+        "This line fails the percentage leg of the threshold, so no commentary was required on it. The memo explains it anyway, and that explanation is what is under review.",
+        {
+          "fact": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+          "doc": "Brightwater monthly reporting policy, section 4",
+          "date": "1 January 2026",
+          "quote": "Commentary is owed on a line only where the movement clears both $25,000 and 10 percent of the prior balance."
+        }
+      ],
+      "key": "flag",
+      "type": "unsupported driver",
+      "why": "$61,500 is 8.3 percent of May and the threshold reading is right, so the figures are not what fails here. Nothing supplied ties the two associates to the $61,500, because there is no production report by provider and no visit count, so the driver is not established from the evidence on file. A production report by provider for both months would settle it, and a line owing no commentary does not make an unsupported sentence hold once the memo writes it.",
+      "truth": "Nothing supplied ties the two associate dentists to the $61,500, and a line that owed no commentary still has to support the sentence the memo wrote about it.",
+      "ask": "Ask the practice for a production report by provider for May and for June.",
+      "tell": "A sentence nobody required still has to be supported once the memo puts it on the page.",
+      "post": {
+        "flag": "Accept",
+        "stand": "Reject"
+      },
+      "basisKey": [
+        "no source on file"
+      ]
+    },
+    {
+      "n": 5,
+      "icon": "brief",
+      "acct": "6610",
+      "name": "Marketing and patient outreach",
+      "prior": 18400,
+      "current": 24100,
+      "memo": "Marketing and patient outreach rose $5,700, or 31.0 percent, on the new patient mailer delivered in the first week of June. The movement fails the dollar leg of the threshold.",
+      "file": [
+        {
+          "fact": "The mailer was printed and delivered in the first week of June, and the $5,700 vendor invoice for it is recorded in June.",
+          "doc": "Tidewater Print and Mail invoice 20614",
+          "date": "8 June 2026",
+          "quote": "New patient mailer, 4,200 pieces, printed and delivered week of 1 June 2026. Total $5,700."
+        },
+        {
+          "fact": "May carried $18,400 of recurring outreach spend and the same recurring items continue unchanged in June, so $18,400 plus the $5,700 mailer is the whole of June's $24,100.",
+          "doc": "Marketing and patient outreach subledger, June 2026",
+          "date": "30 June 2026",
+          "quote": "Recurring outreach items June 2026 $18,400, unchanged from May 2026. Non-recurring: mailer $5,700. Total $24,100."
+        },
+        "This line fails the dollar leg of the threshold, so no commentary was required on it. The memo explains it anyway, and that explanation is what is under review.",
+        {
+          "fact": "A line owes commentary only when it clears both $25,000 and 10 percent.",
+          "doc": "Brightwater monthly reporting policy, section 4",
+          "date": "1 January 2026",
+          "quote": "Commentary is owed on a line only where the movement clears both $25,000 and 10 percent of the prior balance."
+        }
+      ],
+      "key": "stand",
+      "type": "clean line",
+      "why": "The figures tie, the direction is right, and the vendor invoice and the unchanged recurring spend on file reconcile the whole of June's $24,100, so the mailer is a supported cause rather than an asserted one. The threshold reading is right as well, because $5,700 never reaches $25,000.",
+      "over": "Thirty one percent reads alarming until you test the dollar leg, and the invoice and the recurring spend on file account for every dollar of this movement.",
+      "tell": "A cause carried by a document on file holds, whatever the percentage looks like.",
+      "post": {
+        "flag": "Accept",
+        "stand": "Reject"
+      },
+      "basisKey": [
+        "the figure and reason hold"
+      ]
+    }
+  ],
+  "basisKeyNote": "basisKey is the set of basis chips that are correct for the card. A chip outside that set contradicts the key for this card. The reason is scored right when the player chose at least one chip in the key and no chip outside it. A card whose key is 'stand' carries only \"the figure and reason hold\", because a chip naming a defect contradicts a line that has none. The reason score is a compatibility check on the stated basis, not a rubric score; the three-dimension reasoning rubric is scored by a person outside the page.",
+  "basisChips": {
+    "stand": [
+      "the figure and reason hold",
+      "figure does not tie",
+      "direction wrong",
+      "no source on file",
+      "wrong period",
+      "wrong account",
+      "nothing written where owed"
+    ],
+    "flag": [
+      "figure does not tie",
+      "direction wrong",
+      "no source on file",
+      "wrong period",
+      "wrong account",
+      "nothing written where owed"
+    ]
+  },
+  "changeLog": [
+    {
+      "version": "brightwater-v5",
+      "date": "2026-09-13",
+      "changed": "Every on-file fact now carries a one-line excerpt from a named, dated document, or says in the same place that the document was asked for and is not on file.",
+      "why": "The 13 September release review: \"Short source excerpts, and one document that is incomplete or wrong-period.\" Author-summarized facts told the player what to conclude. An excerpt with a date on it makes the player read the document."
+    },
+    {
+      "version": "brightwater-v5",
+      "date": "2026-09-13",
+      "changed": "Line 3, orthodontic plan revenue, rests on a real document shown on the card: the orthodontic plan schedule dated 31 May 2026, quoted as 96 active plans and $96,000 of monthly plan billing at that date, and stating in its own words that it does not cover plans starting after 31 May. The memo attributes $42,400 to thirty-one plans that started in June.",
+      "why": "The same review asked that the wrong-period item rest on a genuine dated document rather than on a summary saying the document is the wrong period. The schedule ties to the ledger's May balance of $96,000, so it is plainly the right account and plainly the wrong month."
+    },
+    {
+      "version": "brightwater-v4",
+      "date": "2026-09-13",
+      "changed": "Line 3, orthodontic plan revenue, is no longer a silent line. It now carries a memo sentence whose figures tie and whose named cause, thirty-one plans starting in June, rests on a plan schedule dated 31 May that covers the period before the movement. The call stays flag and the type moves from no explanation to unsupported driver.",
+      "why": "The 13 September review: \"Brightwater item 3 has an empty memo and type no explanation. There is no cause to evaluate.\" All five lines now test a named cause, and one of them puts a genuine document on file that relates to the wrong period, so the presence of a document is not an automatic answer."
+    },
+    {
+      "version": "brightwater-v4",
+      "date": "2026-09-13",
+      "changed": "Three lines are unsupported-cause flags, 1, 3 and 4, and two are supported-cause stands, 2 and 5.",
+      "why": "The mix is stated in cases/README.md with what each degenerate strategy scores."
+    },
+    {
+      "version": "brightwater-v4",
+      "date": "2026-09-13",
+      "changed": "Every card carries basisKey, and the file carries basisKeyNote and basisChips.",
+      "why": "The call and the reason are scored separately from this release."
+    }
+  ]
+}

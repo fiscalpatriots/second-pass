@@ -61,7 +61,7 @@ def _fixed(x: float, digits: int) -> str:
     return ("-" + s) if x < 0 else s
 
 
-_COMMA_RE = re.compile(r"\B(?=(\d{3})+(?!\d))")
+_COMMA_RE = re.compile(r"\B(?=([0-9]{3})+(?![0-9]))")
 
 
 def money(v):
@@ -82,7 +82,7 @@ def pct_txt(v):
     return _fixed(_js_round(v * 10) / 10, 1) + "%"
 
 
-_NUM_OK = re.compile(r"^\d*\.?\d+\Z")
+_NUM_OK = re.compile(r"^[0-9]*\.?[0-9]+\Z")
 
 
 def parse_num(s):
@@ -181,7 +181,7 @@ HEADERWORD = re.compile(
     r"(^|\W)(prior|current|previous|prev|last|this|py|pp|comparative|change|variance|var|"
     r"budget|actual|ytd|period|amount|balance|jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|"
     r"jun(e)?|jul(y)?|aug(ust)?|sep(t|tember)?|oct(ober)?|nov(ember)?|dec(ember)?|q[1-4]|fy)"
-    r"(\W|\Z)|%|\b(19|20)\d{2}\b", re.I | re.A)
+    r"(\W|\Z)|%|\b(19|20)[0-9]{2}\b", re.I | re.A)
 DERIVEDCOL = re.compile(
     r"(change|variance|\bvar\b|%|percent|\bpct\b|diff|movement|\bfav\b|\bunfav\b)", re.I | re.A)
 MONTHNUM = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6, "jul": 7,
@@ -190,7 +190,7 @@ MONTHNUM = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6, "jul": 7
 
 def month_key(s):
     t = str(s).lower()
-    y = re.search(r"\b(19|20)\d{2}\b", t)
+    y = re.search(r"\b(19|20)[0-9]{2}\b", t)
     year = int(y.group(0)) if y else None
     m = re.search(r"\b(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\b", t)
     if not m and year is None:
@@ -238,7 +238,7 @@ def guess_cols(labels):
     return {"p": cand[0], "c": cand[1] if len(cand) > 1 else cand[0]}
 
 
-_ACCT_SPLIT = re.compile(r"^(\d{2,8}[A-Za-z]?)\s*[\s.:\u00b7-]\s*(\S.*)\Z", re.S)
+_ACCT_SPLIT = re.compile(r"^([0-9]{2,8}[A-Za-z]?)\s*[\s.:\u00b7-]\s*(\S.*)\Z", re.S)
 
 
 def acct_shape(name, row):
@@ -299,7 +299,7 @@ def parse_ledger(text, choice=None):
         amb = False
         if "\t" not in line and "," in line:
             for z in range(1, len(f)):
-                if re.match(r"^\$?\d{3}\Z", f[z]) and re.match(r"^\$?[-(]?\d+\)?\Z", f[z - 1]):
+                if re.match(r"^\$?[0-9]{3}\Z", f[z]) and re.match(r"^\$?[-(]?[0-9]+\)?\Z", f[z - 1]):
                     amb = True
         k = -1
         tail = 0
@@ -382,7 +382,7 @@ def parse_ledger(text, choice=None):
             head.pop(0)
         while head and head[-1] == "":
             head.pop()
-        if len(head) > 1 and re.match(r"^\d{2,8}[a-z]?\Z", head[0], re.I):
+        if len(head) > 1 and re.match(r"^[0-9]{2,8}[a-z]?\Z", head[0], re.I):
             return head[0] + " " + ", ".join(head[1:])
         return ", ".join(head)
 
@@ -465,7 +465,7 @@ def parse_ledger(text, choice=None):
         seen_num[a.num] = seen_num.get(a.num, 0) + 1
 
     discarded = [i for i in range(total_cols) if i != pick["p"] and i != pick["c"]]
-    named = sum(1 for l in labels if not re.match(r"^column \d+\Z", str(l)))
+    named = sum(1 for l in labels if not re.match(r"^column [0-9]+\Z", str(l)))
     cols_unconfirmed = (total_cols > 2 and named < total_cols
                         and not (choice and isinstance(choice.get("p"), int)))
 
@@ -541,7 +541,7 @@ def split_sentences(text):
         line = re.sub(r"^\s+", "", line)
         if not line:
             continue
-        mp = re.match(r"^\(\s*([A-Za-z]{1,2}|\d{1,3})\s*\)\s*(\S.*)\Z", line, re.S)
+        mp = re.match(r"^\(\s*([A-Za-z]{1,2}|[0-9]{1,3})\s*\)\s*(\S.*)\Z", line, re.S)
         if mp and mp.group(2):
             out.append({"label": mp.group(1).upper(), "text": re.sub(r"\s+", " ", mp.group(2))})
             continue
@@ -549,7 +549,7 @@ def split_sentences(text):
         if ml and ml.group(2):
             out.append({"label": ml.group(1).upper(), "text": re.sub(r"\s+", " ", ml.group(2))})
             continue
-        m = re.match(r"^([A-Za-z]{1,2}\s?\d{1,3}|\d{1,2})\s*[.)\]:-]\s+(.*)\Z", line, re.S)
+        m = re.match(r"^([A-Za-z]{1,2}\s?[0-9]{1,3}|[0-9]{1,2})\s*[.)\]:-]\s+(.*)\Z", line, re.S)
         if m and m.group(2):
             out.append({"label": re.sub(r"\s+", "", m.group(1)).upper(),
                         "text": re.sub(r"\s+", " ", m.group(2))})
@@ -561,7 +561,7 @@ def split_sentences(text):
             buf += ch
             if ch in ".!?":
                 nx = line[i + 1:]
-                if re.match(r"^\s+[\"\u201c(]?[A-Z0-9]", nx) and not re.search(r"\d\.\Z", buf):
+                if re.match(r"^\s+[\"\u201c(]?[A-Z0-9]", nx) and not re.search(r"[0-9]\.\Z", buf):
                     out.append({"label": None, "text": re.sub(r"\s+", " ", buf.strip())})
                     buf = ""
                     i += 1
@@ -604,8 +604,8 @@ _CODES = (r"EUR|GBP|JPY|CHF|CAD|AUD|NZD|CNY|RMB|INR|MXN|BRL|ZAR|SEK|NOK|DKK|SGD|
 FOREIGN_BEFORE = re.compile(r"(?:[" + _CURRENCY + r"]|\b(?:" + _CODES + r")\s)\s*\Z", re.I)
 FOREIGN_AFTER = re.compile(r"^\s*(?:[" + _CURRENCY + r"]|\b(?:" + _CODES + r")\b)", re.I)
 SCALE_AFTER = re.compile(
-    r"^[\s-]*(?:thousands?|millions?|billions?|trillions?|mn|bn|basis\s+points?|bps|times|"
-    r"multiples?)\b", re.I)
+    r"^[\s-]*(?:thousands?|millions?|billions?|trillions?|mn|bn|basis\s+points?|bps|bp|times|"
+    r"multiples?|per\s?mille|permille|per\s+thousand|points?|pts)\b", re.I)
 _NW = ("one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|"
        "sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|"
        "hundred|thousand|million|billion")
@@ -698,7 +698,7 @@ def word_numbers(text, taken):
         if any(i < t[1] and j > t[0] for t in taken):
             continue
         after = text[j:j + 30]
-        if re.search(r"\d\s*\Z", text[max(0, i - 14):i]):
+        if re.search(r"[0-9]\s*\Z", text[max(0, i - 14):i]):
             pending.append({"raw": m.group(0), "at": i, "end": j,
                             "why": "a figure written in words", "always": True})
             continue
@@ -729,40 +729,222 @@ def word_numbers(text, taken):
     return figs, pending
 
 
-def stray_numbers(text, taken):
-    """A run of digits standing where the words put a claim, or wearing a unit
-    the grammar does not read."""
+# ---------- 0b. quantities the figure reader does not parse ----------------
+# A sentence is checked within scope only when every quantitative expression in
+# it is accounted for.  These forms carry a quantity the figure reader does not
+# parse, so each one is an unparsed span wherever it stands: a multiplier
+# ("doubled", "twice", "threefold", "3x"), a fraction ("one and a half", "a
+# quarter of", "half the prior balance", "1/2"), a decimal written in words
+# ("thirty point five"), a digit outside 0 to 9 (Arabic-Indic, fullwidth,
+# superscript), a fraction or per mille character, and a number glued to
+# letters or underscores ("9e1", "30_000").  Mirrors checker.html.
+_ODD = "٠-٩۰-۹०-९০-৯๐-๙０-９"
+_ODDX = _ODD + "²³¹⁰⁴-⁹₀-₉¼-¾⅐-⅞①-⑳‰‱％"
+ODD_NUM_RE = re.compile("(?:[0-9][0-9.,]*)?[" + _ODDX + "]+(?:[0-9.,٫٬]*[0-9" + _ODDX + "])*")
+MULT_RE = re.compile(
+    r"\b(?:doubl(?:e|ed|es|ing)|tripl(?:e|ed|es|ing)|quadrupl(?:e|ed|es|ing)|quintupl(?:e|ed|es|ing)|"
+    r"halv(?:e|ed|es|ing)|twice|thrice|(?:two|three|four|five|six|seven|eight|nine|ten|twenty|hundred|"
+    r"[0-9]+(?:\.[0-9]+)?)[\s-]?fold|(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+times|"
+    "[0-9]+(?:\\.[0-9]+)?\\s?[x×])(?![A-Za-z0-9])", re.I)
+MULT_NOT = re.compile(r"^[\s-]+(?:entry|entries|count|counted|counting|check|checked|checking)\b", re.I)
+FRACW = ("half|halves|third|thirds|quarter|quarters|fifth|fifths|sixth|sixths|seventh|sevenths|eighth|"
+         "eighths|ninth|ninths|tenth|tenths|twelfth|twelfths|hundredth|hundredths|thousandth|thousandths")
+FRAC_RE = re.compile(r"\b(?:(a|an|one|two|three|four|five|six|seven|eight|nine|ten|[0-9]+)[\s-]+"
+                     r"(?:and[\s-]+(?:a|one)[\s-]+)?)?(" + FRACW + r")\b", re.I)
+FRAC_KEEP = re.compile(r"^[\s-]*(?:of|percent|per|pct|point|points|again|more|less|higher|lower|the|a|an|"
+                       r"and|or)\b|^[\s-]*(?:[^A-Za-z\s-]|\Z)", re.I)
+DECW = "zero|oh|one|two|three|four|five|six|seven|eight|nine"
+_NWD = ("one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|"
+        "seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|zero")
+DECWORD_RE = re.compile(r"\b(?:(?:" + _NWD + r")(?:[\s-]+(?:" + _NWD + r"))*[\s-]+)?point(?:[\s-]+(?:"
+                        + DECW + r"))+\b", re.I)
+SLASH_RE = re.compile(r"\b[0-9]{1,4}\s?/\s?[0-9]{1,4}(?:/[0-9]{2,4})?\b|\b[0-9]{4}-[0-9]{2}-[0-9]{2}\b|"
+                      r"\b[0-9]{1,2}:[0-9]{2}\b")
+MONTHW = ("jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|"
+          "sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?")
+DATE_PREP = re.compile(r"\b(?:on|by|as\s+of|through|thru|since|until|from|to|dated|of|in|ending|ended|at|"
+                       r"the|and|or|between|before|after|" + MONTHW + r")\s+\Z", re.I)
+DATE_AFTER = re.compile(r"^(?:st|nd|rd|th)?,?\s+(?:of\s+)?(?:" + MONTHW + r")\b", re.I)
+DATE_BEFORE = re.compile(r"\b(?:" + MONTHW + r")\.?\s+\Z", re.I)
+YEAR_BEFORE = re.compile(r"\b(?:in|of|for|since|during|through|until|fiscal|calendar|year|fy|" + MONTHW
+                         + r")[\s,]+\Z", re.I)
+LABEL_BEFORE = re.compile(
+    r"(?:#|\b(?:no|nos|number|note|notes|line|lines|row|rows|item|items|card|cards|page|pages|section|"
+    r"sections|schedule|exhibit|appendix|step|phase|form|store|site|suite|building|route|account|acct|"
+    r"invoice|version|tier|level|class|grade|sku|asc|ias|ifrs|asu|gasb|fasb|irc|topic|chapter|part|article|"
+    r"rule|clause|option|question|week|day|round|case|table|figure|chart|slide|task|ticket|order|po|batch|"
+    r"lot|room|floor|zone|region|district)\.?)[\s#-]*\Z", re.I)
+COUNT_AFTER = re.compile(r"^[\s-]+([A-Za-z]{2,})")
+ONE_IDIOM = re.compile(r"^one(?:\s+(?:of|another)\b|[\s-]+(?:time|off)\b)", re.I)
+ONE_BEFORE = re.compile(r"\b(?:the|this|that|each|every|any|no|other|larger|smaller|last|first|new|old)\s+\Z",
+                        re.I)
+_COUNT_STOP = None
+
+
+def count_stop():
+    global _COUNT_STOP
+    if _COUNT_STOP is None:
+        words = ("percent per pct pp bp bps basis point points pts dollar dollars usd cent cents thousand "
+                 "thousands million millions billion billions trillion trillions mn bn times fold mille "
+                 "percentage to from by at of in on and or but nor than over under above below versus vs "
+                 "against compared since for with as because while after before the a an this that these "
+                 "those which who is was were are be been being it its so then when into through each more "
+                 "less higher lower plus minus now again same").split(" ")
+        _COUNT_STOP = set(words) | set(UP) | set(DOWN) | set(MOVE_NOUN)
+    return _COUNT_STOP
+
+
+OUTSIDE_WHY = {"count": "a count the ledger does not hold", "date": "a date", "year": "a year",
+               "label": "a label or reference", "ordinal": "an ordinal", "time": "a time of day"}
+
+
+def _js_test(rx, s):
+    """JavaScript's RegExp.test on a non-global pattern: search anywhere."""
+    return rx.search(s) is not None
+
+
+def odd_quantities(text):
+    """The forms above, found before any figure is read so no part of one is ever
+    read as a figure.  ``outside`` collects the dates it recognized on the way."""
     out = []
-    for m in re.finditer(r"-?\d[\d,]*(?:\.\d+)?", text):
+    outside = []
+    for m in ODD_NUM_RE.finditer(text):
+        out.append({"raw": m.group(0), "at": m.start(), "end": m.end(),
+                    "why": "a digit or numeric character the checker does not read"})
+    for m in MULT_RE.finditer(text):
+        if re.match(r"^doubl", m.group(0), re.I) and MULT_NOT.search(text[m.end():]):
+            continue
+        out.append({"raw": m.group(0), "at": m.start(), "end": m.end(),
+                    "why": "a multiplier the checker does not read"})
+    for m in DECWORD_RE.finditer(text):
+        out.append({"raw": m.group(0), "at": m.start(), "end": m.end(),
+                    "why": "a decimal written in words the checker does not read"})
+    for m in FRAC_RE.finditer(text):
+        w = m.group(2).lower()
+        lead = m.group(1).lower() if m.group(1) else ""
+        aft = text[m.end():]
+        bef = text[:m.start()]
+        if w in ("half", "halves"):
+            if not lead and re.search(r"(?:first|second|latter|former|back|front)[\s-]*\Z", bef, re.I):
+                continue
+            if re.search(r"^[\s-]*(?:years?|months?|days?|hours?|time)\b", aft, re.I):
+                continue
+        elif w in ("quarter", "quarters"):
+            if not lead or re.search(r"^[\s-]*end\b", aft, re.I):
+                continue
+        else:
+            if not lead:
+                continue
+            if lead in ("a", "an", "one") and not w.endswith("s") and not FRAC_KEEP.search(aft):
+                continue
+        out.append({"raw": m.group(0), "at": m.start(), "end": m.end(),
+                    "why": "a fraction the checker does not read"})
+    for m in SLASH_RE.finditer(text):
+        sb = text[:m.start()]
+        sa = text[m.end():]
+        dated = (bool(re.search(r"-|:", m.group(0))) or bool(re.search(r"/[0-9]+/", m.group(0)))
+                 or bool(DATE_PREP.search(sb)))
+        if dated and not re.search(r"^\s*(?:of\b|percent|per\s?cent|pct|%)", sa, re.I):
+            outside.append({"raw": m.group(0), "at": m.start(), "end": m.end(),
+                            "kind": "time" if ":" in m.group(0) else "date"})
+        else:
+            out.append({"raw": m.group(0), "at": m.start(), "end": m.end(),
+                        "why": "a fraction the checker does not read"})
+    out.sort(key=lambda o: (o["at"], -o["end"]))
+    merged = []
+    for o in out:
+        last = merged[-1] if merged else None
+        if last and o["at"] < last["end"]:
+            if o["end"] > last["end"]:
+                last["end"] = o["end"]
+                last["raw"] = text[last["at"]:last["end"]]
+            continue
+        merged.append(o)
+    return merged, outside
+
+
+def stray_numbers(text, taken, skip_nums=None):
+    """A run of digits the figure reader did not take.  It is accounted for only as
+    a year, a date, a label, an ordinal, a time of day, an account number standing
+    as a reference, or a count written in front of the thing it counts.  Anything
+    else is an unparsed span."""
+    out = []
+    outside = []
+    pos = 0
+    rx = re.compile(r"-?[0-9][0-9,]*(?:\.[0-9]+)?")
+    while True:
+        m = rx.search(text, pos)
+        if not m:
+            break
         i, j = m.start(), m.end()
+        pos = j if j > i else i + 1
         if any(i < t[1] and j > t[0] for t in taken):
             continue
+        ts, te = i, j
+        while ts > 0 and re.match(r"[A-Za-z0-9_]", text[ts - 1]):
+            ts -= 1
+        while te < len(text) and re.match(r"[A-Za-z0-9_]", text[te]):
+            te += 1
+        if ts < i or te > j:
+            tok = text[ts:te]
+            pos = te
+            if re.match(r"^[0-9]+(?:st|nd|rd|th)\Z", tok, re.I):
+                outside.append({"raw": tok, "at": ts, "end": te, "kind": "ordinal"})
+            elif re.match(r"^[0-9]{1,2}(?:am|pm)\Z", tok, re.I):
+                outside.append({"raw": tok, "at": ts, "end": te, "kind": "time"})
+            elif re.match(r"^[A-Za-z]{1,6}[0-9]+[A-Za-z]?\Z", tok):
+                outside.append({"raw": tok, "at": ts, "end": te, "kind": "label"})
+            else:
+                out.append({"raw": tok, "at": ts, "end": te,
+                            "why": "a number written in a form the checker does not read"})
+            continue
         after = text[j:j + 26]
+        before = text[max(0, i - 40):i]
         sm = SCALE_AFTER.match(after)
         fm = FOREIGN_AFTER.match(after)
-        unit = bool(sm or fm)
-        r = role_of(text, {"at": i, "end": j, "unit": "dollars"}, 0, [])
-        if not unit and r["role"] == "unknown":
+        if sm or fm:
+            out.append({"raw": m.group(0) + (sm or fm).group(0), "at": i, "end": j,
+                        "why": "a unit the checker does not read"})
             continue
-        out.append({"raw": m.group(0) + ((sm or fm).group(0) if unit else ""), "at": i, "end": j,
-                    "why": "a unit the checker does not read" if unit
-                           else "a number standing where the words put a claim"})
-    return out
+        r = role_of(text, {"at": i, "end": j, "unit": "dollars"}, 0, [])
+        whole = bool(re.match(r"^[0-9]+\Z", m.group(0)))
+        n = int(re.sub(r"[^0-9]", "", m.group(0)) or "0")
+        if re.match(r"^(19|20)[0-9]{2}\Z", m.group(0)) and (r["role"] == "unknown" or YEAR_BEFORE.search(before)):
+            outside.append({"raw": m.group(0), "at": i, "end": j, "kind": "year"})
+            continue
+        if skip_nums and m.group(0) in skip_nums and r["role"] == "unknown":
+            continue
+        if whole and 1 <= n <= 31 and (DATE_AFTER.match(after) or DATE_BEFORE.search(before)):
+            outside.append({"raw": m.group(0), "at": i, "end": j, "kind": "date"})
+            continue
+        if whole and LABEL_BEFORE.search(before):
+            outside.append({"raw": m.group(0), "at": i, "end": j, "kind": "label"})
+            continue
+        cw = COUNT_AFTER.match(after) if whole else None
+        if cw and cw.group(1).lower() not in count_stop():
+            outside.append({"raw": m.group(0), "at": i, "end": j, "kind": "count"})
+            continue
+        out.append({"raw": m.group(0), "at": i, "end": j,
+                    "why": ("a number standing where the words put a claim" if r["role"] != "unknown"
+                            else "a number the checker cannot place")})
+    return out, outside
 
 
 # ---------- 1. extraction ---------------------------------------------------
 class FigureList(list):
     rejected = ()
+    outside = ()
 
 
 _RE_PCT = re.compile(
-    r"([-(]?\s?\$?\s?\d[\d,]*(?:\.\d+)?\s?\)?)\s*(percentage points?|percent|per cent|pct|pp|%)", re.I)
+    r"([-(]?\s?\$?\s?[0-9][0-9,]*(?:\.[0-9]+)?\s?\)?)\s*(percentage points?|percent|per cent|pct|pp|%)", re.I)
 _RE_DOL = re.compile(
-    r"\(\s?\$?\s?\d(?:[\d,]*\d)?(?:\.\d+)?\s?[kKmMbB]?\s?\)|"
-    r"-?\$\s?\d(?:[\d,]*\d)?(?:\.\d+)?(?:\s?[kKmMbB]\b)?|"
-    r"\b\d{1,3}(?:,\d{3})+(?:\.\d+)?\b|"
-    r"\b\d+(?:\.\d+)?[kKmMbB]\b")
-_RE_BARE = re.compile(r"(?:-\s?)?\b\d{4,}(?:\.\d+)?\b")
+    r"\(\s?\$?\s?[0-9](?:[0-9,]*[0-9])?(?:\.[0-9]+)?\s?[kKmMbB]?\s?\)|"
+    r"-?\$\s?[0-9](?:[0-9,]*[0-9])?(?:\.[0-9]+)?(?:\s?[kKmMbB]\b)?|"
+    r"\b[0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?\b|"
+    r"\b[0-9]+(?:\.[0-9]+)?[kKmMbB]\b")
+_RE_BARE = re.compile(r"(?:-\s?)?\b[0-9]{4,}(?:\.[0-9]+)?\b")
+_GLUE = re.compile(r"[A-Za-z0-9_./]")
 
 
 def figures(text, skip_nums=None):
@@ -778,7 +960,37 @@ def figures(text, skip_nums=None):
         return bool(re.match(r"^\s*-", raw)) or (
             bool(re.match(r"^\s*\(", raw)) and bool(re.search(r"\)\s*\Z", raw)))
 
+    glued = []
+
+    def glued_at(m):
+        """A figure glued to the letters, digits, dots or slashes in front of it, as
+        in "9e1 percent" or "US$30,000", is not the figure it would be on its own."""
+        rel = re.search(r"[-($0-9]", m.group(0))
+        k = m.start() + (rel.start() if rel else 0)
+        if k == 0 or not _GLUE.match(text[k - 1]):
+            return False
+        s = k
+        while s > 0 and _GLUE.match(text[s - 1]):
+            s -= 1
+        end = m.end()
+        why = ("a currency the checker does not read"
+               if re.match(r"^[A-Za-z]+\Z", text[s:k]) and text[k] == "$"
+               else "a number written in a form the checker does not read")
+        glued.append({"raw": text[s:end].rstrip(), "at": s, "end": end, "why": why})
+        taken.append([s, end])
+        return True
+
+    odd_spans, odd_outside = odd_quantities(text)
+    for o in odd_spans:
+        taken.append([o["at"], o["end"]])
+    for o in odd_outside:
+        taken.append([o["at"], o["end"]])
+
     for m in _RE_PCT.finditer(text):
+        if overlaps(m.start(), m.end()):
+            continue
+        if glued_at(m):
+            continue
         ptxt = m.group(1)
         neg = has_sign(ptxt)
         if re.match(r"^\s*\(", ptxt) and not re.search(r"\)\s*\Z", ptxt):
@@ -796,6 +1008,8 @@ def figures(text, skip_nums=None):
     for m in _RE_DOL.finditer(text):
         if overlaps(m.start(), m.end()):
             continue
+        if glued_at(m):
+            continue
         dv = parse_fig(m.group(0))
         if dv is None:
             continue
@@ -807,9 +1021,13 @@ def figures(text, skip_nums=None):
         if overlaps(m.start(), m.end()):
             continue
         bare = re.sub(r"[^0-9.]", "", m.group(0))
-        if re.match(r"^(19|20)\d\d\Z", bare):
+        if re.match(r"^(19|20)[0-9][0-9]\Z", bare):
+            continue
+        if LABEL_BEFORE.search(text[max(0, m.start() - 40):m.start()]):
             continue
         if skip_nums and bare in skip_nums:
+            continue
+        if glued_at(m):
             continue
         out.append({"raw": re.sub(r"\s+", "", m.group(0)),
                     "v": float(bare) * (-1 if m.group(0).startswith("-") else 1),
@@ -828,8 +1046,9 @@ def figures(text, skip_nums=None):
 
     out.sort(key=lambda f: f["at"])
 
-    rejected = []
+    rejected = list(odd_spans) + glued
     keep = []
+    outside = list(odd_outside)
     for f in out:
         before = text[:f["at"]]
         after = text[f["end"]:]
@@ -860,20 +1079,38 @@ def figures(text, skip_nums=None):
         f["side"] = r.get("side") or ""
         f["roleFrom"] = r.get("from") or ""
 
-    spans = [[f["at"], f["end"]] for f in keep] + [[r["at"], r["end"]] for r in rejected]
+    spans = ([[f["at"], f["end"]] for f in keep] + [[r["at"], r["end"]] for r in rejected]
+             + [[o["at"], o["end"]] for o in outside])
+    # a quantity in words with no unit is accounted for only as a count written in
+    # front of the thing it counts, or as "one" standing as a pronoun or an idiom
     for w in word_pending:
         if any(w["at"] < sp[1] and w["end"] > sp[0] for sp in spans):
             continue
-        if not w["always"] and role_of(
-                text, {"at": w["at"], "end": w["end"], "unit": "dollars"}, 0, [])["role"] == "unknown":
-            continue
-        rejected.append({"raw": w["raw"], "at": w["at"], "end": w["end"], "why": w["why"]})
+        why = w["why"]
+        if not w["always"]:
+            cw = COUNT_AFTER.match(text[w["end"]:w["end"] + 30])
+            if cw and cw.group(1).lower() not in count_stop():
+                outside.append({"raw": w["raw"], "at": w["at"], "end": w["end"], "kind": "count"})
+                continue
+            if w["raw"].lower() == "one" and (ONE_IDIOM.search(text[w["at"]:])
+                                              or ONE_BEFORE.search(text[:w["at"]])):
+                continue
+            if LABEL_BEFORE.search(text[max(0, w["at"] - 40):w["at"]]):
+                outside.append({"raw": w["raw"], "at": w["at"], "end": w["end"], "kind": "label"})
+                continue
+            if role_of(text, {"at": w["at"], "end": w["end"], "unit": "dollars"}, 0, [])["role"] == "unknown":
+                why = "a figure written in words the checker cannot place"
+        rejected.append({"raw": w["raw"], "at": w["at"], "end": w["end"], "why": why})
         spans.append([w["at"], w["end"]])
-    rejected.extend(stray_numbers(text, spans))
+    stray, stray_outside = stray_numbers(text, spans, skip_nums)
+    rejected.extend(stray)
+    outside.extend(stray_outside)
     rejected.sort(key=lambda r: r["at"])
+    outside.sort(key=lambda o: o["at"])
 
     result = FigureList(keep)
     result.rejected = rejected
+    result.outside = outside
     return result
 
 
@@ -886,8 +1123,13 @@ def pcts_in(figs):
 
 
 # ---------- 2. numeric role -------------------------------------------------
-CUE_PRIOR = {"from"}
-CUE_CURRENT = {"to", "at", "now", "reached", "reaching", "stands", "standing", "hit", "hits"}
+# "prior" and "current" standing in front of a figure are the role labels Prompt 1
+# asks the drafting tool to write, so they are read as roles too
+CUE_PRIOR = {"from", "prior", "previous"}
+CUE_CURRENT = {"to", "at", "now", "reached", "reaching", "stands", "standing", "hit", "hits", "current"}
+# words after a figure that turn it into a bound rather than a figure
+BOUND_AFTER = re.compile(r"^\s*(?:or\s+(?:more|less|so|higher|lower|above|below|over|under)|"
+                         r"at\s+(?:most|least)|and\s+(?:up|above|over))\b", re.I)
 CUE_MOVE = {"by"}
 MOVE_NOUN = {"increase", "increases", "decrease", "decreases", "rise", "rises", "fall", "falls",
              "drop", "drops", "gain", "gains", "growth", "decline", "declines", "movement",
@@ -913,6 +1155,8 @@ def role_of(text, f, idx, all_figs):
     pct = f["unit"] != "dollars"
     if f["unit"] == "percentage points":
         return {"role": "rate change in points", "from": "the words \"percentage points\""}
+    if BOUND_AFTER.search(post):
+        return {"role": "unknown", "from": ""}
     if pct and re.match(r"^\s*of\s+(the\s+)?(prior|previous|last|opening|jan|feb|mar|apr|may|jun|"
                         r"jul|aug|sep|oct|nov|dec)", post, re.I):
         return {"role": "relative movement", "from": "\"of\" naming the period it is a share of"}
@@ -1278,8 +1522,8 @@ def tokenize_expr(x):
                      (r"\bover\b", " / "), (r"\btimes\b", " * "), (r"\bmultiplied by\b", " * "),
                      (r"\bplus\b", " + "), (r"\bminus\b", " - "), (r"\bless\b", " - ")):
         s = re.sub(pat, rep, s)
-    toks = re.findall(r"\d+|[()+\-*/]", s)
-    junk = re.sub(r"\d+|[()+\-*/\s]", "", s)
+    toks = re.findall(r"[0-9]+|[()+\-*/]", s)
+    junk = re.sub(r"[0-9]+|[()+\-*/\s]", "", s)
     return {"toks": toks, "junk": junk}
 
 
@@ -1309,7 +1553,7 @@ def eval_toks(toks, by_num, month):
             return -factor()
         if t == "+":
             return factor()
-        if re.match(r"^\d+\Z", t):
+        if re.match(r"^[0-9]+\Z", t):
             a = by_num.get(t)
             if not a:
                 raise RatioError("no account " + t + " in the ledger")
@@ -1386,8 +1630,20 @@ def parse_ratios(text, by_num):
 
 
 # ============================================================ direction
-FLATW = ["held flat", "held steady", "held level", "held at", "no change", "no movement", "flat",
-         "unchanged", "steady", "level with", "unmoved"]
+# "flat" is a direction too.  Two kinds.  A no-change claim, "unchanged", "remained
+# at", "held at", "stayed the same", asserts zero movement and is tested against a
+# movement of zero to the half cent.  A flat claim, "flat", "steady", is tested
+# against a movement inside half a percent of zero.
+STILLW = ["unchanged", "unmoved", "no change", "no movement", "no net change", "held at", "holds at",
+          "remained at", "remains at", "remain at", "stayed at", "stays at", "stay at", "kept at",
+          "continued at", "maintained at", "remained unchanged", "stayed unchanged", "remained the same",
+          "stayed the same", "remained constant", "stayed constant", "held constant", "was constant",
+          "were constant", "level with"]
+FLATW = ["held flat", "held steady", "held level", "flat", "steady", "remained flat", "stayed flat",
+         "remained steady", "stayed steady", "remained level", "stayed level", "remained stable",
+         "stayed stable"] + STILLW
+# "remained" or "stayed" written straight in front of a figure is the same claim
+STILL_FIG = re.compile(r"\b(remain(?:ed|s)?|stay(?:ed|s)?)\s+(?:\$|\(|-?[0-9])", re.I)
 FLAT_TOL = 0.5
 
 
@@ -1409,13 +1665,31 @@ def flat_word(txt):
     for w in FLATW:
         if (" " + w + " ") in t and (not found or len(w) > len(found)):
             found = w
+    if not found:
+        m = STILL_FIG.search(str(txt))
+        if m:
+            found = m.group(1).lower()
     return found
+
+
+def still_word(w):
+    """A no-change word, as against a flat word."""
+    return bool(w) and (w in STILLW or bool(re.match(r"^(?:remain|stay)", w)))
 
 
 def is_flat(a):
     if a.pct is None:
         return a.change == 0
     return abs(a.pct) <= FLAT_TOL
+
+
+def is_still(a):
+    """A movement a no-change claim stands on: none, to the half cent."""
+    return abs(a.change) <= TOL_D
+
+
+def flat_agrees(w, a):
+    return is_still(a) if still_word(w) else is_flat(a)
 
 
 RE_COARSE = re.compile(r"[,;:]|\bso\b|\bbecause\b|\bwhile\b|\bbut\b|\bas\b|\bafter\b|\bbefore\b|"
@@ -1429,7 +1703,7 @@ RE_FINE = re.compile(r"[,;:]|\bso\b|\bbecause\b|\bwhile\b|\bwhereas\b|\bbut\b|\b
 def spans_of(txt, rx):
     """Clauses, with the offsets kept so a figure can be placed in the clause it
     was written in.  A comma inside a figure is part of the figure."""
-    t = re.sub(r"(\d),(\d)", "\\1\u0001\\2", str(txt))
+    t = re.sub(r"([0-9]),([0-9])", "\\1\u0001\\2", str(txt))
     out = []
     last = 0
     for m in rx.finditer(t):
@@ -1469,39 +1743,18 @@ def claim_in(t):
 def direction_on(s):
     if not s["bound"]:
         return None
-    bad, good, anchored, voided = [], [], [], []
-    for c in clauses_of(s["text"]):
-        cf = figures(c, s["numset"])
-        anchor = None
-        neg = negation_in(c)
-        for d in dollars_in(cf):
-            if anchor:
-                break
-            for a in s["bound"]:
-                if anchor:
-                    break
-                if (near(d["v"], a.prior, TOL_D) or near(d["v"], a.cur, TOL_D)
-                        or near(d["v"], a.change, TOL_D)):
-                    anchor = a
-        if neg and (flat_word(c) or dir_words(c)):
-            voided.append("the words negate this clause (\u201c" + neg + "\u201d), so what it claims "
-                          "about the direction of "
-                          + (acct_id(anchor) if anchor else "; ".join(acct_id(a) for a in s["bound"]))
-                          + " is not settled by the checker")
-            if anchor:
-                anchored.append(c)
-            continue
-        if not anchor:
-            continue
-        anchored.append(c)
+    bad, good, anchored, voided, loose, open_ = [], [], [], [], [], []
+
+    def test_clause(c, anchor):
         sign = 1 if anchor.change > 0 else (-1 if anchor.change < 0 else 0)
         anm = acct_id(anchor)
         fw = flat_word(c)
         if fw:
-            if is_flat(anchor):
+            if flat_agrees(fw, anchor):
                 good.append("\"" + fw + "\" agrees with " + anm + ", which moved " + money(anchor.change)
                             + ("" if anchor.pct is None else ", " + pct_txt(anchor.pct))
-                            + ", inside half a percent of no movement")
+                            + (", which is no movement at all" if still_word(fw)
+                               else ", inside half a percent of no movement"))
             else:
                 bad.append("the memo says \"" + fw + "\" but " + anm + " "
                            + ("rose " if sign > 0 else "fell ") + money(abs(anchor.change))
@@ -1516,44 +1769,116 @@ def direction_on(s):
                 bad.append("the memo says \"" + w["w"] + "\" but " + anm + " "
                            + ("rose " if sign > 0 else "fell ") + money(abs(anchor.change))
                            + ("" if anchor.pct is None else " (" + pct_txt(anchor.pct) + ")"))
-    if not anchored:
-        if voided:
-            return {"bad": bad, "good": good, "voided": voided}
-        sneg = negation_in(s["text"])
-        if sneg and (flat_word(s["text"]) or dir_words(s["text"])):
-            voided.append("the words negate this sentence (\u201c" + sneg + "\u201d), so what it claims "
-                          "about the direction is not settled by the checker")
-            return {"bad": bad, "good": good, "voided": voided}
-        sfw = flat_word(s["text"])
-        if sfw:
-            fok = False
-            fnames = []
+
+    prev_end = 0
+    for sp in spans_of(s["text"], RE_COARSE):
+        c = sp["text"]
+        sep = s["text"][prev_end:sp["at"]].strip().lower()
+        prev_end = sp["end"]
+        cf = figures(c, s["numset"])
+        anchor = None
+        neg = negation_in(c)
+        for d in dollars_in(cf):
+            if anchor:
+                break
             for a in s["bound"]:
-                fnames.append(acct_id(a) + " moved " + money(a.change)
-                              + ("" if a.pct is None else ", " + pct_txt(a.pct)))
-                if is_flat(a):
-                    fok = True
-            if fok:
-                good.append("\"" + sfw + "\" agrees with the bound line")
-            elif fnames:
-                bad.append("the memo says \"" + sfw + "\" but " + " and ".join(fnames))
-        for w in dir_words(s["text"]):
+                if anchor:
+                    break
+                if (near(d["v"], a.prior, TOL_D) or near(d["v"], a.cur, TOL_D)
+                        or near(d["v"], a.change, TOL_D)):
+                    anchor = a
+        if neg and (flat_word(c) or dir_words(c)):
+            voided.append("the words negate this clause (“" + neg + "”), so what it claims "
+                          "about the direction of "
+                          + (acct_id(anchor) if anchor else "; ".join(acct_id(a) for a in s["bound"]))
+                          + " is not settled by the checker")
+            if anchor:
+                anchored.append(c)
+            continue
+        if not anchor:
+            if flat_word(c) or dir_words(c):
+                open_.append({"text": c, "sep": sep})
+            continue
+        anchored.append(c)
+        test_clause(c, anchor)
+
+    if anchored:
+        # a direction or no-change word in a clause of its own, beside a clause the
+        # figures did tie.  Where that clause names one bound line it is tested
+        # against that line; where it names none and disagrees with the lines the
+        # sentence binds, it is held, because the checker cannot tell what it
+        # describes.
+        for o in open_:
+            c = o["text"]
+            ct = " " + re.sub(r"\s+", " ", re.sub(r"[^a-z0-9\s]", " ", c.lower())) + " "
+            named = []
+            for a in s["bound"]:
+                if ((a.num and _num_in(a.num, c)) or (a.flat and (" " + a.flat + " ") in ct)
+                        or (a.two and " " in a.two and (" " + a.two + " ") in ct)):
+                    named.append(a)
+            if len(named) == 1:
+                test_clause(c, named[0])
+                continue
+            # a clause opened by "as", "because", "while" and the like names a cause
+            # or a contrast, and its direction word is about that, unless it points
+            # back at the line with "it" or names no one else
+            if (re.match(r"^(?:so|because|while|but|as|after|before|though)\Z", o["sep"]) and not named
+                    and not re.match(r"^\s*(?:it|its|the\s+(?:line|account|balance))\b", c, re.I)):
+                continue
+            fw = flat_word(c)
+            words = dir_words(c)
             agrees = False
-            names = []
             for a in s["bound"]:
                 sign = 1 if a.change > 0 else (-1 if a.change < 0 else 0)
-                if sign == 0:
-                    continue
-                names.append(acct_id(a) + " " + ("rose" if sign > 0 else "fell"))
-                if w["d"] == sign:
+                if fw and flat_agrees(fw, a):
                     agrees = True
-            if not names:
+                for w in words:
+                    if w["d"] == sign:
+                        agrees = True
+            if not agrees:
+                loose.append("\"" + (fw or "\", \"".join(w["w"] for w in words)) + "\" stands in a clause "
+                             "that ties to no figure and names no line, and it does not agree with "
+                             + "; ".join(acct_id(a) for a in s["bound"])
+                             + ", so the checker cannot tell what it describes")
+        return {"bad": bad, "good": good, "voided": voided, "loose": loose}
+
+    if voided:
+        return {"bad": bad, "good": good, "voided": voided, "loose": loose}
+    sneg = negation_in(s["text"])
+    if sneg and (flat_word(s["text"]) or dir_words(s["text"])):
+        voided.append("the words negate this sentence (“" + sneg + "”), so what it claims "
+                      "about the direction is not settled by the checker")
+        return {"bad": bad, "good": good, "voided": voided, "loose": loose}
+    sfw = flat_word(s["text"])
+    if sfw:
+        fok = False
+        fnames = []
+        for a in s["bound"]:
+            fnames.append(acct_id(a) + " moved " + money(a.change)
+                          + ("" if a.pct is None else ", " + pct_txt(a.pct)))
+            if flat_agrees(sfw, a):
+                fok = True
+        if fok:
+            good.append("\"" + sfw + "\" agrees with the bound line")
+        elif fnames:
+            bad.append("the memo says \"" + sfw + "\" but " + " and ".join(fnames))
+    for w in dir_words(s["text"]):
+        agrees = False
+        names = []
+        for a in s["bound"]:
+            sign = 1 if a.change > 0 else (-1 if a.change < 0 else 0)
+            if sign == 0:
                 continue
-            if agrees:
-                good.append("\"" + w["w"] + "\" agrees with the bound line")
-            else:
-                bad.append("the memo says \"" + w["w"] + "\" but " + " and ".join(names))
-    return {"bad": bad, "good": good, "voided": voided}
+            names.append(acct_id(a) + " " + ("rose" if sign > 0 else "fell"))
+            if w["d"] == sign:
+                agrees = True
+        if not names:
+            continue
+        if agrees:
+            good.append("\"" + w["w"] + "\" agrees with the bound line")
+        else:
+            bad.append("the memo says \"" + w["w"] + "\" but " + " and ".join(names))
+    return {"bad": bad, "good": good, "voided": voided, "loose": loose}
 
 
 # ============================================================ the run
@@ -2249,6 +2574,9 @@ def run_check(ledger_text, memo_text, ratios="", dollar_floor=25000, percent_flo
                          "det": res["txt"], "ask": res["ask"]})
 
         dirn = direction_on(s)
+        s["dirPass"] = bool(dirn and dirn["good"] and not dirn["bad"] and not dirn["voided"]
+                            and not dirn["loose"])
+        s["outside"] = list(getattr(s["figs"], "outside", ()) or [])
         if dirn:
             if dirn["bad"]:
                 s["st"] = worse(s["st"], "failed")
@@ -2259,23 +2587,31 @@ def run_check(ledger_text, memo_text, ratios="", dollar_floor=25000, percent_flo
                 s["st"] = worse(s["st"], "needs review")
                 q("Negated claim", s["label"], s["text"], "; ".join(dirn["voided"]), "Reviewer",
                   "Which way does this sentence say the account moved, once the negation is read?")
+            if dirn["loose"]:
+                s["st"] = worse(s["st"], "needs review")
+                q("Unresolved direction", s["label"], s["text"], "; ".join(dirn["loose"]), "Reviewer",
+                  "Which line does this direction word describe, and does it agree with that line?")
             dst = ("failed" if dirn["bad"] else
-                   ("needs review" if dirn["voided"] else
+                   ("needs review" if dirn["voided"] or dirn["loose"] else
                     ("checked within scope" if dirn["good"] else "not checked")))
             rows.append({"id": run_id + "/" + s["label"] + "/dir", "ev": evid(),
                          "line": _acct_line(s), "subj": s["text"], "label": s["label"],
                          "check": "Direction", "badge": BADGE[dst], "status": dst,
                          "result": "FAIL" if dirn["bad"] else
                                    ("NEGATED, NOT SETTLED" if dirn["voided"] else
-                                    ("PASS" if dirn["good"] else "NOT STATED")),
+                                    ("NOT TIED TO A LINE" if dirn["loose"] else
+                                     ("PASS" if dirn["good"] else "NOT STATED"))),
                          "det": ("; ".join(dirn["bad"]) + ".") if dirn["bad"] else
                                 (("; ".join(dirn["voided"]) + ".") if dirn["voided"] else
-                                 (("; ".join(dirn["good"]) + ".") if dirn["good"] else
-                                  "This sentence makes no claim about which way the account moved.")),
+                                 (("; ".join(dirn["loose"]) + ".") if dirn["loose"] else
+                                  (("; ".join(dirn["good"]) + ".") if dirn["good"] else
+                                   "This sentence makes no claim about which way the account moved."))),
                          "ask": ("Which way did this account actually move, and does the driver still "
                                  "hold once the sign is right?") if dirn["bad"] else
                                 (("Which way does this sentence say the account moved, once the "
-                                  "negation is read?") if dirn["voided"] else "")})
+                                  "negation is read?") if dirn["voided"] else
+                                 ("Which line does this direction word describe, and does it agree "
+                                  "with that line?" if dirn["loose"] else ""))})
 
         pc = policy_claims(s["text"])
         if pc and s["bound"]:
@@ -2310,6 +2646,7 @@ def run_check(ledger_text, memo_text, ratios="", dollar_floor=25000, percent_flo
                     else:
                         pbad.append("the memo says no commentary is owed, but " + acct_id(a0)
                                     + " clears the rule")
+            s["pcPass"] = not pbad
             if pbad:
                 s["st"] = worse(s["st"], "failed")
                 q("Failure", s["label"], s["text"], "; ".join(pbad), "Preparer",
@@ -2332,6 +2669,13 @@ def run_check(ledger_text, memo_text, ratios="", dollar_floor=25000, percent_flo
                   "this sentence carries no figure and makes no threshold claim, so nothing in it was "
                   "checked against the ledger", "Reviewer",
                   "Is this claim supported, and by which document?")
+        # a line that says no source is on file hands its driver to a person
+        if s["bound"] and re.search(r"\bno source on file\b", s["text"], re.I):
+            q("No source on file", s["label"], s["text"],
+              "the sentence says no source is on file for its reason, so the driver is an open "
+              "question, not a finding", "Controller",
+              "What drove " + "; ".join(acct_id(a) for a in s["bound"])
+              + " this period, and which document supports it?")
         key = ("checked" if s["st"] == "checked within scope" else
                ("review" if s["st"] == "needs review" else
                 ("failed" if s["st"] == "failed" else "notchecked")))
@@ -2380,9 +2724,7 @@ def run_check(ledger_text, memo_text, ratios="", dollar_floor=25000, percent_flo
         rows.append({"id": run_id + "/" + s["label"] + "/rev", "ev": evid(), "line": _acct_line(s),
                      "subj": s["text"], "label": s["label"], "check": "Reviewer", "badge": "review",
                      "status": s["st"], "result": "FOR THE REVIEWER",
-                     "det": "Every figure in this sentence was checked within the scope above and the "
-                            "direction agrees with the sign. What is left is judgment, and the checker "
-                            "does not make it.",
+                     "det": _scope_text(s) + " What is left is judgment, and the checker does not make it.",
                      "ask": ["Is the driver named here supported by anything on file?",
                              "Is the period right (nothing pulled forward or deferred)?"]})
     for a in L["accounts"]:
@@ -2444,9 +2786,22 @@ def _status_why(s):
     if s["st"] == "not checked":
         return ("Nothing in this sentence could be tied to the ledger and tested. That is not the "
                 "same as a sentence that was checked and found true.")
-    return ("Every figure in this sentence carries a role read from the words, a unit, and an "
-            "unrounded comparison with the ledger, and each one agreed. That is the whole of what "
-            "was checked; the judgment is not.")
+    return _scope_text(s) + " That is the whole of what was checked, and it does not say the sentence is true."
+
+
+def _scope_text(s):
+    """What a sentence checked within scope was actually checked on, named figure by
+    figure, so a green result never claims more than it covered."""
+    figs = [f["raw"] + " as the " + f["role"] for f in (s.get("figs") or []) if f.get("st") == "checked"]
+    t = ("Checked within scope: " + "; ".join(figs) + ".") if figs else \
+        "No figure in this sentence was compared with the ledger."
+    if s.get("pcPass"):
+        t += " Its threshold claim agrees with the rule as set."
+    t += " Its direction word agrees with the sign." if s.get("dirPass") else " No direction word was tested."
+    outs = ["\u201c" + o["raw"] + "\u201d (" + OUTSIDE_WHY[o["kind"]] + ")" for o in (s.get("outside") or [])]
+    if outs:
+        t += " Read and left outside the check: " + "; ".join(outs) + "."
+    return t
 
 
 def _preview(L):

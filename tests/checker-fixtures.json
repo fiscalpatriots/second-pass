@@ -710,15 +710,15 @@
   },
   {
     "id": "T18",
-    "name": "Halyard sample end to end, case halyard-v3",
-    "required": "The CHECKER.md expected outputs for the Halyard sample, generated from cases/halyard-v3.json.",
+    "name": "Halyard sample end to end, case halyard-v4",
+    "required": "The CHECKER.md expected outputs for the Halyard sample, generated from cases/halyard-v4.json. The v4 ledger, memo and keys are the v3 ones; only the on-file facts behind the reveal changed, so every mechanical expectation below is unchanged.",
     "sample": "halyard",
     "expect": [
       {
         "desc": "the sample carries the shared case version",
         "get": "json",
         "op": "includes",
-        "value": "\"caseVersion\": \"halyard-v3\""
+        "value": "\"caseVersion\": \"halyard-v4\""
       },
       {
         "desc": "fourteen ledger rows read",
@@ -844,21 +844,27 @@
   },
   {
     "id": "T18b",
-    "name": "Brightwater sample end to end, case brightwater-v2",
-    "required": "The CHECKER.md expected outputs for the Brightwater sample, generated from cases/brightwater-v2.json.",
+    "name": "Brightwater sample end to end, case brightwater-v5",
+    "required": "The Brightwater sample, generated from cases/brightwater-v4.json. Every figure and every direction word in the v4 memo is correct, so the mechanical pass clears all five and the whole case turns on evidence a person has to weigh. A checker that failed a line here would be wrong.",
     "sample": "brightwater",
     "expect": [
       {
         "desc": "the sample carries the shared case version",
         "get": "json",
         "op": "includes",
-        "value": "\"caseVersion\": \"brightwater-v2\""
+        "value": "\"caseVersion\": \"brightwater-v5\""
       },
       {
-        "desc": "five ledger rows, five sentences",
+        "desc": "five ledger rows read",
         "get": "stats.rowsUsed",
         "op": "eq",
         "value": 5
+      },
+      {
+        "desc": "no row skipped",
+        "get": "stats.rowsSkipped",
+        "op": "eq",
+        "value": 0
       },
       {
         "desc": "five sentences",
@@ -867,32 +873,74 @@
         "value": 5
       },
       {
-        "desc": "card 1 fails on direction",
+        "desc": "card 1, supplies, ties",
         "get": "status.1",
         "op": "eq",
-        "value": "failed"
+        "value": "checked within scope"
       },
       {
-        "desc": "card 2 is checked within scope",
+        "desc": "card 1 reads $52,700 as the movement and 38.1 percent as the rate",
+        "get": "role.1",
+        "op": "includes",
+        "value": "$52,700=dollars/absolute movement"
+      },
+      {
+        "desc": "card 2, hygienist wages, ties",
         "get": "status.2",
         "op": "eq",
         "value": "checked within scope"
       },
       {
-        "desc": "card 3, the timing trap, needs review on an unstated role",
+        "desc": "card 3, orthodontic plans, ties",
         "get": "status.3",
         "op": "eq",
-        "value": "needs review"
+        "value": "checked within scope"
       },
       {
-        "desc": "card 5 fails: $44,900 is not the $54,900 change",
+        "desc": "card 4, patient revenue, ties",
+        "get": "status.4",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "card 4's threshold claim is checked and true",
+        "get": "finding.4",
+        "op": "includes",
+        "value": "Threshold claim: PASS"
+      },
+      {
+        "desc": "card 5, marketing, ties",
         "get": "status.5",
         "op": "eq",
-        "value": "failed"
+        "value": "checked within scope"
+      },
+      {
+        "desc": "card 5's threshold claim is checked and true",
+        "get": "finding.5",
+        "op": "includes",
+        "value": "Threshold claim: PASS"
+      },
+      {
+        "desc": "nothing failed the mechanical pass",
+        "get": "stats.failed",
+        "op": "eq",
+        "value": 0
+      },
+      {
+        "desc": "nothing was left needing review",
+        "get": "stats.review",
+        "op": "eq",
+        "value": 0
       },
       {
         "desc": "nothing is silent",
         "get": "stats.silent",
+        "op": "eq",
+        "value": 0
+      },
+      {
+        "desc": "and the mechanical queue is empty, because what is left is judgment",
+        "get": "stats.queue",
         "op": "eq",
         "value": 0
       }
@@ -1322,24 +1370,30 @@
   },
   {
     "id": "T32",
-    "name": "N13 control, a second clause naming its own account and balance",
-    "required": "Clause binding reads the second clause on its own terms.",
+    "name": "N13 a no-change claim in a second clause, against a line that moved",
+    "required": "\"Insurance expense remained at $95,000\" asserts no movement. Insurance moved $45,000, so the claim fails. This fixture was once labelled a control; the third review of 13 September 2026 showed that label was wrong.",
     "inputs": {
       "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
       "memo": "Rent expense rose $30,000; Insurance expense remained at $95,000."
     },
     "expect": [
       {
-        "desc": "it clears",
+        "desc": "it fails",
         "get": "status.S1",
         "op": "eq",
-        "value": "checked within scope"
+        "value": "failed"
       },
       {
-        "desc": "the balance is bound to insurance",
+        "desc": "the balance is still bound to insurance",
         "get": "finding.S1",
         "op": "includes",
         "value": "$95,000 is the current balance on 6200 Insurance expense"
+      },
+      {
+        "desc": "the no-change claim is what fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "the memo says \"remained at\" but 6200 Insurance expense rose $45,000"
       }
     ]
   },
@@ -1588,18 +1642,24 @@
   },
   {
     "id": "T43",
-    "name": "N24 control, a bare account word with its own balance",
-    "required": "A distinctive word in a clause is enough to bind that clause.",
+    "name": "N24 a no-change claim on a bare account word, against a line that moved",
+    "required": "\"insurance remained at $95,000\" asserts no movement on the line the clause binds, and insurance moved $45,000. It fails. This fixture was once labelled a control.",
     "inputs": {
       "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
       "memo": "Rent expense rose $30,000 and insurance remained at $95,000."
     },
     "expect": [
       {
-        "desc": "it clears",
+        "desc": "it fails",
         "get": "status.S1",
         "op": "eq",
-        "value": "checked within scope"
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change claim is what fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
       }
     ]
   },
@@ -1832,7 +1892,7 @@
         "desc": "the whole fraction is the span, not just the first word",
         "get": "finding.S1",
         "op": "includes",
-        "value": "“one third” is a quantity in words the checker cannot resolve"
+        "value": "“one third” is a fraction the checker does not read"
       },
       {
         "desc": "it reaches the queue",
@@ -1973,6 +2033,3318 @@
         "get": "queueKinds",
         "op": "eq",
         "value": ""
+      }
+    ]
+  },
+  {
+    "id": "P01",
+    "name": "third review probe P01",
+    "required": "Probe P01 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and ended at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "P02",
+    "name": "third review probe P02",
+    "required": "Probe P02 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, down from $130,000 to $100,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P03",
+    "name": "third review probe P03",
+    "required": "Probe P03 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by $30,000 and fifty percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P04",
+    "name": "third review probe P04",
+    "required": "Probe P04 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by $30,000 and 90 per cent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P05",
+    "name": "third review probe P05, a multiplier, unresolved",
+    "required": "Probe P05 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by $30,000 and doubled.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P06",
+    "name": "third review probe P06, a multiplier, unresolved",
+    "required": "Probe P06 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by $30,000 and tripled.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P07",
+    "name": "third review probe P07, a fraction, unresolved",
+    "required": "Probe P07 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, bringing it to half the prior balance.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P08",
+    "name": "third review probe P08, a multiplier, unresolved",
+    "required": "Probe P08 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, bringing it to twice the prior balance.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P09",
+    "name": "third review probe P09, a number glued to a letter, unresolved",
+    "required": "Probe P09 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by $30,000, or 9e1 percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P10",
+    "name": "third review probe P10, a unit the grammar does not read, unresolved",
+    "required": "Probe P10 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by $30,000, or 90.0 per mille.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P11",
+    "name": "third review probe P11, a no-change claim on a line that moved, failed",
+    "required": "Probe P11 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000; Insurance expense remained at $95,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P12",
+    "name": "third review probe P12, a no-change claim on a line that moved, failed",
+    "required": "Probe P12 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense was unchanged at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P13",
+    "name": "third review probe P13, a no-change claim on a line that moved, failed",
+    "required": "Probe P13 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense remained at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P14",
+    "name": "third review probe P14, a flat claim on a line that moved, failed",
+    "required": "Probe P14 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and stayed flat.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P15",
+    "name": "third review probe P15, a negation, held",
+    "required": "Probe P15 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, with no increase in the balance.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P16",
+    "name": "third review probe P16, a bound rather than a figure, held",
+    "required": "Probe P16 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense was below $30,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P17",
+    "name": "third review probe P17, a bound, held",
+    "required": "Probe P17 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose by at least $30,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P18",
+    "name": "third review probe P18, a bound, held",
+    "required": "Probe P18 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose by more than $30,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P19",
+    "name": "third review probe P19, a bound, held",
+    "required": "Probe P19 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose by less than $30,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P20",
+    "name": "third review probe P20",
+    "required": "Probe P20 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and $30,000 = $60,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P21",
+    "name": "third review probe P21, a decimal in words, unresolved",
+    "required": "Probe P21 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or thirty point zero percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P22",
+    "name": "third review probe P22, a decimal in words, unresolved",
+    "required": "Probe P22 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or ninety point zero percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P23",
+    "name": "third review probe P23, a fraction in a percent, unresolved",
+    "required": "Probe P23 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or one and a half percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P24",
+    "name": "third review probe P24, a number glued to an underscore, unresolved",
+    "required": "Probe P24 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by 30_000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P25",
+    "name": "third review probe P25, Arabic-Indic digits, unresolved without a crash",
+    "required": "Probe P25 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by ٣٠٠٠٠.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P26",
+    "name": "third review probe P26",
+    "required": "Probe P26 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000.\nThe bank covenant ratio was 7.2%.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "sentence S2 is needs review",
+        "get": "status.S2",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P27",
+    "name": "third review probe P27",
+    "required": "Probe P27 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000, versus $45,000 for Insurance expense.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P28",
+    "name": "third review probe P28",
+    "required": "Probe P28 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $45,000, versus $30,000 for Insurance expense.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P29",
+    "name": "third review probe P29",
+    "required": "Probe P29 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000, while insurance remained unchanged at $95,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P30",
+    "name": "third review probe P30",
+    "required": "Probe P30 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by $30,000 from $100,000 to $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "P31",
+    "name": "third review probe P31",
+    "required": "Probe P31 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense declined by $30,000 from $100,000 to $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P32",
+    "name": "third review probe P32, a negation, held",
+    "required": "Probe P32 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 30%, although it did not rise.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P33",
+    "name": "third review probe P33",
+    "required": "Probe P33 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose thirty thousand dollars, or thirty percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "P34",
+    "name": "third review probe P34, a fraction, unresolved",
+    "required": "Probe P34 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and grew by one-half.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      }
+    ]
+  },
+  {
+    "id": "P35",
+    "name": "third review probe P35",
+    "required": "Probe P35 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000; June was $130,000 and May was $100,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P36",
+    "name": "third review probe P36",
+    "required": "Probe P36 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000; June was $100,000 and May was $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P37",
+    "name": "third review probe P37, a multiplier in the driver, unresolved",
+    "required": "Probe P37 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "1. Rent expense rose $30,000 because occupancy doubled.\n2. The bank covenant ratio was 7.2%.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence 1 is not checked",
+        "get": "status.1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "sentence 2 is needs review",
+        "get": "status.2",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "P38",
+    "name": "third review probe P38",
+    "required": "Probe P38 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 90 percent, because one site closed.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "P39",
+    "name": "third review probe P39, a year after \"in\" is a date, checked",
+    "required": "Probe P39 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 in 2026.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "P40",
+    "name": "third review probe P40",
+    "required": "Probe P40 from the third independent review of 13 September 2026, entered exactly as that bundle supplied it.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by thirty thousand dollars, then decreased by thirty thousand dollars.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "sentence S1 is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "MUL01",
+    "name": "multiplier, refusing variant: Rent expense increased by $30,000 and doubled.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense increased by $30,000 and doubled.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL02",
+    "name": "multiplier, refusing variant: Rent expense doubled, rising $30,000.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense doubled, rising $30,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL03",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, more than doubling.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, more than doubling.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL04",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000 as occupancy doubles.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 as occupancy doubles.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL05",
+    "name": "multiplier, refusing variant: Rent expense tripled to $130,000.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense tripled to $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL06",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, a two-fold increase.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a two-fold increase.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL07",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, a twofold increase.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a twofold increase.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL08",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, a 3x increase.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a 3x increase.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL09",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, or 1.3x the prior balance.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 1.3x the prior balance.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL10",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, twice the prior month's change.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, twice the prior month's change.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL11",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000 and quadrupled.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and quadrupled.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL12",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000 after halving in May.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 after halving in May.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL13",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, three times the insurance increas",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, three times the insurance increase.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL14",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000; it has doubled since January.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000; it has doubled since January.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL15",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000 (doubled).",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 (doubled).",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL16",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, a 2× rise.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a 2× rise.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL17",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000 but did not double.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 but did not double.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL18",
+    "name": "multiplier, refusing variant: Rent expense rose $30,000, or thirty percent, and was halved",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or thirty percent, and was halved in May.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "MUL19",
+    "name": "multiplier, accepting variant: Rent expense rose $30,000 on the double-entry correction.",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 on the double-entry correction.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "MUL20",
+    "name": "multiplier, accepting variant: Rent expense rose $30,000 after the double count in May was ",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 after the double count in May was reversed.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "MUL21",
+    "name": "multiplier, accepting variant: Rent expense rose $30,000, or 30 percent, on the Suite 200 l",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 30 percent, on the Suite 200 lease.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "MUL22",
+    "name": "multiplier, accepting variant: Rent expense rose $30,000 (30%).",
+    "required": "A multiplier carries a quantity the figure reader does not parse. The sentence is not checked, whatever else in it agreed; wording that is not a multiplier still clears.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 (30%).",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "STILL01",
+    "name": "no-change claim, refusing variant: Rent expense remained at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense remained at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL02",
+    "name": "no-change claim, refusing variant: Rent expense remains at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense remains at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL03",
+    "name": "no-change claim, refusing variant: Rent expense stayed at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense stayed at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL04",
+    "name": "no-change claim, refusing variant: Rent expense held at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense held at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL05",
+    "name": "no-change claim, refusing variant: Rent expense was unchanged at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense was unchanged at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL06",
+    "name": "no-change claim, refusing variant: Rent expense was unchanged.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense was unchanged.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL07",
+    "name": "no-change claim, refusing variant: Rent expense remained unchanged at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense remained unchanged at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL08",
+    "name": "no-change claim, refusing variant: Rent expense stayed the same at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense stayed the same at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL09",
+    "name": "no-change claim, refusing variant: Rent expense remained $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense remained $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL10",
+    "name": "no-change claim, refusing variant: At $130,000, rent expense remained flat.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "At $130,000, rent expense remained flat.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL11",
+    "name": "no-change claim, refusing variant: Rent expense stayed flat at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense stayed flat at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL12",
+    "name": "no-change claim, refusing variant: Rent expense, at $130,000, was unchanged from May.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense, at $130,000, was unchanged from May.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the no-change word is held, never cleared",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "NOT TIED TO A LINE"
+      }
+    ]
+  },
+  {
+    "id": "STILL13",
+    "name": "no-change claim, refusing variant: Rent expense showed no change at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense showed no change at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL14",
+    "name": "no-change claim, refusing variant: Rent expense was held constant at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense was held constant at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL15",
+    "name": "no-change claim, refusing variant: Rent expense continued at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense continued at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL16",
+    "name": "no-change claim, refusing variant: Rent expense rose $30,000; Insurance expense remained at $95",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000; Insurance expense remained at $95,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL17",
+    "name": "no-change claim, refusing variant: Rent expense rose $30,000 and insurance stayed at $95,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000\n6200\tInsurance expense\t50000\t95000",
+      "memo": "Rent expense rose $30,000 and insurance stayed at $95,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL18",
+    "name": "no-change claim, refusing variant: Rent expense did not remain at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense did not remain at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "STILL19",
+    "name": "no-change claim, refusing variant: Rent expense remained at $130,400.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t130000\t130400",
+      "memo": "Rent expense remained at $130,400.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the no-change or flat claim fails",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL20",
+    "name": "no-change claim, accepting variant: Rent expense remained at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t130000\t130000",
+      "memo": "Rent expense remained at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "no direction failure",
+        "get": "finding.S1",
+        "op": "notIncludes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL21",
+    "name": "no-change claim, accepting variant: Rent expense was unchanged at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t130000\t130000",
+      "memo": "Rent expense was unchanged at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "no direction failure",
+        "get": "finding.S1",
+        "op": "notIncludes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL22",
+    "name": "no-change claim, accepting variant: Rent expense held at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t130000\t130000",
+      "memo": "Rent expense held at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "no direction failure",
+        "get": "finding.S1",
+        "op": "notIncludes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL23",
+    "name": "no-change claim, accepting variant: Rent expense stayed the same at $130,000.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t130000\t130000",
+      "memo": "Rent expense stayed the same at $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "no direction failure",
+        "get": "finding.S1",
+        "op": "notIncludes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL24",
+    "name": "no-change claim, accepting variant: Rent expense held flat at $130,400.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t130000\t130400",
+      "memo": "Rent expense held flat at $130,400.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "no direction failure",
+        "get": "finding.S1",
+        "op": "notIncludes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL25",
+    "name": "no-change claim, accepting variant: Rent expense, unchanged at $130,000, carries no commentary.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t130000\t130000",
+      "memo": "Rent expense, unchanged at $130,000, carries no commentary.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "no direction failure",
+        "get": "finding.S1",
+        "op": "notIncludes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL26",
+    "name": "no-change claim, refusing variant: Rent expense, at $130,000, fell.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense, at $130,000, fell.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "a direction word in a clause of its own is held",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "NOT TIED TO A LINE"
+      }
+    ]
+  },
+  {
+    "id": "STILL27",
+    "name": "no-change claim, refusing variant: At $130,000, rent expense fell.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "At $130,000, rent expense fell.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      },
+      {
+        "desc": "the clause names the line, so the direction is tested",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "STILL28",
+    "name": "no-change claim, accepting variant: At $130,000, rent expense rose.",
+    "required": "\"remained at\", \"held at\", \"was unchanged\", \"stayed the same\" and kin assert zero movement. On a line that moved the sentence fails; on a line that did not move it is checked; a negated one is held for review.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "At $130,000, rent expense rose.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "no direction failure",
+        "get": "finding.S1",
+        "op": "notIncludes",
+        "value": "Direction: FAIL"
+      }
+    ]
+  },
+  {
+    "id": "FRAC01",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or one and a half percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or one and a half percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC02",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or one-and-a-half percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or one-and-a-half percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC03",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or a quarter.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or a quarter.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC04",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or a quarter of the prior balance",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or a quarter of the prior balance.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC05",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or half a percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or half a percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC06",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or a half percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or a half percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC07",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or three quarters of a percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or three quarters of a percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC08",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or two thirds.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or two thirds.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC09",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or 1/2 percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 1/2 percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC10",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or 1½ percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 1½ percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC11",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or ½%.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or ½%.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC12",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or thirty point five percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or thirty point five percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC13",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or point five percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or point five percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC14",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or .5 percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or .5 percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC15",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000 after being cut in half in May.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 after being cut in half in May.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC16",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose by a third, or $30,000.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose by a third, or $30,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      },
+      {
+        "desc": "the fraction is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC17",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, nearly a third.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, nearly a third.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC18",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, one quarter above May.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, one quarter above May.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC19",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, not a quarter.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, not a quarter.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC20",
+    "name": "fraction or number words in a percent, refusing variant: Rent expense rose $30,000, or thirty and a half percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or thirty and a half percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "FRAC21",
+    "name": "fraction or number words in a percent, accepting variant: Rent expense rose $30,000 in the first half of June.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 in the first half of June.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "FRAC22",
+    "name": "fraction or number words in a percent, accepting variant: Rent expense rose $30,000 on a third site lease.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 on a third site lease.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "FRAC23",
+    "name": "fraction or number words in a percent, accepting variant: Rent expense rose $30,000 at quarter-end.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 at quarter-end.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "FRAC24",
+    "name": "fraction or number words in a percent, accepting variant: Rent expense rose $30,000, or thirty percent.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or thirty percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "FRAC25",
+    "name": "fraction or number words in a percent, accepting variant: Rent expense rose $30,000 as the lease moved to a half-year ",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 as the lease moved to a half-year term.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "FRAC26",
+    "name": "fraction or number words in a percent, accepting variant: Rent expense rose $30,000 on the lease that started on 6/1.",
+    "required": "A fraction, a decimal in words or a fraction character carries a quantity the figure reader does not parse. It is an unparsed span and the sentence is not checked; a period word such as \"first half\" or \"quarter-end\" and an ordinal such as \"a third site\" are not fractions.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 on the lease that started on 6/1.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT01",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000 and increased by ٣٠٠٠٠.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by ٣٠٠٠٠.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT02",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose ٣٠٬٠٠٠ dollars.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose ٣٠٬٠٠٠ dollars.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT03",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $٣٠,٠٠٠.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $٣٠,٠٠٠.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT04",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000, or ٣٠ percent.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or ٣٠ percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT05",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000, or ３０%.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or ３０%.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT06",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000, or 30％.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 30％.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT07",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $३०,०००.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $३०,०००.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT08",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000, or 30‰.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 30‰.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT09",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000, or 30².",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 30².",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT10",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000, up ۳۰ percent.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, up ۳۰ percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT11",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000, or 9e1 percent.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 9e1 percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT12",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000 and increased by 30_000.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and increased by 30_000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT13",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose $30,000, or 90.0 per mille.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 90.0 per mille.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT14",
+    "name": "digits outside 0 to 9, refusing variant: Rent expense rose US$30,000.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose US$30,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT15",
+    "name": "digits outside 0 to 9, accepting variant: Rent expense rose $30,000 (30%).",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 (30%).",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "DIGIT16",
+    "name": "digits outside 0 to 9, accepting variant: Rent expense rose $30,000 at the café on Main Street.",
+    "required": "A digit outside 0 to 9, a fullwidth or superscript digit, a fraction character or a per mille sign is recorded as an unparsed span, never dropped and never a crash. The sentence is not checked.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 at the café on Main Street.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "COUNT01",
+    "name": "a number that is not a figure, refusing variant: Rent expense rose $30,000, or 30.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or 30.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "COUNT02",
+    "name": "a number that is not a figure, refusing variant: Rent expense rose $30,000, a rise of 30.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, a rise of 30.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "COUNT03",
+    "name": "a number that is not a figure, refusing variant: Rent expense rose $30,000, or thirty.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, or thirty.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "COUNT04",
+    "name": "a number that is not a figure, refusing variant: Rent expense rose $30,000 and 800 to $130,000.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 and 800 to $130,000.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "COUNT05",
+    "name": "a number that is not a figure, refusing variant: Rent expense rose $30,000, 3 points above plan.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, 3 points above plan.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "COUNT06",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000 on 12 new leases.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 on 12 new leases.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the count is named as outside the check",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "“12” (a count the ledger does not hold)"
+      }
+    ]
+  },
+  {
+    "id": "COUNT07",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000 across three sites.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 across three sites.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the count is named as outside the check",
+        "get": "finding.S1",
+        "op": "includes",
+        "value": "“three” (a count the ledger does not hold)"
+      }
+    ]
+  },
+  {
+    "id": "COUNT08",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000 on the lease signed on June 30.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 on the lease signed on June 30.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "COUNT09",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000 on the lease signed on 30 June 202",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 on the lease signed on 30 June 2026.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "COUNT10",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000 in Q2.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 in Q2.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "COUNT11",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000 on the 3rd floor lease.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 on the 3rd floor lease.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "COUNT12",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000 under invoice 4471.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 under invoice 4471.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "COUNT13",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000, one of the larger moves.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000, one of the larger moves.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "COUNT14",
+    "name": "a number that is not a figure, accepting variant: Rent expense rose $30,000 in 2026.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 in 2026.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      }
+    ]
+  },
+  {
+    "id": "COUNT15",
+    "name": "a number that is not a figure, refusing variant: Rent expense rose $30,000 by 2026.",
+    "required": "A number is accounted for only as a year, a date, a label, an ordinal, an account number standing as a reference, or a count written in front of the thing it counts, and the explanation names it as left outside the check. Any other number, in digits or in words, is an unparsed span.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "Rent expense rose $30,000 by 2026.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is not checked",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "not checked"
+      },
+      {
+        "desc": "the unread span is in the queue",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "Unparsed figure"
+      }
+    ]
+  },
+  {
+    "id": "ROLE01",
+    "name": "the Prompt 1 line shape, accepting variant: 6100 Rent expense: prior $100,000, current $130,000, rose by",
+    "required": "Prompt 1 asks for \"prior <balance>, current <balance>\". Those words are read as roles, so a line drafted in that shape is checked on every figure, and \"no source on file\" becomes a question for a person.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "6100 Rent expense: prior $100,000, current $130,000, rose by $30,000, 30.0 percent, because no source on file (source: no source on file).",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "the prior balance role is read",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "$100,000=dollars/prior balance"
+      },
+      {
+        "desc": "the current balance role is read",
+        "get": "role.S1",
+        "op": "includes",
+        "value": "$130,000=dollars/current balance"
+      },
+      {
+        "desc": "the missing source is a question for a person",
+        "get": "queueKinds",
+        "op": "includes",
+        "value": "No source on file"
+      }
+    ]
+  },
+  {
+    "id": "ROLE02",
+    "name": "the Prompt 1 line shape, accepting variant: 6100 Rent expense: prior $100,000.00, current $130,000.00, r",
+    "required": "Prompt 1 asks for \"prior <balance>, current <balance>\". Those words are read as roles, so a line drafted in that shape is checked on every figure, and \"no source on file\" becomes a question for a person.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "6100 Rent expense: prior $100,000.00, current $130,000.00, rose $30,000.00, 30 percent, because the new lease began (source: signed lease).",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
+      },
+      {
+        "desc": "no missing-source question when a source is named",
+        "get": "queueKinds",
+        "op": "notIncludes",
+        "value": "No source on file"
+      }
+    ]
+  },
+  {
+    "id": "ROLE03",
+    "name": "the Prompt 1 line shape, refusing variant: 6100 Rent expense: prior $130,000, current $100,000, rose by",
+    "required": "Prompt 1 asks for \"prior <balance>, current <balance>\". Those words are read as roles, so a line drafted in that shape is checked on every figure, and \"no source on file\" becomes a question for a person.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "6100 Rent expense: prior $130,000, current $100,000, rose by $30,000, 30.0 percent, because no source on file (source: no source on file).",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "ROLE04",
+    "name": "the Prompt 1 line shape, refusing variant: 6100 Rent expense: prior $100,000, current $130,000, fell by",
+    "required": "Prompt 1 asks for \"prior <balance>, current <balance>\". Those words are read as roles, so a line drafted in that shape is checked on every figure, and \"no source on file\" becomes a question for a person.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "6100 Rent expense: prior $100,000, current $130,000, fell by $30,000, 30.0 percent, because no source on file (source: no source on file).",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is failed",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "ROLE05",
+    "name": "the Prompt 1 line shape, refusing variant: 6100 Rent expense: prior year $100,000, current $130,000, ro",
+    "required": "Prompt 1 asks for \"prior <balance>, current <balance>\". Those words are read as roles, so a line drafted in that shape is checked on every figure, and \"no source on file\" becomes a question for a person.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "6100 Rent expense: prior year $100,000, current $130,000, rose by $30,000, because no source on file (source: no source on file).",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is needs review",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "needs review"
+      }
+    ]
+  },
+  {
+    "id": "ROLE06",
+    "name": "the Prompt 1 line shape, accepting variant: 6100 Rent expense: previous $100,000, current $130,000, rose",
+    "required": "Prompt 1 asks for \"prior <balance>, current <balance>\". Those words are read as roles, so a line drafted in that shape is checked on every figure, and \"no source on file\" becomes a question for a person.",
+    "inputs": {
+      "ledger": "6100\tRent expense\t100000\t130000",
+      "memo": "6100 Rent expense: previous $100,000, current $130,000, rose by $30,000, or 30.0 percent.",
+      "ratios": ""
+    },
+    "expect": [
+      {
+        "desc": "the sentence is checked within scope",
+        "get": "status.S1",
+        "op": "eq",
+        "value": "checked within scope"
       }
     ]
   }
