@@ -7,19 +7,21 @@ digits outside 0 to 9, numbers that are not figures, and the Prompt 1 line shape
 The same file guards ``checker.html`` at beat-the-machine.
 
 Every input is run through ``checker.html`` under Node, using the browser suite's
-own harness, and through ``second_pass.checker`` here. The comparison is made
-after two normalizations, and nothing else is normalized:
+own harness, and through ``second_pass.checker`` here. The outputs are compared
+after three normalizations, and nothing else is normalized:
 
-* the run timestamp is dropped, because two runs at two moments differ by design;
+* every ISO timestamp is masked, because two runs at two moments differ by design;
+* the JSON record and the serialized queue are parsed and compared as objects, so
+  key order and indentation do not count, while every key and value does;
 * where the browser refuses an input outright, its probe carries no role map and no
-  queue, and both are read as empty, which is what the Python probe returns;
-* every other compared field is compared as an exact string or number.
+  queue, and both are read as empty, which is what the Python probe returns.
 
 The compared fields, per input, are the sentence statuses, every extracted figure
-as ``raw=unit/role``, the coverage counts, the reviewer queue by kind in order, and
-every finding row's check, result, text and question for every sentence. The
-rendered page text, the CSV, the JSON record and the prompts are not compared here;
-``CONTRACT-DIVERGENCE.md`` says so.
+as ``raw=unit/role``, the coverage counts, the reviewer queue by kind and in full,
+every finding row's check, result, text and question for every sentence, the
+sentences that reached the reviewer list, the CSV export, the copy-table export,
+the JSON record and Prompt 2. The rendered page text is not compared: the browser
+reads it out of a document stub and Python assembles the same facts as plain text.
 
 The browser side needs Node and the beat-the-machine repository beside this one, or
 at ``BEAT_THE_MACHINE``. Where either is missing the test is skipped, not passed.
@@ -27,6 +29,7 @@ at ``BEAT_THE_MACHINE``. Where either is missing the test is skipped, not passed
 
 import json
 import os
+import re
 import shutil
 import subprocess
 
@@ -39,7 +42,9 @@ ROOT = os.path.dirname(HERE)
 GAME = os.environ.get("BEAT_THE_MACHINE") or os.path.join(os.path.dirname(ROOT), "beat-the-machine")
 NODE = shutil.which("node")
 
-FIELDS = ("status", "role", "stats", "queueKinds", "finding")
+FIELDS = ("status", "role", "stats", "queueKinds", "finding", "survivors", "queue", "csv", "tsv",
+          "json", "prompt")
+ISO = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z")
 
 _NODE_SCRIPT = r"""
 const fs = require("fs"), path = require("path");
@@ -52,7 +57,8 @@ for (const fx of fixtures) {
   let p;
   try { p = execute(fx); } catch (e) { out[fx.id] = { error: String(e && e.message) }; continue; }
   out[fx.id] = { status: p.status, role: p.role, stats: p.stats, queueKinds: p.queueKinds,
-                 finding: p.finding, consoleErrors: p.consoleErrors };
+                 finding: p.finding, survivors: p.survivors, queue: p.queue, csv: p.csv, tsv: p.tsv,
+                 json: p.json, prompt: p.prompt, consoleErrors: p.consoleErrors };
 }
 process.stdout.write(JSON.stringify(out));
 """
@@ -78,11 +84,15 @@ def browser():
     return _BROWSER["run"]
 
 
-def _python(fx):
-    p = probe(fx)
-    stats = dict(p.get("stats") or {})
-    return {"status": p["status"], "role": p["role"], "stats": stats,
-            "queueKinds": p["queueKinds"], "finding": p["finding"]}
+def normalize(field, value):
+    if value is None:
+        value = {} if field in ("status", "role", "stats", "finding") else ""
+    if field in ("json", "queue"):
+        text = ISO.sub("<timestamp>", value) if isinstance(value, str) else value
+        return json.loads(text) if isinstance(text, str) and text else text
+    if isinstance(value, str):
+        return ISO.sub("<timestamp>", value)
+    return value
 
 
 def test_the_fixture_file_is_the_browser_fixture_file():
@@ -103,11 +113,9 @@ def test_both_implementations_agree(fixture):
     got_js = run[fixture["id"]]
     assert "error" not in got_js, got_js.get("error")
     assert not got_js["consoleErrors"], got_js["consoleErrors"]
-    got_py = _python(fixture)
-    # a refused input: the browser probe carries no role map and no queue at all
-    got_js.setdefault("role", {})
-    got_js.setdefault("queueKinds", "")
+    got_py = probe(fixture)
     for field in FIELDS:
-        assert got_py[field] == got_js[field], (
-            "%s differs on %s\n  browser: %s\n  python:  %s"
-            % (fixture["id"], field, json.dumps(got_js[field])[:1500], json.dumps(got_py[field])[:1500]))
+        a = normalize(field, got_js.get(field))
+        b = normalize(field, got_py.get(field))
+        assert a == b, ("%s differs on %s\n  browser: %s\n  python:  %s"
+                        % (fixture["id"], field, json.dumps(a)[:1500], json.dumps(b)[:1500]))

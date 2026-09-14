@@ -1,107 +1,112 @@
 # Contract divergence, browser against Python
 
-The Second Pass contract now exists in two places: `checker.html` in the
-beat-the-machine repository, and `second_pass/checker.py` here. They are meant
-to be one thing. This file records where they are not, by fixture id, so nobody
-has to discover it during a close.
+The Second Pass contract lives in two places: `checker.html` in the beat-the-machine
+repository, and `second_pass/checker.py` here. They are meant to be one thing. This file
+says exactly what was compared between them, on which inputs, after which normalization,
+and what came out. It claims nothing beyond the comparison it describes.
 
-**Where the two disagree, the browser wins.** `CHECKER.md` is the contract; this
-module is an implementation of it.
+**Where the two disagree, the browser wins.** `CHECKER.md` is the contract; this module is
+an implementation of it.
 
-## How they were compared, 13 September 2026
+## What was compared, 13 September 2026
 
-Both were run over all fifty-nine fixtures in `tests/checker-fixtures.json`,
-and the full probe was compared field by field, not just the assertions the
-fixtures carry. The probe is the one the browser's own runner builds:
+**The inputs.** One file, `tests/checker-fixtures.json`, identical in both repositories once
+line endings are normalized (a test here checks that). It holds 212 inputs:
+
+| Ids | What they are |
+| --- | --- |
+| `T01` to `T54`, with `T10b`, `T12b`, `T14b`, `T15b` and `T18b` | the fixtures that guarded the page before the third review, including the end-to-end samples `T18` (halyard-v4), `T18b` (brightwater-v5) and `T19` (Kestrel) |
+| `P01` to `P40` | the forty probes from the third independent review of 13 September 2026, entered exactly as that bundle supplied them |
+| `MUL01` to `MUL22`, `STILL01` to `STILL28`, `FRAC01` to `FRAC26`, `DIGIT01` to `DIGIT16`, `COUNT01` to `COUNT15`, `ROLE01` to `ROLE06` | 113 mutations of the classes the review showed were open: multipliers, no-change claims, fractions and number words, digits outside 0 to 9, numbers that are not figures, and the Prompt 1 line shape, each class with inputs it must refuse and inputs it must accept |
+
+**How.** `tests/test_parity_shared_inputs.py` runs every input through `checker.html` under
+Node, using the browser suite's own harness from `tests/run-checker-tests.cjs`, and through
+`second_pass.checker` here, then compares these fields for every input:
 
 | Field | What it holds |
 | --- | --- |
-| `stats` | the nine coverage counts |
 | `status` | one status per sentence |
-| `role` | every figure's raw text, unit and numeric role |
+| `role` | every extracted figure as its raw text, unit and numeric role |
+| `stats` | the coverage counts |
+| `queueKinds` and `queue` | the reviewer's queue, by kind and in full |
 | `finding` | every row's check, result, finding and question, per sentence |
-| `account` | every ledger line recomputed, with both legs and whether it clears |
-| `flags` | unconfirmed columns, ambiguous rows, discarded columns, duplicates, skipped rows |
-| `queue` | the reviewer's queue, serialised whole |
-| `queueKinds` | the queue in order, by kind |
 | `survivors` | the sentences that reached the reviewer list |
-| `csv` | the CSV export, every column |
-| `json` | the JSON record, every field |
+| `csv`, `tsv`, `json` | the CSV export, the copy-table export and the JSON record |
 | `prompt` | Prompt 2, the reviewer prompt |
-| `tsv` | the copy-table export |
+
+**The normalization, all of it.** Every ISO timestamp is masked. The JSON record and the
+serialized queue are parsed and compared as objects, so key order and indentation do not
+count and every key and value does. Where the browser refuses an input outright, its probe
+carries no role map and no queue, and both are read as empty. Nothing else is normalized.
+
+**Not compared.** The rendered page text, which the browser reads out of a document stub and
+Python assembles as plain text in its own order, and the page behaviors listed at the foot of
+this file.
 
 ## The result
 
-**No divergence on any fixture, on any of those fields.** The two agree byte for
-byte, including the run identifier and the source version, which are hashes of
-the inputs and would move if any input were read differently.
+**All 212 inputs agree on every compared field**, `python -m pytest
+tests/test_parity_shared_inputs.py -q`: 213 passed, the extra test being the check that the
+two fixture files are the same file. Both suites also pass on their own: `node
+tests/run-checker-tests.cjs` 213 of 213 (212 fixtures and the check that the author page's
+copy of the reader matches the page), and `python -m pytest tests/ -q` 504 passed.
 
-Two things differ by construction and are not contract:
+That is agreement on these 212 inputs. It is not a proof that the two agree on inputs nobody
+has written yet, and a matching test count would not prove it either; a new input is only
+compared once it is added to the fixture file.
 
-1. **The rendered page text.** The browser probe reads the text content of the
-   results DOM; Python assembles the same facts as plain text in a different
-   order and without the markup. Every fixture clause written against
-   `pageText` (T07, T08, T10, T10b, T13, T14, T15, T15b, T18, T19) passes in
-   both, because every one asserts that a phrase is present, and the phrases
-   come from the findings rather than from the layout.
-2. **The run timestamp.** Two runs at different moments carry different stamps.
-   The comparison normalises it.
+## What the comparison found on the way, and what changed
 
-## Where the two fixture files differ, 13 September 2026
+- **The review's probe P25 crashed the command line** with a `ValueError`. Python's `\d`
+  matches Arabic-Indic digits and JavaScript's does not, so a run of them passed the figure
+  pattern and then could not be converted. Every `\d` in `second_pass/checker.py` is now
+  `0-9`, and digits outside 0 to 9 are an unparsed span in both. P25 returns **not checked**
+  in both, with the span in the queue.
+- **The two fixture files differed at T18 and T18b**, because the shared samples here were
+  still halyard-v3 and brightwater-v2. `cases/shared/*.json` are now regenerated from the
+  samples inline in `checker.html`: halyard-v4, brightwater-v5, Kestrel and Ridgeline, and
+  `cases/shared/definitions/` carries halyard-v4 and brightwater-v5. The fixture files are
+  now one file.
+- **Prompt 2 differed on 161 of the 212 inputs.** The browser writes each queue item as
+  `S1. <issue>` and Python wrote `S1 — <issue>`. This file's earlier statement that the two
+  agreed byte for byte on the prompt was wrong. Python now writes the browser's form.
 
-Two ids, and neither is a contract divergence:
+## The earlier comparison
 
-| Id | Why |
-| --- | --- |
-| `T18` | the end-to-end Halyard sample. beat-the-machine asserts against `halyard-v4`; `cases/shared/halyard.json` here is still `halyard-v3`, so the fixture here asserts against v3. Same assertions, older memo |
-| `T18b` | the same, Brightwater. There, `brightwater-v4`; here, `brightwater-v2` |
-
-The shared sample files here are hand-kept, while beat-the-machine regenerates
-its inline copies with `build-checker-cases.cjs`. Bringing them to v4 is a case
-change, not a checker change, and it is not made here on a QA pass. Every other
-fixture, `T01` to `T54`, is byte for byte the same file in both repositories.
-
-## Quantities written in words, added 13 September 2026
-
-`T21` and the six new fixtures `T49` to `T54` carry rule 1c of `CHECKER.md`:
-units through millions are parsed to a figure where the parser resolves the run
-and the words give it a unit, and everything else in words either reaches the
-reviewer's queue or, where it is a count standing beside no claim, is left
-alone. Both implementations were changed in the same commit and both suites run
-clean: `node tests/run-checker-tests.cjs` 59/59, `python -m pytest tests/ -q`
-138 passed.
+The version of this file at `130b6b7` said the two agreed byte for byte on all fifty-nine
+fixtures, including the prompt. The third review's forty-input comparison found 39 matching
+sentence statuses and one crash (P25), and the fixture files differed at T18 and T18b. Both
+of those were true of that revision, and so was the prompt difference above. The statements
+in this file replace that one.
 
 ## Things the Python side does not carry
 
-These are page behaviours, not contract steps, and they have no command-line
-meaning. They are listed so that nobody reads their absence as a divergence:
+These are page behaviors, not contract steps, and they have no command-line meaning. They are
+listed so that nobody reads their absence as a divergence:
 
-- the parse preview's two column dropdowns and the re-run on changing one
-  (the `cols` argument to `run_check` does the same job non-interactively)
-- the numeric-role dropdown beside a row, and re-stamping a run with a
-  reviewer's confirmation
-- the Yes / No / Not on file ticks that ride into the CSV's human conclusion
-  column; the column is written, and it is blank, which is what an untouched
-  question means
-- **Previous runs**, the print stylesheet, the clipboard actions and the
-  stacked coverage bar
-- Prompt 1, which is drafted before a memo exists and reads the panes rather
-  than a finished run
+- the parse preview's two column dropdowns and the re-run on changing one (the `cols`
+  argument to `run_check` does the same job non-interactively)
+- the numeric-role dropdown beside a row, and restamping a run with a reviewer's confirmation
+- the Yes, No and Not on file ticks that ride into the CSV's human conclusion column; the
+  column is written, and it is blank, which is what an untouched question means
+- **Previous runs**, the print stylesheet, the clipboard actions and the stacked coverage bar
+- Prompt 1, which is drafted before a memo exists and reads the panes rather than a run
 
-## How to re-run the comparison
+## How to rerun the comparison
 
-The browser suite:
+With beat-the-machine checked out beside this repository, or its path in `BEAT_THE_MACHINE`,
+and Node on the path:
+
+```
+python -m pytest tests/test_parity_shared_inputs.py -q
+```
+
+Without Node or the sibling repository the comparison is skipped, and pytest says so; a
+skipped comparison is not a passing one. The browser suite on its own:
 
 ```
 node tests/run-checker-tests.cjs          # in the beat-the-machine repository
 ```
 
-The Python suite:
-
-```
-python -m pytest tests/test_checker_contract.py -q
-```
-
-Both read the same `checker-fixtures.json`. If the file in this repository ever
-falls behind the one that guards the page, copy it across and run the suite
-again before anything else.
+If the fixture file in one repository changes, copy it to the other and run both before
+anything else.

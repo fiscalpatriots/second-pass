@@ -2156,10 +2156,11 @@ class CheckResult:
              "Ledger rows read: " + str(st["rowsUsed"]) + ". Ledger rows skipped and never checked: "
              + str(st["rowsSkipped"]) + ".",
              "Lines clearing the rule with no sentence about them: " + str(st["silent"]) + ".",
-             "\"Checked within scope\" means only this: each figure in the sentence carried a role the "
-             "words gave it, and the unrounded comparison with the pasted ledger agreed. It does not "
-             "mean the sentence is true, and it does not mean every figure in the memo was checked. "
-             "Recompute anything you doubt.",
+             "\"Checked within scope\" means only this: each figure the checker read in the sentence "
+             "carried a role the words gave it and agreed with the pasted ledger unrounded, and every "
+             "other number in it was a year, a date, a label or a count, named in its findings and not "
+             "checked. It does not mean the sentence is true, and it does not mean every figure in the "
+             "memo was checked. Recompute anything you doubt.",
              "",
              "SOURCES ACTUALLY SUPPLIED TO THIS RUN. Nothing else was available to the checker, and no "
              "close binder, trial balance, invoice or contract was seen by it."]
@@ -2170,7 +2171,7 @@ class CheckResult:
         if not self.queue:
             p.append("(none)")
         for item in self.queue:
-            p.append("- [" + item["kind"] + "] " + item["ref"] + " \u2014 " + item["issue"]
+            p.append("- [" + item["kind"] + "] " + item["ref"] + ". " + item["issue"]
                      + ((" Question: " + item["ask"]) if item["ask"] else "")
                      + " Owner: " + item["owner"] + ".")
         p.extend(["", "SENTENCES CHECKED WITHIN SCOPE. For each one, answer only these two questions:",
