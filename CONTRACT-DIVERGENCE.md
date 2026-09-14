@@ -11,13 +11,15 @@ an implementation of it.
 ## What was compared, 13 September 2026
 
 **The inputs.** One file, `tests/checker-fixtures.json`, identical in both repositories once
-line endings are normalized (a test here checks that). It holds 212 inputs:
+line endings are normalized (a test here checks that). It holds 546 inputs:
 
 | Ids | What they are |
 | --- | --- |
 | `T01` to `T54`, with `T10b`, `T12b`, `T14b`, `T15b` and `T18b` | the fixtures that guarded the page before the third review, including the end-to-end samples `T18` (halyard-v4), `T18b` (brightwater-v5) and `T19` (Kestrel) |
 | `P01` to `P40` | the forty probes from the third independent review of 13 September 2026, entered exactly as that bundle supplied them |
 | `MUL01` to `MUL22`, `STILL01` to `STILL28`, `FRAC01` to `FRAC26`, `DIGIT01` to `DIGIT16`, `COUNT01` to `COUNT15`, `ROLE01` to `ROLE06` | 113 mutations of the classes the review showed were open: multipliers, no-change claims, fractions and number words, digits outside 0 to 9, numbers that are not figures, and the Prompt 1 line shape, each class with inputs it must refuse and inputs it must accept |
+| `A001` to `A139`, `B001` to `B036` | the 175 probes of the independent adversarial audit of 13 September 2026, entered as that audit supplied them |
+| `CUR01` to `CUR24`, `SIGN01` to `SIGN26`, `SAME01` to `SAME28`, `PER01` to `PER33`, `ANA01` to `ANA20`, `RESP01` to `RESP14`, `QTY01` to `QTY14` | 159 mutations of the clearance grammar's classes, each with inputs it must refuse and inputs it must accept |
 
 **How.** `tests/test_parity_shared_inputs.py` runs every input through `checker.html` under
 Node, using the browser suite's own harness from `tests/run-checker-tests.cjs`, and through
@@ -45,13 +47,16 @@ this file.
 
 ## The result
 
-**All 212 inputs agree on every compared field**, `python -m pytest
-tests/test_parity_shared_inputs.py -q`: 213 passed, the extra test being the check that the
-two fixture files are the same file. Both suites also pass on their own: `node
-tests/run-checker-tests.cjs` 213 of 213 (212 fixtures and the check that the author page's
-copy of the reader matches the page), and `python -m pytest tests/ -q` 504 passed.
+**All 546 inputs agree on every compared field**, `python -m pytest
+tests/test_parity_shared_inputs.py -q`: 548 passed, the two extra tests being the check that
+the two fixture files are the same file and the check that the clearance grammar's risk lexicon
+and the patterns around it are the same in both, entry for entry. Both suites also pass on their
+own: `node tests/run-checker-tests.cjs` 548 of 548 (546 fixtures, the check that the author
+page's copy of the reader functions matches the page, and the check that the shared constants and
+the clearance block match), and `python -m pytest tests/ -q` 1,173 passed with beat-the-machine
+beside this repository, or 625 passed and 548 skipped without it.
 
-That is agreement on these 212 inputs. It is not a proof that the two agree on inputs nobody
+That is agreement on these 546 inputs. It is not a proof that the two agree on inputs nobody
 has written yet, and a matching test count would not prove it either; a new input is only
 compared once it is added to the fixture file.
 

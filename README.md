@@ -19,11 +19,12 @@ signs.
 The checker also runs in a browser, at
 [checker.html](https://fiscalpatriots.github.io/beat-the-machine/checker.html),
 one HTML file with no libraries. That page and this package implement one
-contract and run the same 212 fixtures, and on those 212 inputs they agree on
+contract and run the same 546 fixtures, and on those 546 inputs they agree on
 every field compared in [CONTRACT-DIVERGENCE.md](CONTRACT-DIVERGENCE.md). The
-checks read a ledger in one of the layouts `CHECKER.md` accepts, and a sentence
+checks read a ledger in one of the layouts `CHECKER.md` accepts, a sentence
 carrying anything the grammar cannot read comes back not checked rather than
-cleared.
+cleared, and a sentence that leaves a word from the clearance grammar's risk
+lexicon once its claims are read comes back needs review.
 
 ## The contract, in one paragraph
 
@@ -191,24 +192,29 @@ node tests/run-checker-tests.cjs                          # in the beat-the-mach
 python -m pytest tests/test_parity_shared_inputs.py -q    # here, both on one input set
 ```
 
-212 fixtures. Fifty-nine of them run `T01` to `T54`, five with a lettered second
+546 fixtures. Fifty-nine of them run `T01` to `T54`, five with a lettered second
 case: seventeen probes from the external audit of 13 September 2026, twenty-four
 from the live release review of the same day, the end-to-end sample runs, and
 probes written against the repaired contract afterwards. `P01` to `P40` are the
 forty probes from the third independent review of 13 September 2026, and the
 other 113 are mutations of the six classes that review showed were open:
 multipliers, no-change claims, fractions and number words, digits outside 0 to 9,
-numbers that are not figures, and the Prompt 1 line shape. Each one carries the
-required behavior as its own assertion, so a change in either place that moves a
-status fails the suite. `python -m pytest tests/ -q` runs 504 tests in this
-repository, the parity test among them.
+numbers that are not figures, and the Prompt 1 line shape. `A001` to `A139` and
+`B001` to `B036` are the 175 probes of the independent audit of 13 September 2026,
+and the last 159 are mutations of the clearance grammar's classes: currencies, signs,
+sameness, periods and bases, claims carried to another account, "respectively", and
+words that size, rank or share a movement. Each one carries the required behavior
+as its own assertion, so a change in either place that moves a status fails the
+suite. `python -m pytest tests/ -q` runs 1,173 tests in this repository with
+beat-the-machine beside it, the parity test among them; without it, 625 pass and
+the 548 that need the browser are skipped.
 
 The two were also compared field by field, not only on the clauses the fixtures
-assert: `tests/test_parity_shared_inputs.py` runs all 212 inputs through the page
+assert: `tests/test_parity_shared_inputs.py` runs all 546 inputs through the page
 under Node and through this package, and compares the statuses, roles, coverage
 counts, the queue, the findings, the reviewer list, the CSV, the table export, the
 JSON record and the reviewer prompt, with timestamps masked and the JSON compared
-as objects. They agree on every compared field for those 212 inputs, which is not
+as objects. They agree on every compared field for those 546 inputs, which is not
 a proof that they agree on an input nobody has added yet.
 [CONTRACT-DIVERGENCE.md](CONTRACT-DIVERGENCE.md) records the method, the result,
 what the comparison found and fixed on the way, and the page behaviors that have
