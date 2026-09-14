@@ -262,7 +262,7 @@ class Account:
     """One ledger line, and everything the run learns about it."""
 
     __slots__ = ("num", "name", "prior", "cur", "change", "pct", "words", "flat",
-                 "two", "row", "section", "sent", "legs", "clears", "dup")
+                 "two", "row", "section", "sent", "legs", "clears", "dup", "cols")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -469,6 +469,10 @@ def parse_ledger(text, choice=None):
     cols_unconfirmed = (total_cols > 2 and named < total_cols
                         and not (choice and isinstance(choice.get("p"), int)))
 
+    # every line carries the labels of the two columns it was read from, so a
+    # sentence can be held when it names a month or a year neither of them names
+    for a in accounts:
+        a.cols = [labels[pick["p"]], labels[pick["c"]]]
     return {"accounts": accounts, "skipped": skipped, "totals": totals, "sections": sections,
             "labels": labels, "T": total_cols, "pick": pick, "guess": guess,
             "header": bool(header_cells), "dups": dups, "ambig": ambig,
@@ -599,10 +603,42 @@ def parse_fig(raw):
 
 
 # ---------- 0. what the accepted grammar does not read ----------------------
-_CURRENCY = r"\u20ac\u00a3\u00a5\u20b9\u20bd\u20a9\u20aa\u20ba\u0e3f\u00a2"
-_CODES = (r"EUR|GBP|JPY|CHF|CAD|AUD|NZD|CNY|RMB|INR|MXN|BRL|ZAR|SEK|NOK|DKK|SGD|HKD|USD")
-FOREIGN_BEFORE = re.compile(r"(?:[" + _CURRENCY + r"]|\b(?:" + _CODES + r")\s)\s*\Z", re.I)
-FOREIGN_AFTER = re.compile(r"^\s*(?:[" + _CURRENCY + r"]|\b(?:" + _CODES + r")\b)", re.I)
+# the currencies the page does not read: names, the qualifiers that make a dollar
+# someone else's dollar, ISO codes and symbols.  A figure standing beside one is an
+# unparsed span; one standing anywhere else in a sentence holds it at needs review
+# (section 6).  re.ASCII keeps \b and \s to the browser's meaning.
+_A = re.ASCII
+CUR_NAMES = (r"euros?|pounds?(?:\s+sterling)?|sterling|yen|yuan|renminbi|rupees?|rupiahs?|francs?|pesos?|"
+             r"reais|rand|lira|lire|liras|kronor|kronur|krona|krone|kroner|zlotys?|roubles?|rubles?|"
+             r"shekels?|dirhams?|riyals?|rials?|dinars?|baht|ringgits?|naira|cedis?|shillings?|forints?|"
+             r"koruna|hryvnias?|pence|cents?|quid|bitcoins?")
+CUR_NAT = (r"canadian|australian|new\s+zealand|hong\s+kong|singapore(?:an)?|taiwan(?:ese)?|jamaican|"
+           r"bahamian|barbadian|bermudian|belize|fijian|namibian|liberian|zimbabwean|guyanese|"
+           r"trinidad(?:ian)?|east\s+caribbean|brunei|mexican|chilean|colombian|argentine|argentinian|"
+           r"philippine|cuban|dominican|uruguayan|brazilian|swiss|japanese|chinese|indian|british|"
+           r"european|russian|korean|turkish|israeli|swedish|norwegian|danish|polish|czech|hungarian|"
+           r"south\s+african|egyptian|nigerian|kenyan|thai|indonesian|malaysian|vietnamese|pakistani|"
+           r"saudi|emirati|qatari|kuwaiti|u\.?\s?s\.?|american|foreign|local")
+CUR_CODES = ("EUR|GBP|JPY|CHF|CAD|AUD|NZD|CNY|CNH|RMB|INR|MXN|BRL|ZAR|SEK|NOK|DKK|SGD|HKD|USD|KRW|RUB|"
+             "ILS|PLN|CZK|HUF|THB|IDR|MYR|VND|PKR|SAR|AED|QAR|KWD|EGP|NGN|KES|TWD|ARS|CLP|COP|UAH|RON|"
+             "BGN|ISK|LKR|BDT|JOD|BHD|OMR|XAF|XOF|XCD|JMD|TTD|BBD|BSD|BZD|BMD|FJD|GHS|BTC|ETH")
+CUR_SYM = (r"\u00A2-\u00A5\u058F\u060B\u09F2\u09F3\u0AF1\u0BF9\u0E3F\u17DB\u20A0-\u20CF\uFDFC"
+           r"\uFE69\uFFE0\uFFE1\uFFE5\uFFE6")
+FOREIGN_BEFORE = re.compile(r"(?:[" + CUR_SYM + r"]|\b(?:" + CUR_CODES + r")\s)\s*\Z", re.I | _A)
+FOREIGN_AFTER = re.compile(
+    r"^\s*(?:[" + CUR_SYM + r"]|\b(?:" + CUR_CODES + r")\b|\(\s*(?:" + CUR_CODES + r")\s*\)|"
+    r"(?:in\s+)?(?:(?:" + CUR_NAT + r")\s+)?(?:" + CUR_NAMES + r")\b|"
+    r"(?:in\s+)?(?:" + CUR_NAT + r")\s+(?:dollars?|currenc(?:y|ies)|terms)\b|"
+    r"in\s+(?:a\s+)?(?:another|other)\s+currenc(?:y|ies)\b)", re.I | _A)
+# a debit or credit marker written after a figure.  Which way it points depends on
+# the account's normal balance, which a two column ledger does not say.
+DRCR_AFTER = re.compile(r"^\s*\(?(?:CR|DR|Cr|Dr|cr|dr)\)?(?![A-Za-z])\.?|^\s*(?:credit|debit)s?\b", _A)
+# a unit word with no figure in front of it that the reader took: "trente pour
+# cent", "XXX percent", "thousands of dollars"
+ORPHAN_UNIT = re.compile(r"\b(?:percent|per\s?cent|pct|pour\s+cent|por\s+ciento|prozent|"
+                         r"percentage\s+points?|basis\s+points?|bps|dollars)\b|%", re.I | _A)
+ORPHAN_NOT = re.compile(r"^\s*(?:legs?|tests?|thresholds?|floors?|rules?|changes?|columns?|figures?|terms?)\b",
+                        re.I | _A)
 SCALE_AFTER = re.compile(
     r"^[\s-]*(?:thousands?|millions?|billions?|trillions?|mn|bn|basis\s+points?|bps|bp|times|"
     r"multiples?|per\s?mille|permille|per\s+thousand|points?|pts)\b", re.I)
@@ -746,6 +782,8 @@ MULT_RE = re.compile(
     r"halv(?:e|ed|es|ing)|twice|thrice|(?:two|three|four|five|six|seven|eight|nine|ten|twenty|hundred|"
     r"[0-9]+(?:\.[0-9]+)?)[\s-]?fold|(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+times|"
     "[0-9]+(?:\\.[0-9]+)?\\s?[x×])(?![A-Za-z0-9])", re.I)
+# numerals from a writing system the reader does not parse: "三十"
+CJK_NUM_RE = re.compile("[〇零一二三四五六七八九十百千万萬億亿兆]+")
 MULT_NOT = re.compile(r"^[\s-]+(?:entry|entries|count|counted|counting|check|checked|checking)\b", re.I)
 FRACW = ("half|halves|third|thirds|quarter|quarters|fifth|fifths|sixth|sixths|seventh|sevenths|eighth|"
          "eighths|ninth|ninths|tenth|tenths|twelfth|twelfths|hundredth|hundredths|thousandth|thousandths")
@@ -789,7 +827,11 @@ def count_stop():
                  "percentage to from by at of in on and or but nor than over under above below versus vs "
                  "against compared since for with as because while after before the a an this that these "
                  "those which who is was were are be been being it its so then when into through each more "
-                 "less higher lower plus minus now again same").split(" ")
+                 "less higher lower plus minus now again same euro euros pound pounds sterling yen yuan renminbi "
+                 "rupee rupees franc francs peso pesos rand lira lire kronor krona krone kroner zloty zlotys "
+                 "rouble roubles ruble rubles shekel shekels dirham dirhams riyal riyals dinar dinars baht "
+                 "ringgit naira shilling shillings forint forints koruna pence cent cents quid grand thou bucks "
+                 "bitcoin bitcoins currency").split(" ")
         _COUNT_STOP = set(words) | set(UP) | set(DOWN) | set(MOVE_NOUN)
     return _COUNT_STOP
 
@@ -811,6 +853,9 @@ def odd_quantities(text):
     for m in ODD_NUM_RE.finditer(text):
         out.append({"raw": m.group(0), "at": m.start(), "end": m.end(),
                     "why": "a digit or numeric character the checker does not read"})
+    for m in CJK_NUM_RE.finditer(text):
+        out.append({"raw": m.group(0), "at": m.start(), "end": m.end(),
+                    "why": "a numeral the checker does not read"})
     for m in MULT_RE.finditer(text):
         if re.match(r"^doubl", m.group(0), re.I) and MULT_NOT.search(text[m.end():]):
             continue
@@ -937,13 +982,13 @@ class FigureList(list):
 
 
 _RE_PCT = re.compile(
-    r"([-(]?\s?\$?\s?[0-9][0-9,]*(?:\.[0-9]+)?\s?\)?)\s*(percentage points?|percent|per cent|pct|pp|%)", re.I)
+    r"([-+(]?\s?\$?\s?[0-9][0-9,]*(?:\.[0-9]+)?\s?\)?)\s*(percentage points?|percent|per cent|pct|pp|%)", re.I)
 _RE_DOL = re.compile(
     r"\(\s?\$?\s?[0-9](?:[0-9,]*[0-9])?(?:\.[0-9]+)?\s?[kKmMbB]?\s?\)|"
-    r"-?\$\s?[0-9](?:[0-9,]*[0-9])?(?:\.[0-9]+)?(?:\s?[kKmMbB]\b)?|"
-    r"\b[0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?\b|"
+    r"[-+]?\$\s?[-+]?\s?[0-9](?:[0-9,]*[0-9])?(?:\.[0-9]+)?(?:\s?[kKmMbB]\b)?|"
+    r"[-+]?\b[0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?\b|"
     r"\b[0-9]+(?:\.[0-9]+)?[kKmMbB]\b")
-_RE_BARE = re.compile(r"(?:-\s?)?\b[0-9]{4,}(?:\.[0-9]+)?\b")
+_RE_BARE = re.compile(r"(?:[-+]\s?)?\b[0-9]{4,}(?:\.[0-9]+)?\b")
 _GLUE = re.compile(r"[A-Za-z0-9_./]")
 
 
@@ -957,8 +1002,23 @@ def figures(text, skip_nums=None):
         return any(i < t[1] and j > t[0] for t in taken)
 
     def has_sign(raw):
-        return bool(re.match(r"^\s*-", raw)) or (
-            bool(re.match(r"^\s*\(", raw)) and bool(re.search(r"\)\s*\Z", raw)))
+        return (bool(re.match(r"^\s*[-+]", raw)) or bool(re.match(r"^\s*\$\s?[-+]", raw))
+                or bool(re.search(r"-\s*\Z", raw))
+                or (bool(re.match(r"^\s*\(", raw)) and bool(re.search(r"\)\s*\Z", raw))))
+
+    def sign_lead(m):
+        """A plus or a minus is the figure's sign only where it stands in front of the
+        figure, as in "by -30,000", "by +$60,000" or "$-30,000".  Glued to a digit or a
+        letter before it, as in "25,000-35,000", it is a range or a hyphen."""
+        t, at = m.group(0), m.start()
+        if re.match(r"^[-+]", t) and at > 0 and re.match(r"[A-Za-z0-9_.,/%]", text[at - 1]):
+            t, at = t[1:], at + 1
+        return t, at
+
+    def trail_minus(end):
+        """A minus written after the figure, as in "changed by 30,000-"."""
+        nxt = text[end + 1] if end + 1 < len(text) else ""
+        return end < len(text) and text[end] == "-" and not re.match(r"[0-9$A-Za-z(]", nxt)
 
     glued = []
 
@@ -992,16 +1052,20 @@ def figures(text, skip_nums=None):
         if glued_at(m):
             continue
         ptxt = m.group(1)
+        pat = m.start()
+        praw = m.group(0)
+        if sign_lead(m)[1] > m.start():
+            ptxt, praw, pat = ptxt[1:], praw[1:], pat + 1
         neg = has_sign(ptxt)
         if re.match(r"^\s*\(", ptxt) and not re.search(r"\)\s*\Z", ptxt):
             ptxt = re.sub(r"^\s*\(", "", ptxt)
         pv = parse_num(ptxt)
         if pv is not None:
-            raw = re.sub(r"^\s*\(", "", m.group(0)).strip()
+            raw = re.sub(r"^\s*\(", "", praw).strip()
             unit = ("percentage points"
                     if re.search(r"point", m.group(2), re.I) or re.match(r"^pp\Z", m.group(2), re.I)
                     else "percent")
-            out.append({"raw": raw, "v": pv, "at": m.start(), "end": m.end(),
+            out.append({"raw": raw, "v": pv, "at": pat, "end": m.end(),
                         "unit": unit, "signed": neg, "plain": False})
         taken.append([m.start(), m.end()])
 
@@ -1010,12 +1074,20 @@ def figures(text, skip_nums=None):
             continue
         if glued_at(m):
             continue
-        dv = parse_fig(m.group(0))
+        draw, dat = sign_lead(m)
+        dend = m.end()
+        dv = parse_fig(draw)
         if dv is None:
             continue
-        out.append({"raw": m.group(0).strip(), "v": dv, "at": m.start(), "end": m.end(),
-                    "unit": "dollars", "signed": has_sign(m.group(0)), "plain": False})
-        taken.append([m.start(), m.end()])
+        dsg = has_sign(draw)
+        if not dsg and trail_minus(dend):
+            dsg = True
+            dv = -abs(dv)
+            dend += 1
+            draw += "-"
+        out.append({"raw": draw.strip(), "v": dv, "at": dat, "end": dend,
+                    "unit": "dollars", "signed": dsg, "plain": False})
+        taken.append([m.start(), dend])
 
     for m in _RE_BARE.finditer(text):
         if overlaps(m.start(), m.end()):
@@ -1029,11 +1101,19 @@ def figures(text, skip_nums=None):
             continue
         if glued_at(m):
             continue
-        out.append({"raw": re.sub(r"\s+", "", m.group(0)),
-                    "v": float(bare) * (-1 if m.group(0).startswith("-") else 1),
-                    "at": m.start(), "end": m.end(), "unit": "dollars",
-                    "signed": m.group(0).startswith("-"), "plain": True})
-        taken.append([m.start(), m.end()])
+        btxt, bat = sign_lead(m)
+        bend = m.end()
+        bneg = btxt.startswith("-")
+        bsg = bool(re.match(r"^[-+]", btxt))
+        if not bsg and trail_minus(bend):
+            bsg = True
+            bneg = True
+            bend += 1
+        out.append({"raw": re.sub(r"\s+", "", btxt) + ("-" if bend > m.end() else ""),
+                    "v": float(bare) * (-1 if bneg else 1),
+                    "at": bat, "end": bend, "unit": "dollars",
+                    "signed": bsg, "plain": True})
+        taken.append([m.start(), bend])
 
     # a quantity in words that the parser resolved and the words gave a unit is
     # an ordinary figure from here on.
@@ -1064,6 +1144,12 @@ def figures(text, skip_nums=None):
                 rejected.append({"raw": f["raw"] + mm.group(0), "at": f["at"],
                                  "end": f["end"] + len(mm.group(0)),
                                  "why": "a currency the checker does not read"})
+                continue
+            mm = DRCR_AFTER.match(after)
+            if mm:
+                rejected.append({"raw": f["raw"] + mm.group(0), "at": f["at"],
+                                 "end": f["end"] + len(mm.group(0)),
+                                 "why": "a debit or credit marker the checker does not read"})
                 continue
             mm = SCALE_AFTER.match(after)
             if mm:
@@ -1105,6 +1191,18 @@ def figures(text, skip_nums=None):
     stray, stray_outside = stray_numbers(text, spans, skip_nums)
     rejected.extend(stray)
     outside.extend(stray_outside)
+    told = ([list(sp) for sp in spans] + [[x["at"], x["end"]] for x in stray]
+            + [[x["at"], x["end"]] for x in stray_outside])
+    for m in ORPHAN_UNIT.finditer(text):
+        oa, ob = m.start(), m.end()
+        hit = any(oa < t[1] and ob > t[0] for t in told)
+        if not hit and m.group(0).lower() == "dollars":
+            hit = any(f["unit"] == "dollars" and f["end"] <= oa and not re.search(r"\S", text[f["end"]:oa])
+                      for f in keep)
+        if hit or ORPHAN_NOT.search(text[ob:]):
+            continue
+        rejected.append({"raw": m.group(0), "at": oa, "end": ob,
+                         "why": "a unit with no figure the checker reads in front of it"})
     rejected.sort(key=lambda r: r["at"])
     outside.sort(key=lambda o: o["at"])
 
@@ -1307,7 +1405,9 @@ def clause_bind(s):
                 if got:
                     hits.append(a)
         f["clause"] = cl["text"] if cl else s["text"]
-        f["bind"] = hits if len(hits) == 1 else None
+        # "respectively" pairs figures with accounts by position, which the clauses
+        # do not show, so no figure in such a sentence is bound by its clause
+        f["bind"] = hits if (len(hits) == 1 and not re.search(r"\brespectively\b", s["text"], re.I)) else None
 
 
 # ---------- 4. units and calculation ----------------------------------------
@@ -1740,7 +1840,390 @@ def claim_in(t):
     return bool(len(figures(t)) or dir_words(t) or flat_word(t))
 
 
+# ---------- 6. clearance: what is left once the claims are read ---------------
+# A sentence is checked within scope only when nothing risky is left after every
+# claim in it is read.  The reader takes out, character by character, the account
+# names and numbers the sentence is bound by, every figure it read, every span it
+# recorded as unparsed or as outside the check, the direction and no-change words
+# it tests, the movement nouns, "changed by" and "moved by" in front of a figure,
+# and the period frame of the ledger's own two columns: "month over month", "the
+# prior month", or a month the column labels name.  Whatever is left is read
+# against the risk lexicon below.
+#
+# A strong entry holds the sentence wherever it stands: currencies, signs and
+# debit or credit markers, sameness and comparison words, another account carried
+# by "so did" or "respectively", budgets, plans and bases, and periods other than
+# the ledger's pair.  A weak entry holds it only inside the claim, which runs from
+# the start of the sentence to the first word that opens a reason after its last
+# figure ("because", "as", "on", "with", "after" and kin), unless that reason
+# points straight back at the line ("because it", "as the balance").  A reason is
+# already a question for a person, so words that only describe the cause stay
+# with that question.
+#
+# Two rules are structural rather than lexical.  Where a sentence binds more than
+# one account, every account it names needs a figure or a tested direction word in
+# its own clause, or the sentence is held.  Where the column labels name no month,
+# two months in the claim that are not neighbours are held.
+#
+# Anything left holds a sentence that would otherwise be checked at needs review,
+# and the reviewer's queue names the word.  Every pattern here is the browser's
+# pattern character for character (tests/test_parity_shared_inputs.py compares
+# them), compiled with re.ASCII so \b and \s mean what they mean in JavaScript.
+MONTHS_CAP = ("Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|"
+              "Sept?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?")
+ACCEPT_FRAME = re.compile(
+    r"\b(?:chang(?:ed|es)|mov(?:ed|es)|shift(?:ed|s)|swung|var(?:ied|ies))\s+by(?=\s*[-+($0-9])|"
+    r"\bmonth[\s-]+(?:over|on)[\s-]+month\b|\b(?:mom|m\/m)\b|"
+    r"\b(?:over|from|versus|vs\.?|against|compared\s+(?:with|to)|relative\s+to|than)\s+(?:(?:in|at)\s+)?"
+    r"(?:the\s+)?(?:(?:prior|previous|preceding|last)\s+month|month\s+(?:before|earlier))\b|"
+    r"\brather\s+than\b|\binstead\s+of\b", re.I | _A)
+FRAME_MONTH = re.compile(
+    r"\b(?:over|from|versus|vs\.?|against|compared\s+(?:with|to)|relative\s+to|than(?:\s+(?:in|at))?)\s+"
+    r"(?:the\s+)?(" + MONTHS_CAP + r")\.?(?:,?\s+((?:19|20)[0-9]{2}))?\b", re.I | _A)
+MONTH_TOKEN = re.compile(r"\b(?:" + MONTHS_CAP + r")\b", _A)
+REASON_AT = re.compile(
+    r"\b(?:because|as|since|on|upon|due\s+to|owing\s+to|thanks\s+to|driven\s+by|caused\s+by|led\s+by|"
+    r"reflecting|reflects|following|after|with|amid|whereas|while)\b|\(", re.I | _A)
+REASON_BACK = re.compile(
+    r"^\s*(?:it|its|this|these|that|the\s+(?:line|account|balance|movement|increase|decrease|rise|fall|"
+    r"change|variance|figure|amount|total))\b", re.I | _A)
+CONTRACT_NOUN = re.compile(
+    r"^[\s-]+(?:terms?|leases?|contracts?|renewals?|subscriptions?|agreements?|plans?|polic(?:y|ies)|"
+    r"licen[cs]es?|commitments?|prepayments?|retainers?|warrant(?:y|ies)|deals?|bonus(?:es)?|fees?|dues|"
+    r"audits?|reviews?|minimums?|maintenance|rent|charges?|invoices?|billing)\b", re.I | _A)
+NUMW_RISK = ("two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|[0-9]+|several|few|past|last|"
+             "prior|previous|recent|coming|next|many")
+_MONTHS_LOW = (r"jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|"
+               r"sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?")
+_MONTHS_LAST = (r"jan(?:uary)?|feb(?:ruary)?|march|apr(?:il)?|may|june|july|aug(?:ust)?|sept?(?:ember)?|"
+                r"oct(?:ober)?|nov(?:ember)?|dec(?:ember)?")
+# The lexicon.  cat names the class, strong says it holds wherever it stands, cs
+# makes the match case sensitive, not skips a match the words after it explain, and
+# contract skips a period word that only gives the length of a lease, a contract, a
+# fee or a renewal ("a one-year lease").
+RISK_LEX = [
+    {"cat": "currency", "strong": 1, "re": r"\b(?:" + CUR_NAMES + r")\b",
+     "why": "names a currency, and the checker reads dollars only"},
+    {"cat": "currency", "strong": 1,
+     "re": r"\b(?:(?:" + CUR_NAT + r")\s+(?:dollars?|currenc(?:y|ies)|terms)|currenc(?:y|ies)|exchange\s+rates?|"
+           r"foreign\s+exchange|forex|fx)\b",
+     "why": "names a currency or an exchange rate, and the checker reads dollars only"},
+    {"cat": "currency", "strong": 1, "cs": 1, "re": r"\b(?:" + CUR_CODES + r"|Rs)\b",
+     "why": "is a currency code, and the checker reads dollars only"},
+    {"cat": "currency", "strong": 1, "re": r"[" + CUR_SYM + r"]",
+     "why": "is a currency symbol other than the dollar sign"},
+    {"cat": "sign", "strong": 1, "cs": 1, "re": r"\b(?:CR|DR|Cr|Dr)\b\.?", "not": r"^\.?\s+[A-Z][a-z]",
+     "why": "marks a debit or a credit, and which way that points depends on the account"},
+    {"cat": "sign", "strong": 1,
+     "re": r"\b(?:credit|debit)\s+balances?\b|\bin\s+(?:credit|debit)\b|\bnet\s+(?:credit|debit)\b|"
+           r"\b(?:credited|debited)\b|\b(?:un)?favou?rabl[ey]\b|\badverse(?:ly)?\b|\b(?:un)?fav\b",
+     "why": "marks a debit, a credit or a favourable or adverse variance, and which way that points "
+            "depends on the account"},
+    {"cat": "sign", "strong": 1, "cs": 1, "re": r"\((?:F|U|A|Fav|Unfav|Adv)\)",
+     "why": "marks a favourable or adverse variance, and which way that points depends on the account"},
+    {"cat": "sign", "strong": 1, "re": r"\B[-+](?=\s*\(|\s+\$?[0-9])|\(\s*[-+]\s*\)|\+\/-|±",
+     "why": "is a sign standing apart from the figure, which the checker does not read as the figure's sign"},
+    {"cat": "sign", "strong": 0, "re": r"\b(?:plus|minus|negative|positive)\b",
+     "why": "gives a sign in words the checker does not read"},
+    {"cat": "other account", "strong": 1,
+     "re": r"\b(?:so|as|neither|nor)\s+(?:did|was|were|has|have|had|does|do|is|are)\b|\blikewise\b|"
+           r"\bsimilarly\b|\bthe\s+same\s+(?:was|is|holds?|goes|applies)\b|\brespectively\b|\bthe\s+rest\b|"
+           r"\bfollow(?:ed|s)\s+suit\b|\bin\s+(?:tandem|step|kind)\b|"
+           r"\b(?:other|another|every|all)\s+(?:other\s+)?(?:lines?|accounts?)\b",
+     "why": "carries the claim over to another line without a figure the checker can tie"},
+    {"cat": "other account", "strong": 0, "re": r"\b(?:also|too|as\s+well|together|alongside|equally)\b",
+     "why": "points at another line the claim does not name"},
+    {"cat": "sameness", "strong": 1,
+     "re": r"\b(?:same|identical(?:ly)?|equal(?:s|led|ed)?|equivalent|match(?:ed|es|ing)?|comparabl[ey]|"
+           r"similar|consistent(?:ly)?|in[\s-]?line\s+with|on\s+(?:a\s+)?par|par\s+with|parity|unaltered|"
+           r"(?:no|not)\s+different|even\s+with|in\s+keeping\s+with|ditto|stable|stability|"
+           r"stabili[sz](?:ed|es|ing)|steady|steadily|static|constant|flattish|flat[\s-]?lined?|"
+           r"stagna(?:nt|ted|tion)|stall(?:ed|s|ing)|plateau(?:ed|s|ing)?|sideways|little[\s-]+changed?|"
+           r"level|barely|hardly|scarcely)\b",
+     "why": "claims no change or sameness in a word the checker does not test"},
+    {"cat": "sameness", "strong": 0,
+     "re": r"\b(?:virtually|essentially|practically|basically|broadly|largely|roughly\s+(?:flat|unchanged)|"
+           r"maintain(?:ed|s|ing)?|sustain(?:ed|s|ing)?|persist(?:ed|s|ing)?|remain(?:ed|s|ing)?|"
+           r"stay(?:ed|s|ing)?|held|hold(?:s|ing)?|kept|keep(?:s|ing)?|continu(?:ed|es|ing)|still|"
+           r"mirror(?:ed|s|ing)?|track(?:ed|s|ing)?)\b",
+     "why": "claims no change or sameness in a word the checker does not test"},
+    {"cat": "comparison", "strong": 1,
+     "re": r"\b(?:compared\s+(?:with|to)|in\s+comparison|comparison|versus|vs\.?|against|relative\s+to|than|"
+           r"outpac(?:ed|es|ing)|outperform(?:ed|s|ing)?|underperform(?:ed|s|ing)?|outstrip(?:ped|s|ping)?|"
+           r"exceed(?:ed|s|ing)?|ahead\s+of|behind|short\s+of|shy\s+of|lag(?:ged|s|ging)?)\b",
+     "why": "compares with something other than the ledger's two columns"},
+    {"cat": "comparison", "strong": 0,
+     "re": r"\b(?:largest|biggest|smallest|highest|lowest|greatest|most|least|record|top|rank(?:ed|s|ing)?|"
+           r"leading|all[\s-]time)\b",
+     "why": "ranks this line against others, which the checker does not test"},
+    {"cat": "basis", "strong": 1,
+     "re": r"\b(?:budget(?:s|ed|ary)?|forecast(?:s|ed|ing)?|re-?forecast(?:s|ed)?|outlook|guidance|"
+           r"projection(?:s)?|projected|pro[\s-]?forma|run[\s-]rate|annuali[sz](?:ed|es|ing|ation)|"
+           r"like[\s-]for[\s-]like|constant\s+currency|normali[sz](?:ed|ation)|seasonally[\s-]adjusted|basis|"
+           r"cumulative(?:ly)?|to[\s-]date|so\s+far|since\s+inception|as\s+(?:expected|planned|anticipated))\b|"
+           r"\b(?:versus|vs\.?|against|to|over|under|above|below|ahead\s+of|behind|compared\s+(?:with|to)|"
+           r"relative\s+to|than|of|from|missed|beat|met)\s+(?:the\s+)?(?:plan|target|estimates?|expectations?|"
+           r"consensus|goal)\b",
+     "why": "measures against a budget, a plan, a forecast or a basis the ledger does not hold"},
+    {"cat": "period", "strong": 1, "cs": 1, "re": r"\b(?:PY|LY|CY|PYTD|CYTD|YTD|QTD|MTD|TTM|LTM|YoY|QoQ)\b",
+     "why": "frames the claim on a period other than the ledger's two columns"},
+    {"cat": "period", "strong": 1, "contract": 1,
+     "re": r"\b(?:yrs?|years?(?:[\s-]+(?:over|on|to)[\s-]+(?:year|date))?|yearly|annual(?:ly)?|per\s+annum|"
+           r"yoy|y\/y|ytd|qtd|mtd|(?:month|quarter)[\s-]to[\s-]date|fiscal|fy\s?[0-9]{0,4}|"
+           r"quarter(?:s|ly)?(?:[\s-]end)?|q[1-4]|[1-4]q|h[12]|[12]h|half[\s-]year(?:ly)?|"
+           r"semi[\s-]?annual(?:ly)?|biannual(?:ly)?|trailing|ttm|ltm|ntm|rolling|twelve[\s-]months?|"
+           r"12[\s-]months?|months|weeks|quarters|(?:" + NUMW_RISK + r")[\s-]+(?:days|months|weeks|quarters|years)|"
+           r"(?:consecutive|straight|successive|running)\s+(?:months?|quarters?|years?|periods?)|in\s+a\s+row|"
+           r"week[\s-]over[\s-]week|wow|qoq|q\/q|sequential(?:ly)?|(?:prior|previous|comparable|same)\s+periods?|"
+           r"period[\s-]over[\s-]period|since\s+(?:the\s+)?(?:start|beginning|end|last|" + _MONTHS_LOW + r"|"
+           r"(?:19|20)[0-9]{2}|q[1-4]|year|quarter)|(?:last|next|this|previous|prior)\s+(?:" + _MONTHS_LAST + r"|"
+           r"spring|summer|autumn|fall|winter)|(?:over|during|through(?:out)?|across|since)\s+(?:the\s+)?"
+           r"(?:spring|summer|autumn|fall|winter|holidays?|season)|(?:first|second|1st|2nd)\s+half"
+           r"(?!\s+of\s+(?:the\s+)?(?:month|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec))|ago|"
+           r"per\s+(?:month|week|day|quarter))\b",
+     "why": "frames the claim on a period other than the ledger's two columns"},
+    {"cat": "period", "strong": 0,
+     "re": r"\b(?:weeks?|days?|week[\s-]?end|spring|summer|autumn|winter|seasonal(?:ly)?|holidays?|through|"
+           r"thru|until|till|during|(?:first|second|third|fourth|last|final|early|late|mid)[\s-]+"
+           r"(?:half|week|weeks|days?|part|month)|mid[\s-]?month|early|late|recent(?:ly)?|previously|"
+           r"historically|typically|usually|normally|again|yet)\b",
+     "why": "places the claim inside or across a period the ledger's two columns do not show"},
+    {"cat": "change", "strong": 0,
+     "re": r"\b(?:soar(?:ed|s|ing)?|spik(?:ed|es|ing)|spike|leap(?:t|ed|s|ing)?|rocket(?:ed|s|ing)?|"
+           r"balloon(?:ed|s|ing)?|swell(?:ed|s|ing)?|swollen|plung(?:ed|es|ing)|plunge|plummet(?:ed|s|ing)?|"
+           r"tumbl(?:ed|es|ing)|tumble|slump(?:ed|s|ing)?|sank|sink(?:s|ing)?|sunk|dip(?:ped|s|ping)?|"
+           r"contract(?:ed|ing)|shrunk|shrink(?:s|ing)?|dwindl(?:ed|es|ing)|collaps(?:ed|es|ing)|"
+           r"crater(?:ed|s|ing)|retreat(?:ed|s|ing)|rebound(?:ed|s|ing)?|recover(?:ed|s|ing)|bounc(?:ed|es|ing)|"
+           r"revers(?:ed|es|ing)|swung|swing(?:s|ing)|flipp(?:ed|ing)|mov(?:ed|es|ing)|move|shift(?:ed|s|ing)?|"
+           r"fluctuat(?:ed|es|ing|ions?)|var(?:ied|ies|ying)|widen(?:ed|s|ing)|narrow(?:ed|s|ing)|"
+           r"deepen(?:ed|s|ing)|improv(?:ed|es|ing|ements?)|worsen(?:ed|s|ing)|deteriorat(?:ed|es|ing|ion)|"
+           r"strengthen(?:ed|s|ing)|weaken(?:ed|s|ing)|peak(?:ed|s|ing)|bottom(?:ed|s|ing)|surpass(?:ed|es|ing)|"
+           r"escalat(?:ed|es|ing)|inflat(?:ed|es|ing)|deflat(?:ed|es|ing)|compress(?:ed|es|ing)|erod(?:ed|es|ing)|"
+           r"ramp(?:ed|s|ing)|decelerat(?:ed|es|ing)|slow(?:ed|s|ing)|tick(?:ed|s)\s+(?:up|down)|"
+           r"edg(?:ed|es|ing)\s+(?:up|down|higher|lower)|inch(?:ed|es|ing)\s+(?:up|down|higher|lower)|crept|"
+           r"trend(?:ed|s|ing)?|went\s+(?:up|down)|came\s+(?:in|down)|pick(?:ed|s)\s+up|chang(?:ed|es|ing)|"
+           r"climbing|follow(?:ed|s))\b",
+     "why": "describes a change in a word the checker does not test against the ledger"},
+    {"cat": "change", "strong": 0,
+     "re": r"\b(?:sharp(?:ly)?|significant(?:ly)?|substantial(?:ly)?|material(?:ly)?|marked(?:ly)?|"
+           r"dramatic(?:ally)?|considerabl[ey]|notabl[ey]|modest(?:ly)?|slight(?:ly)?|marginal(?:ly)?|"
+           r"moderate(?:ly)?|steep(?:ly)?|strong(?:ly)?|weak(?:ly)?|huge(?:ly)?|big(?:ger)?|large(?:r)?|"
+           r"small(?:er)?|sizeabl[ey]|sizabl[ey]|major|minor|massive(?:ly)?|meaningful(?:ly)?|negligibl[ey]|"
+           r"immaterial(?:ly)?|tiny|great(?:ly|er)?|appreciabl[ey]|noticeabl[ey]|drastic(?:ally)?|"
+           r"radical(?:ly)?|severe(?:ly)?|heav(?:y|ily|ier)|mild(?:ly)?|somewhat|outsized|"
+           r"disproportionate(?:ly)?|unusual(?:ly)?|abnormal(?:ly)?|brisk(?:ly)?|robust(?:ly)?|solid(?:ly)?|"
+           r"healthy)\b",
+     "why": "sizes the movement in a word the checker does not test"},
+    {"cat": "quantity", "strong": 0,
+     "re": r"\b(?:most(?:ly)?|main(?:ly)?|primar(?:y|ily)|partly|partial(?:ly)?|entire(?:ly)?|whol(?:e|ly)|"
+           r"full(?:y)?|sole(?:ly)?|chief(?:ly)?|predominant(?:ly)?|exclusive(?:ly)?|principal(?:ly)?|"
+           r"in\s+part|in\s+full|bulk|majority|minority|portion|share|offset(?:s|ting)?|net\s+of|several|many|"
+           r"much|numerous|multiple|few|fewer|more|less|lesser|dozens?|hundreds|thousands|millions|billions|"
+           r"lots?|plenty|handful|countless|various|extra|additional|incremental|excess|surplus|shortfall|"
+           r"deficit|gap|difference|delta|spread|margin|ratio|rate|proportion|fraction)\b",
+     "why": "is a quantity or a share in words the checker does not test"},
+]
+_RISK_RX = None
+
+
+def risk_rx():
+    global _RISK_RX
+    if _RISK_RX is None:
+        _RISK_RX = [{"cat": e["cat"], "strong": bool(e.get("strong")), "contract": bool(e.get("contract")),
+                     "why": e["why"], "rx": re.compile(e["re"], _A | (0 if e.get("cs") else re.I)),
+                     "not": re.compile(e["not"], _A) if e.get("not") else None} for e in RISK_LEX]
+    return _RISK_RX
+
+
+def label_month(label):
+    """The month a ledger column label names, or None."""
+    m = re.search(r"\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\b",
+                  str("" if label is None else label).lower(), _A)
+    return MONTHNUM[m.group(1)] if m else None
+
+
+def label_year(label):
+    """The year a ledger column label names, or None."""
+    m = re.search(r"\b(?:19|20)[0-9]{2}\b", str("" if label is None else label), _A)
+    return int(m.group(0)) if m else None
+
+
+def _month_num(word):
+    return MONTHNUM[word[:3].lower()]
+
+
+def risk_tokens(s):
+    """Whatever the clearance grammar leaves in a sentence once its claims are read."""
+    text = str(s["text"])
+    n = len(text)
+    used = [0] * n
+    out = []
+
+    def eat(a, b):
+        for k in range(max(0, a), min(n, b)):
+            used[k] = 1
+
+    def eat_re(rx):
+        for m in rx.finditer(text):
+            eat(m.start(), m.end())
+
+    def add(raw, at, why, cat):
+        out.append({"raw": raw, "at": at, "end": at + len(raw), "cat": cat, "why": why})
+
+    figs = s.get("figs")
+    if figs is None:
+        figs = []
+    bound = s.get("bound") or []
+    last_fig = -1
+    held = []
+    for f in figs:
+        eat(f["at"], f["end"])
+        held.append([f["at"], f["end"]])
+        if f["end"] > last_fig:
+            last_fig = f["end"]
+    for r in (getattr(figs, "rejected", ()) or ()):
+        eat(r["at"], r["end"])
+        held.append([r["at"], r["end"]])
+    # a label that names a period, "Q2", "H1" or "FY26", is read as a period here
+    for o in (getattr(figs, "outside", ()) or ()):
+        if not re.match(r"^(?:q[1-4]|[1-4]q|h[12]|[12]h|fy[0-9]*)\Z", o["raw"], re.I | _A):
+            eat(o["at"], o["end"])
+    for a in bound:
+        if a.num:
+            eat_re(re.compile(r"\b" + a.num + r"\b", _A))
+        ws = [w for w in str(a.flat or "").split(" ") if w]
+        if ws:
+            eat_re(re.compile(r"\b" + "[^A-Za-z0-9]+".join(ws) + r"\b", re.I | _A))
+        for w in (a.words or []):
+            eat_re(re.compile(r"\b" + w + r"\b", re.I | _A))
+    eat_re(re.compile(r"\b(?:" + "|".join(UP + DOWN + sorted(MOVE_NOUN)) + r")\b", re.I | _A))
+    for w in FLATW:
+        eat_re(re.compile(r"\b" + w.replace(" ", r"\s+") + r"\b", re.I | _A))
+    eat_re(re.compile(STILL_FIG.pattern, re.I | _A))
+    eat_re(ACCEPT_FRAME)
+    cols = (bound[0].cols if bound and bound[0].cols else None) or []
+    col0 = cols[0] if len(cols) > 0 else None
+    col1 = cols[1] if len(cols) > 1 else None
+    mp, mc, yp, yc = label_month(col0), label_month(col1), label_year(col0), label_year(col1)
+    for m in FRAME_MONTH.finditer(text):
+        if not re.match(r"[A-Z]", m.group(1)):
+            continue
+        fm = _month_num(m.group(1))
+        fy = int(m.group(2)) if m.group(2) else None
+        ok = (fm == mp and (fy is None or fy == yp)) if mp is not None else fy is None
+        if ok:
+            eat(m.start(), m.end())
+    # the claim runs to the first word that opens a reason after the last figure,
+    # passing over a reason that points straight back at the line
+    anchor = last_fig
+    if anchor < 0:
+        dm = re.search(r"\b(?:" + "|".join(UP + DOWN) + r")\b", text, re.I | _A)
+        anchor = dm.end() if dm else 0
+    reason_at = n
+    for m in REASON_AT.finditer(text, anchor):
+        if REASON_BACK.search(text[m.end():]):
+            continue
+        reason_at = m.start()
+        break
+
+    def in_held(a, b):
+        return any(a < h[1] and b > h[0] for h in held)
+
+    for e in risk_rx():
+        for m in e["rx"].finditer(text):
+            a, b = m.start(), m.end()
+            if a == b:
+                continue
+            if all(used[k] or text[k].isspace() for k in range(a, b)):
+                continue
+            if not e["strong"] and a >= reason_at:
+                continue
+            if e["not"] is not None and e["not"].search(text[b:]):
+                continue
+            if e["contract"] and CONTRACT_NOUN.search(text[b:]):
+                continue
+            add(m.group(0), a, e["why"], e["cat"])
+    # a month or a year the ledger's column labels contradict, and, where the labels
+    # name no month, two months in the claim that are not neighbours
+    seen = []
+    for m in MONTH_TOKEN.finditer(text):
+        if m.start() >= reason_at:
+            continue
+        tm = _month_num(m.group(0))
+        if mp is not None and mc is not None:
+            if tm != mp and tm != mc and not used[m.start()]:
+                add(m.group(0), m.start(), "is neither of the two months the ledger compares", "period")
+            continue
+        if seen and tm not in seen and not used[m.start()]:
+            d = abs(tm - seen[0])
+            if len(seen) > 1 or (d != 1 and d != 11):
+                add(m.group(0), m.start(), "with the other month named, spans more than the one month to "
+                    "month change the ledger holds", "period")
+        if tm not in seen:
+            seen.append(tm)
+    if yp is not None or yc is not None:
+        for m in re.finditer(r"\b(?:19|20)[0-9]{2}\b", text, _A):
+            y = int(m.group(0))
+            if y == yp or y == yc or in_held(m.start(), m.end()):
+                continue
+            add(m.group(0), m.start(), "is not the year of either column the ledger compares", "period")
+    # every account a sentence binds needs a claim of its own
+    if len(bound) > 1:
+        fine = spans_of(text, RE_FINE)
+        for a in bound:
+            hits = []
+            for c in fine:
+                ct = " " + re.sub(r"\s+", " ", re.sub(r"[^a-z0-9\s]", " ", c["text"].lower())) + " "
+                if ((a.num and _num_in(a.num, c["text"])) or (a.flat and (" " + a.flat + " ") in ct)
+                        or (a.two and " " in a.two and (" " + a.two + " ") in ct)):
+                    hits.append(c)
+            if not hits:
+                continue
+            claimed = any(any(c["at"] <= f["at"] < c["end"] for f in figs) or dir_words(c["text"])
+                          or flat_word(c["text"]) for c in hits)
+            if claimed:
+                continue
+            ws = [w for w in str(a.flat or "").split(" ") if w]
+            nm = re.search(r"\b" + "[^A-Za-z0-9]+".join(ws) + r"\b", hits[0]["text"], re.I | _A) if ws else None
+            if not nm and a.num:
+                nm = re.search(r"\b" + a.num + r"\b", hits[0]["text"], _A)
+            if nm:
+                raw, at = nm.group(0), hits[0]["at"] + nm.start()
+            else:
+                lead = re.search(r"\S", hits[0]["text"])
+                raw, at = hits[0]["text"].strip(), hits[0]["at"] + (lead.start() if lead else -1)
+            add(raw, at, "is named with no figure and no direction word of its own, so what the sentence "
+                "claims about it is not tied to the ledger", "other account")
+    out.sort(key=lambda o: (o["at"], -o["end"]))
+    kept = []
+    for o in out:
+        if kept and o["at"] < kept[-1]["end"]:
+            continue
+        o["txt"] = "“" + o["raw"] + "” " + o["why"] + ", so this sentence is held for a person to read"
+        kept.append(o)
+    return kept
+# end of the clearance grammar
+
+
 def direction_on(s):
+    """The direction check, and then what the clearance grammar leaves.  The words it
+    leaves hold the sentence, and join the loose list, only where they are what would
+    stop it clearing: a sentence carrying an unparsed span is already not checked, a
+    sentence with no figure and no threshold claim has nothing to clear, and one
+    already failed or held stays as it is."""
+    d = _direction_read(s)
+    if d is None:
+        return None
+    d["risk"] = risk_tokens(s)
+    d["held"] = ((not s.get("residue")) and bool(len(s.get("figs") or []) or policy_claims(s["text"]))
+                 and s.get("st") in (None, "checked within scope", "not checked"))
+    if d["held"]:
+        for r in d["risk"]:
+            d["loose"].append(r["txt"])
+    return d
+
+
+def _direction_read(s):
     if not s["bound"]:
         return None
     bad, good, anchored, voided, loose, open_ = [], [], [], [], [], []
@@ -2575,6 +3058,11 @@ def run_check(ledger_text, memo_text, ratios="", dollar_floor=25000, percent_flo
                          "det": res["txt"], "ask": res["ask"]})
 
         dirn = direction_on(s)
+        risk = dirn["risk"] if dirn else []
+        if dirn:
+            dirn = {"bad": dirn["bad"], "good": dirn["good"], "voided": dirn["voided"],
+                    "loose": dirn["loose"][:len(dirn["loose"]) - (len(risk) if dirn["held"] else 0)],
+                    "risk": risk, "held": dirn["held"]}
         s["dirPass"] = bool(dirn and dirn["good"] and not dirn["bad"] and not dirn["voided"]
                             and not dirn["loose"])
         s["outside"] = list(getattr(s["figs"], "outside", ()) or [])
@@ -2613,6 +3101,22 @@ def run_check(ledger_text, memo_text, ratios="", dollar_floor=25000, percent_flo
                                   "negation is read?") if dirn["voided"] else
                                  ("Which line does this direction word describe, and does it agree "
                                   "with that line?" if dirn["loose"] else ""))})
+
+        # wording the grammar does not read.  Once every claim in the sentence is
+        # read, anything left from the risk lexicon holds it at needs review, named
+        # word by word, wherever that is what stops the sentence clearing.
+        for r in (risk if dirn and dirn["held"] else []):
+            rst = "needs review"
+            s["st"] = worse(s["st"], rst)
+            q("Unread wording", s["label"], s["text"], r["txt"], "Reviewer",
+              "What does \u201c" + r["raw"] + "\u201d claim in this sentence, and does the ledger support it?")
+            rows.append({"id": run_id + "/" + s["label"] + "/w" + str(r["at"]), "ev": evid(),
+                         "line": _acct_line(s), "subj": s["text"], "label": s["label"],
+                         "check": "Wording " + r["raw"], "badge": BADGE[rst], "status": rst,
+                         "result": "OUTSIDE THE GRAMMAR",
+                         "det": r["txt"] + ". Every other claim in it was read.",
+                         "ask": "What does \u201c" + r["raw"] + "\u201d claim in this sentence, and does "
+                                "the ledger support it?"})
 
         pc = policy_claims(s["text"])
         if pc and s["bound"]:
@@ -2782,7 +3286,8 @@ def _status_why(s):
         return "At least one check on this sentence failed. Nothing later in the run lifts that."
     if s["st"] == "needs review":
         return ("Something here is unresolved: a role the words do not give, a binding the checker "
-                "will not settle, a percent it cannot compute, or a ledger question above it. It "
+                "will not settle, a percent it cannot compute, wording the grammar does not read, or a "
+                "ledger question above it. It "
                 "cannot be called checked until a person answers it.")
     if s["st"] == "not checked":
         return ("Nothing in this sentence could be tied to the ledger and tested. That is not the "

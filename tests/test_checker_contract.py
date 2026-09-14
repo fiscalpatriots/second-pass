@@ -158,14 +158,18 @@ def test_fixture_holds_in_python(fixture):
 
 
 def test_the_suite_is_the_browser_suite():
-    """Two hundred and twelve fixtures: T01 to T54 with the lettered companions, the
-    forty probes of the third review, P01 to P40, and the mutation classes."""
-    assert len(FIXTURES) == 212
+    """Five hundred and forty-six fixtures: T01 to T54 with the lettered companions, the
+    forty probes of the third review, P01 to P40, the mutation classes written against
+    them, the 175 probes of the independent audit of 13 September 2026 (A001 to A139
+    and B001 to B036), and the clearance grammar's mutation classes."""
+    assert len(FIXTURES) == 546
     assert FIXTURE_IDS[0] == "T01"
     assert "T54" in FIXTURE_IDS and "P01" in FIXTURE_IDS and "P40" in FIXTURE_IDS
-    for prefix in ("MUL", "STILL", "FRAC", "DIGIT", "COUNT", "ROLE"):
+    assert "A001" in FIXTURE_IDS and "A139" in FIXTURE_IDS and "B036" in FIXTURE_IDS
+    for prefix in ("MUL", "STILL", "FRAC", "DIGIT", "COUNT", "ROLE",
+                   "CUR", "SIGN", "SAME", "PER", "ANA", "RESP", "QTY"):
         assert any(i.startswith(prefix) for i in FIXTURE_IDS), prefix
-    assert len(set(FIXTURE_IDS)) == 212
+    assert len(set(FIXTURE_IDS)) == 546
 
 
 # The coverage strips printed in CHECKER.md for the four samples. These are the

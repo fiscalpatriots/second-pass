@@ -3,8 +3,12 @@
 The input set is ``tests/checker-fixtures.json``: the fixtures that guard the page,
 the forty probes from the third independent review of 13 September 2026, and the
 mutation classes written against them (multipliers, no-change claims, fractions,
-digits outside 0 to 9, numbers that are not figures, and the Prompt 1 line shape).
-The same file guards ``checker.html`` at beat-the-machine.
+digits outside 0 to 9, numbers that are not figures, and the Prompt 1 line shape),
+the 175 probes of the independent audit of the same day, and the clearance grammar's
+mutation classes (currencies, signs, sameness, periods and bases, another account,
+"respectively", and words that size, rank or share a movement). The same file guards
+``checker.html`` at beat-the-machine. A last test holds the clearance grammar's risk
+lexicon, and the patterns around it, identical in both implementations.
 
 Every input is run through ``checker.html`` under Node, using the browser suite's
 own harness, and through ``second_pass.checker`` here. The outputs are compared
@@ -119,3 +123,47 @@ def test_both_implementations_agree(fixture):
         b = normalize(field, got_py.get(field))
         assert a == b, ("%s differs on %s\n  browser: %s\n  python:  %s"
                         % (fixture["id"], field, json.dumps(a)[:1500], json.dumps(b)[:1500]))
+
+
+_LEXICON_SCRIPT = r"""
+const fs = require("fs"), path = require("path"), vm = require("vm");
+const ctx = {}; ctx.window = ctx; vm.createContext(ctx);
+vm.runInContext(fs.readFileSync(path.join(process.argv[1], "assets", "second-pass-core.js"), "utf8"), ctx);
+const C = ctx.SecondPassCore, out = { lex: C.RISK_LEX, rx: {} };
+for (const n of ["FOREIGN_BEFORE", "FOREIGN_AFTER", "DRCR_AFTER", "ORPHAN_UNIT", "ORPHAN_NOT", "CJK_NUM_RE",
+                 "ACCEPT_FRAME", "FRAME_MONTH", "MONTH_TOKEN", "REASON_AT", "REASON_BACK", "CONTRACT_NOUN"])
+  out.rx[n] = { source: C[n].source, i: C[n].flags.indexOf("i") > -1 };
+process.stdout.write(JSON.stringify(out));
+"""
+
+
+def _plain(pattern):
+    """A pattern with its unicode escapes written as the characters they name, and the
+    end-of-text anchor written one way, so two spellings of one pattern compare equal."""
+    text = re.sub(r"\\u([0-9A-Fa-f]{4})", lambda m: chr(int(m.group(1), 16)), pattern)
+    return re.sub(r"\\Z$", "$", text)
+
+
+def test_the_clearance_lexicon_is_the_browser_lexicon():
+    """The clearance grammar's risk lexicon and the patterns around it are the same
+    patterns, entry for entry, with the same class, strength, case rule and
+    explanation, in both implementations."""
+    if not NODE or not os.path.isfile(os.path.join(GAME, "assets", "second-pass-core.js")):
+        pytest.skip("Node or the beat-the-machine repository is not available")
+    from second_pass import checker
+    done = subprocess.run([NODE, "-e", _LEXICON_SCRIPT, GAME], capture_output=True, text=True,
+                          encoding="utf-8", timeout=120)
+    assert done.returncode == 0, done.stderr[-2000:]
+    js = json.loads(done.stdout)
+    assert len(js["lex"]) == len(checker.RISK_LEX)
+    for a, b in zip(js["lex"], checker.RISK_LEX):
+        for key in ("cat", "why"):
+            assert a[key] == b[key], (key, a[key], b[key])
+        for key in ("strong", "cs", "contract"):
+            assert bool(a.get(key)) == bool(b.get(key)), (a["cat"], key)
+        assert _plain(a["re"]) == _plain(b["re"]), (a["cat"], a["re"][:120])
+        assert (a.get("not") or "") == (b.get("not") or "")
+    for name, got in js["rx"].items():
+        rx = getattr(checker, name)
+        assert _plain(got["source"]) == _plain(rx.pattern), name
+        assert got["i"] == bool(rx.flags & re.I), name
